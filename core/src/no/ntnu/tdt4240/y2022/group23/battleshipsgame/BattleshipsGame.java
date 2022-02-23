@@ -4,10 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.GameStateManager;
 
 public class BattleshipsGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	GameStateManager gsm;
 	
 	@Override
 	public void create () {
