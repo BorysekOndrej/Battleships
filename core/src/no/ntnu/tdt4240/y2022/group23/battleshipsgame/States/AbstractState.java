@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 // https://www.youtube.com/watch?v=rzBVTPaUUDg
 // It's also the same O. Borysek submitted as part of assignment 01.
 
-public abstract class AbstractState {
+public abstract class AbstractState implements IState {
     protected OrthographicCamera cam;
     protected Vector3 mouse;
     protected GameStateManager gsm;
