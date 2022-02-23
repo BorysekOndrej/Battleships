@@ -1,4 +1,4 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame;
 
-public class GameInfo {
+public class RemainingShipsPanel implements IRenderable {
 }
