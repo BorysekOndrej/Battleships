@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
-public class AbstractShip implements IShip {
+public abstract class AbstractShip implements IShip {
     private List<Vector2> positions;
 
 
