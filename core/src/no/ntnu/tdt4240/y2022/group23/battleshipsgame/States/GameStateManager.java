@@ -9,13 +9,13 @@ import java.util.Stack;
 
 
 public class GameStateManager {
-    private Stack<AbstractState> states;
+    private Stack<IState> states;
 
     public GameStateManager(){
         states = new Stack<>();
     }
 
-    public void push(AbstractState state){
+    public void push(IState state){
         states.push(state);
     }
 
@@ -23,7 +23,7 @@ public class GameStateManager {
         states.pop();
     }
 
-    public void set(AbstractState state){
+    public void set(IState state){
         states.pop();
         states.push(state);
     }
