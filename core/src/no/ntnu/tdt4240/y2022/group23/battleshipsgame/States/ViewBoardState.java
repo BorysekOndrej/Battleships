@@ -10,4 +10,8 @@ public class ViewBoardState extends AbstractState {
     protected GameBoard gameBoard;
     protected List<IShip> ships;
     protected TimerPanel timer;
+
+    protected ViewBoardState(GameStateManager gsm) {
+        super(gsm);
+    }
 }

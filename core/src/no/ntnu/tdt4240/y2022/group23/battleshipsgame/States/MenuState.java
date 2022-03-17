@@ -1,4 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 public class MenuState extends AbstractState {
+    protected MenuState(GameStateManager gsm) {
+        super(gsm);
+    }
 }

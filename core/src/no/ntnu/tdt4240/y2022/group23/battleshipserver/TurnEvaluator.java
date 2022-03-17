@@ -8,13 +8,15 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Lobby;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
 
 public class TurnEvaluator {
-    public abstract TurnEvaluator (GameBoard gameBoard, IAction action);
+    public TurnEvaluator (GameBoard gameBoard, IAction action){
+        // todo:
+    }
 
-    public boolean isValidTurn();
-    public GameBoard boardBeforeTurn();
-    public GameBoard boardAfterTurn();
+    public boolean isValidTurn(){return true;} // todo:
+    public GameBoard boardBeforeTurn(){return new GameBoard();} // todo:
+    public GameBoard boardAfterTurn(){return new GameBoard();} // todo:
 
-    private tmp(){
+    private void tmp(){
         // various msgs that can be transmited over the network
         GameBoard gameBoard;
         Lobby lobby;

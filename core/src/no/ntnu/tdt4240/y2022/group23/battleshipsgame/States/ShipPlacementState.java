@@ -10,4 +10,8 @@ public class ShipPlacementState extends AbstractState {
     private GameBoard gameBoard;
     private List<IShip> ships;
     private TimerPanel timer;
+
+    protected ShipPlacementState(GameStateManager gsm) {
+        super(gsm);
+    }
 }
