@@ -1,15 +1,20 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships;
 
-import com.badlogic.gdx.math.Vector2;
-
 import java.util.List;
 
-public abstract class AbstractShip implements IShip {
-    private List<Vector2> positions;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 
+public abstract class AbstractShip implements IShip {
+    private List<Coords> positions;
 
     @Override
-    public List<Vector2> getPositions() {
+    public List<Coords> getPositions() {
         return positions;
+    }
+
+    @Override
+    public boolean isSunk(GameBoard board) {
+        throw new UnsupportedOperationException("not implemented");
     }
 }

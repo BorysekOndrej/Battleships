@@ -2,6 +2,6 @@ package no.ntnu.tdt4240.y2022.group23.battleshipserver;
 
 public class Server{
 	public static void main (String[] arg) {
-		new TurnEvaluator(null, null);
+		throw new UnsupportedOperationException("not implemented");
 	}
 }
