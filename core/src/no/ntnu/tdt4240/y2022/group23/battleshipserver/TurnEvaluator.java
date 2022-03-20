@@ -1,7 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipserver;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
@@ -10,7 +10,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardChange;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 public class TurnEvaluator {
     private final GameBoard beforeBoard;
@@ -18,32 +17,26 @@ public class TurnEvaluator {
     private final NextTurn nextTurn;
 
     private void sinkShips(ShipPlacements ships, List<GameBoardChange> changes) {
-        for (GameBoardChange change : changes) {
-            IShip ship = ships.getShipOnCoords(change.coords);
-            if (ship != null && ship.isSunk(afterBoard)) {
-                for (Coords coords : ship.getPositions()) {
+        changes.stream()
+            .map(change -> ships.getShipOnCoords(change.coords))
+            .distinct()
+            .filter(ship -> ship != null && ship.isSunk(afterBoard))
+            .forEach(ship -> {
+                for (Coords coords : ship.getPositions())
                     afterBoard.set(coords, GameBoardField.SUNK);
-                }
-            }
-        }
+            });
     }
 
     private boolean hitAny(List<GameBoardChange> changes) {
-        for (GameBoardChange change : changes) {
-            if (beforeBoard.get(change.coords) != afterBoard.get(change.coords) &&
-                    (change.newField == GameBoardField.HIT || change.newField == GameBoardField.SUNK))
-                return true;
-        }
-        return false;
+        return changes.stream()
+                .anyMatch(change -> change.newField == GameBoardField.HIT
+                                 || change.newField == GameBoardField.SUNK);
     }
 
-    private void filterUnchanged(List<GameBoardChange> changes) {
-        Iterator<GameBoardChange> it = changes.listIterator();
-        while (it.hasNext()) {
-            GameBoardChange change = it.next();
-            if (beforeBoard.get(change.coords) == afterBoard.get(change.coords))
-                it.remove();
-        }
+    private List<GameBoardChange> filterUnchanged(List<GameBoardChange> changes) {
+        return changes.stream()
+            .filter(change -> beforeBoard.get(change.coords) != afterBoard.get(change.coords))
+            .collect(Collectors.toList());
     }
 
     public TurnEvaluator(ShipPlacements ships, GameBoard gameBoard, IAction action) {
@@ -54,7 +47,7 @@ public class TurnEvaluator {
             afterBoard.set(change.coords, change.newField);
         }
 
-        filterUnchanged(changes);
+        changes = filterUnchanged(changes);
 
          if (!hitAny(changes)) {
              nextTurn = NextTurn.OTHERS_TURN;
