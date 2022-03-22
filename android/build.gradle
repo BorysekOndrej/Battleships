@@ -1,3 +1,4 @@
+apply plugin: 'com.google.gms.google-services'
 android {
     buildToolsVersion "32.0.0"
     compileSdkVersion 29
@@ -32,6 +33,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
     }
 }
 
@@ -91,6 +95,10 @@ task run(type: Exec) {
 
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'no.ntnu.tdt4240.y2022.group23.battleshipsgame/no.ntnu.tdt4240.y2022.group23.battleshipsgame.AndroidLauncher'
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-messaging:23.0.1'
 }
 
 eclipse.project.name = appName + "-android"
