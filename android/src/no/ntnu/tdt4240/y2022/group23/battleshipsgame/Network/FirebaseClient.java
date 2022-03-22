@@ -2,6 +2,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
 import android.util.Log;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -11,29 +12,24 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 class FirebaseClient extends FirebaseMessagingService implements INetworkClient {
-    private static final String TAG = "MyActivity";
+    private static final String TAG = "Firebase client";
     private Queue<Map<String, String>> notificationQueue = new PriorityQueue<>();
     private String firebaseToken;
-    private HttpsClient httpsClient = null;
+    private IFirebaseTokenUpdate firebaseUpdateCallback = null;
 
     public FirebaseClient() {}
 
-    public void injectHttpsClient(HttpsClient httpsClient){
-        this.httpsClient = httpsClient;
+    public void injectFirebaseUpdateCallback(IFirebaseTokenUpdate firebaseUpdateCallback){
+        this.firebaseUpdateCallback = firebaseUpdateCallback;
     }
 
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        firebaseToken = token;
-
-        HashMap<String, String> tokenMsg = new HashMap<>();
-        tokenMsg.put("firebaseToken", firebaseToken);
-        // todo: add user id
-        if (httpsClient != null){
-            httpsClient.send("localhost", tokenMsg); // todo: set url
+        if (firebaseUpdateCallback != null){
+            firebaseUpdateCallback.sendFirebaseToken(firebaseToken, token);
         }
-
+        firebaseToken = token;
     }
 
     @Override

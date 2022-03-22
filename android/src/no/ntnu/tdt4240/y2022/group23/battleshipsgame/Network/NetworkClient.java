@@ -1,18 +1,29 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
 import android.content.Context;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class NetworkClient implements INetworkClient {
+interface IFirebaseTokenUpdate {
+    void sendFirebaseToken(String originalToken, String newToken);
+}
+
+public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
     private final FirebaseClient firebase;
     private final HttpsClient httpsClient;
     private static NetworkClient INSTANCE;
+    private final String firebaseTokenSubmissionURL = "https://envojlo4sdzr8.x.pipedream.net/token";
+
 
     private NetworkClient(Context ctx){
         httpsClient = new HttpsClient(ctx);
         firebase = new FirebaseClient();
-        firebase.injectHttpsClient(httpsClient);
+        firebase.injectFirebaseUpdateCallback(this);
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            sendFirebaseToken(token, token);
+        });
     }
 
     @Override
@@ -37,6 +48,15 @@ public class NetworkClient implements INetworkClient {
 
     public static NetworkClient getInstance(){
         return getInstance(null);
+    }
+
+    // Firebase token submission
+
+    public void sendFirebaseToken(String originalToken, String newToken){
+        Map<String, String> tokenMsg = new HashMap<>();
+        tokenMsg.put("originalToken", originalToken);
+        tokenMsg.put("newToken", newToken);
+        send(firebaseTokenSubmissionURL, tokenMsg);
     }
 
 }
