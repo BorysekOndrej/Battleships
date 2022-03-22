@@ -48,7 +48,7 @@ public class GameBoardTests {
 
         for (int i = 0; i < dims[0]; i++) {
             for (int j = 0; j < dims[1]; j++) {
-                Assertions.assertEquals(board.get(new Coords(i, j)), GameBoardField.UNKNOWN);
+                Assertions.assertEquals(GameBoardField.UNKNOWN, board.get(new Coords(i, j)));
             }
         }
     }
@@ -66,7 +66,7 @@ public class GameBoardTests {
 
         for (int i = 0; i < fieldValues.length; i++) {
             for (int j = 0; j < fieldValues.length; j++) {
-                Assertions.assertEquals(copy.get(new Coords(i, j)), board.get(new Coords(i, j)));
+                Assertions.assertEquals(board.get(new Coords(i, j)), copy.get(new Coords(i, j)));
             }
         }
     }
@@ -75,10 +75,10 @@ public class GameBoardTests {
     public void change_in_copy_does_not_affect_original() {
         GameBoard original = new GameBoard(5, 5);
         GameBoard copy = new GameBoard(original);
-        Assertions.assertNotEquals(original.get(new Coords(0, 0)), GameBoardField.HIT);
+        Assertions.assertNotEquals(GameBoardField.HIT, original.get(new Coords(0, 0)));
 
         copy.set(new Coords(0, 0), GameBoardField.HIT);
-        Assertions.assertNotEquals(original.get(new Coords(0, 0)), GameBoardField.HIT);
+        Assertions.assertNotEquals(GameBoardField.HIT, original.get(new Coords(0, 0)));
     }
 
     @ParameterizedTest
@@ -88,7 +88,7 @@ public class GameBoardTests {
 
         GameBoard board = new GameBoard(dimensions[0], dimensions[1]);
         board.apply(Collections.singletonList(change));
-        Assertions.assertEquals(board.get(change.coords), change.newField);
+        Assertions.assertEquals(change.newField, board.get(change.coords));
     }
 
     @ParameterizedTest
@@ -104,7 +104,7 @@ public class GameBoardTests {
             for (int j = 0; j < dimensions[1]; j++) {
                 if (i == change.coords.x && j == change.coords.y)
                     continue;
-                Assertions.assertEquals(board.get(new Coords(i, j)), original.get(new Coords(i, j)));
+                Assertions.assertEquals(original.get(new Coords(i, j)), board.get(new Coords(i, j)));
             }
         }
     }
