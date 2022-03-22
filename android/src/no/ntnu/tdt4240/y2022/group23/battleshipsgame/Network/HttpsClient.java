@@ -11,7 +11,7 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.Map;
 
-public class HttpsClient extends Application implements INetworkClient {
+class HttpsClient extends Application implements INetworkClient {
     private static final String TAG = "MyActivity";
     RequestQueue queue;
 
