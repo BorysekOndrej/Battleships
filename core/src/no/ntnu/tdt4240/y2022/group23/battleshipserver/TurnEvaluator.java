@@ -43,9 +43,7 @@ public class TurnEvaluator {
         beforeBoard = gameBoard;
         List<GameBoardChange> changes = action.affect(ships, beforeBoard);
         afterBoard = new GameBoard(beforeBoard);
-        for (GameBoardChange change : changes) {
-            afterBoard.set(change.coords, change.newField);
-        }
+        afterBoard.apply(changes);
 
         changes = filterUnchanged(changes);
 

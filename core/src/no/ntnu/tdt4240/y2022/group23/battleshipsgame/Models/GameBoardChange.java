@@ -8,4 +8,9 @@ public class GameBoardChange {
         this.coords = coords;
         this.newField = newVal;
     }
+
+    @Override
+    public String toString() {
+        return "GameBoardChange(coords=" + coords.toString() + ", newVal=" + newField.toString() + ")";
+    }
 }
