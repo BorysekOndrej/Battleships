@@ -2,7 +2,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
 import java.util.List;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.ISerialializable;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.ISerializable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 /**
@@ -10,7 +10,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
  * This class is separated from the GameBoard class to ease information hiding
  * from the opposing player.
  */
-public class ShipPlacements implements ISerialializable {
+public class ShipPlacements implements ISerializable {
     private List<IShip> ships;
 
     public boolean hasShipOnCoords(Coords coords) {
