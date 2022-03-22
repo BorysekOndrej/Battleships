@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.Map;
 
 class HttpsClient extends Application implements INetworkClient {
-    private static final String TAG = "MyActivity";
+    private static final String TAG = "HttpsClient";
     RequestQueue queue;
 
     public HttpsClient(Context ctx) {
@@ -29,14 +29,19 @@ class HttpsClient extends Application implements INetworkClient {
     @Override
     public boolean send(String url, Map<String, String> data) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     Log.d(TAG, "Response is: " + response);
                 },
                 error -> {
-                    Log.d(TAG, "That didn't work!");
+                    Log.w(TAG, "That didn't work!");
                 }
-        );
+        ){
+            @Override
+            protected Map<String, String> getParams(){
+                return data;
+            }
+        };
         queue.add(stringRequest);
 
         return true;
