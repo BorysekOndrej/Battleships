@@ -116,3 +116,8 @@ Thumbs.db
 classDiagram.png
 classDiagram.svg
 classDiagramFull.png
+
+## Tests
+
+/tests/build/
+
