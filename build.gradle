@@ -94,6 +94,7 @@ project(":tests") {
         implementation project(":core")
 
         testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:5.8.2"
         testImplementation "org.mockito:mockito-core:2.23.0"
         testImplementation "org.mockito:mockito-junit-jupiter:2.23.0"
 
