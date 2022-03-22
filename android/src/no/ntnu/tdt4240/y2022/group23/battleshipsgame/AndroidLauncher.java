@@ -4,11 +4,11 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.httpsClient;
+
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.HttpsClient;
 
 public class AndroidLauncher extends AndroidApplication {
-	httpsClient httpsClient;
+	HttpsClient httpsClient;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -16,7 +16,7 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new BattleshipsGame(), config);
 
-		httpsClient = new httpsClient(getApplicationContext());
+		httpsClient = new HttpsClient(getApplicationContext());
 		httpsClient.send("https://envojlo4sdzr8.x.pipedream.net/", null);
 	}
 }

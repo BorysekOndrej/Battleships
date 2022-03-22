@@ -11,11 +11,11 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.Map;
 
-public class httpsClient extends Application implements INetworkClient {
+public class HttpsClient extends Application implements INetworkClient {
     private static final String TAG = "MyActivity";
     RequestQueue queue;
 
-    public httpsClient(Context ctx) {
+    public HttpsClient(Context ctx) {
         queue = Volley.newRequestQueue(ctx);
         queue.start();
     }
