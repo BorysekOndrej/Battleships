@@ -1,7 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -84,8 +83,6 @@ public class GameBoardTests {
     @ParameterizedTest
     @MethodSource({"provideDimsAndChange"})
     public void change_changes_its_coords(int[] dimensions, GameBoardChange change) {
-        Assumptions.assumeTrue(isInbounds(dimensions, change.coords));
-
         GameBoard board = new GameBoard(dimensions[0], dimensions[1]);
         board.apply(Collections.singletonList(change));
         Assertions.assertEquals(change.newField, board.get(change.coords));
@@ -94,8 +91,6 @@ public class GameBoardTests {
     @ParameterizedTest
     @MethodSource({"provideDimsAndChange"})
     public void change_affect_no_coords_except_its_own(int[] dimensions, GameBoardChange change) {
-        Assumptions.assumeTrue(isInbounds(dimensions, change.coords));
-
         GameBoard board = new GameBoard(dimensions[0], dimensions[1]);
         GameBoard original = new GameBoard(board);
         board.apply(Collections.singletonList(change));
