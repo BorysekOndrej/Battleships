@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
-import sun.jvm.hotspot.utilities.Assert;
 
 public class ShipPlacementsTests {
     private static Stream<Arguments> provideShipsWithInboundsAnswers() {
