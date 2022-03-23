@@ -26,7 +26,7 @@ public abstract class AbstractShip implements IShip {
     public boolean isSunk(GameBoard board) {
         if (positionsLeft.size()==0){
             for (Coords coords:positions) {
-                board.set(coords, GameBoardField.HIT);
+                board.set(coords, GameBoardField.SUNK);
             }
             return true;
         }
@@ -39,6 +39,7 @@ public abstract class AbstractShip implements IShip {
     public boolean gotHit(Coords coords, GameBoard board){
         if(positionsLeft.contains(coords)){
             positionsLeft.remove(coords);
+            partsLeft--;
             board.set(coords, GameBoardField.HIT);
             return true;
         }
