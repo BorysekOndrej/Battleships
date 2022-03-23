@@ -42,6 +42,19 @@ public class ShipPlacements implements Serializable {
         ships.add(ship);
     }
 
+    /**
+     * Adds a ship to the collection, if it adheres to rules of ship placement:
+     * - the ship is fully within the boundaries of the game board
+     * - ship cannot overlap any already placed ship
+     * @param width width of the game board
+     * @param height height of the game board
+     * @param ship the ship to be added
+     * @throws IllegalArgumentException thrown when ship to be placed does not follow the rules
+     */
+    public void addShip(int width, int height, IShip ship) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
     public boolean hasShipOnCoords(Coords coords) {
         return getShipOnCoords(coords) != null;
     }

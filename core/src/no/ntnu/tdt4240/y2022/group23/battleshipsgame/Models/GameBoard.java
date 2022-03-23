@@ -40,4 +40,7 @@ public class GameBoard implements Serializable {
             set(change.coords, change.newField);
         }
     }
+
+    public int getWidth() { return board.get(0).size(); }
+    public int getHeight() { return board.size(); }
 }
