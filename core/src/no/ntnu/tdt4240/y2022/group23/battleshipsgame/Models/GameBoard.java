@@ -21,4 +21,7 @@ public class GameBoard implements ISerializable {
             set(change.coords, change.newField);
         }
     }
+
+    public int getWidth() { return board.get(0).size(); }
+    public int getHeight() { return board.size(); }
 }
