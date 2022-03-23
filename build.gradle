@@ -104,3 +104,14 @@ project(":tests") {
         testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
+
+project(":server") {
+    apply plugin: "java"
+
+    sourceSets.test.java.srcDirs = ["src/"]
+
+    dependencies {
+        implementation project(":core")
+        implementation group: 'io.javalin', name: 'javalin', version: '4.4.0'
+    }
+}
