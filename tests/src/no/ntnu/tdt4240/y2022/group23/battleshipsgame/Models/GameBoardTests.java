@@ -103,4 +103,52 @@ public class GameBoardTests {
             }
         }
     }
+
+    private static Stream<Arguments> provideDoubleChangeWithResult() {
+        return Stream.of( // disallow WATER <-> SHIP/HIT/SUNK
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.UNKNOWN, GameBoardField.UNKNOWN),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.WATER, GameBoardField.WATER),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.SHIP, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.WATER, GameBoardField.UNKNOWN, GameBoardField.WATER),
+                Arguments.of(GameBoardField.WATER, GameBoardField.WATER, GameBoardField.WATER),
+                Arguments.of(GameBoardField.HIT, GameBoardField.UNKNOWN, GameBoardField.HIT),
+                Arguments.of(GameBoardField.HIT, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.HIT, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.HIT, GameBoardField.SHIP, GameBoardField.HIT),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.UNKNOWN, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.HIT, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.SHIP, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.UNKNOWN, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.SHIP, GameBoardField.SHIP)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDoubleChangeWithResult")
+    public void changing_twice_the_same_field_in_the_same_apply(GameBoardField fst, GameBoardField snd, GameBoardField result) {
+        GameBoard board = new GameBoard(1, 1);
+
+        board.apply(Arrays.asList(
+                new GameBoardChange(new Coords(0, 0), fst),
+                new GameBoardChange(new Coords(0, 0), snd)
+        ));
+
+        Assertions.assertEquals(result, board.get(new Coords(0, 0)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDoubleChangeWithResult")
+    public void changing_twice_the_same_field_in_different_applies(GameBoardField fst, GameBoardField snd, GameBoardField result) {
+        GameBoard board = new GameBoard(1, 1);
+
+        board.apply(Collections.singletonList(new GameBoardChange(new Coords(0, 0), fst)));
+        board.apply(Collections.singletonList(new GameBoardChange(new Coords(0, 0), snd)));
+
+        Assertions.assertEquals(result, board.get(new Coords(0, 0)));
+    }
 }
