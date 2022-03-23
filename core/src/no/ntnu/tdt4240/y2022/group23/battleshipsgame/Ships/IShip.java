@@ -8,5 +8,10 @@ import java.util.List;
 
 public interface IShip extends Serializable {
     List<Coords> getPositions();
+    void setPositions(List<Coords> positions);
     boolean isSunk(GameBoard board);
+    boolean gotHit(Coords coords, GameBoard board);
+    int getPartsLeft();
+    int getType();
+    void setType(int parts);
 }

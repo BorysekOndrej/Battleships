@@ -4,9 +4,13 @@ import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 
 public abstract class AbstractShip implements IShip {
     private List<Coords> positions;
+    private List<Coords> positionsLeft;
+    private int partsLeft;
+    private int parts;
 
     @Override
     public List<Coords> getPositions() {
@@ -14,7 +18,47 @@ public abstract class AbstractShip implements IShip {
     }
 
     @Override
+    public void setPositions(List<Coords> positions){
+        this.positions = positions;
+    }
+
+    @Override
     public boolean isSunk(GameBoard board) {
-        throw new UnsupportedOperationException("not implemented");
+        if (positionsLeft.size()==0){
+            for (Coords coords:positions) {
+                board.set(coords, GameBoardField.HIT);
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean gotHit(Coords coords, GameBoard board){
+        if(positionsLeft.contains(coords)){
+            positionsLeft.remove(coords);
+            board.set(coords, GameBoardField.HIT);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public int getPartsLeft(){
+        return partsLeft;
+    }
+
+    @Override
+    public int getType(){
+        return parts;
+    }
+
+    @Override
+    public void setType(int parts){
+        this.parts = parts;
     }
 }
