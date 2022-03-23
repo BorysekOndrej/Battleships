@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class GameBoardTests {
 
     private static Stream<int[]> provideDimensions() {
-        int[][] arrayDims = {{1, 1}, {2, 3}, {67, 13}, {1000, 5000}};
+        int[][] arrayDims = {{1, 1}, {2, 3}, {67, 13}, {100, 300}};
         return Arrays.stream(arrayDims);
     }
 
