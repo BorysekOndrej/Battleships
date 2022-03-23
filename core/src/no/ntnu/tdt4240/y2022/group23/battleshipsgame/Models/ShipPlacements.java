@@ -1,9 +1,9 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.ISerializable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 /**
@@ -11,7 +11,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
  * This class is separated from the GameBoard class to ease information hiding
  * from the opposing player.
  */
-public class ShipPlacements implements ISerializable {
+public class ShipPlacements implements Serializable {
     private List<IShip> ships = new ArrayList<>();
 
     /**

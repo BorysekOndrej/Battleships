@@ -1,7 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.ISerializable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * Stores the information about the state of the game available to the player at given moment.
  */
-public class GameBoard implements ISerializable {
+public class GameBoard implements Serializable {
     private List<List<GameBoardField>> board;
 
     public GameBoard(int width, int height) {

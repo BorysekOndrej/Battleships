@@ -1,7 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.ISerializable;
+import java.io.Serializable;
 
-public class Lobby implements ISerializable {
+public class Lobby implements Serializable {
     private String id;
 }
