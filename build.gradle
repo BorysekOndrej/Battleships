@@ -113,5 +113,7 @@ project(":server") {
     dependencies {
         implementation project(":core")
         implementation group: 'io.javalin', name: 'javalin', version: '4.4.0'
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
     }
 }

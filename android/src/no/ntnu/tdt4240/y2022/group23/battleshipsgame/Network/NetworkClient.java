@@ -52,9 +52,9 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     // Firebase token submission
 
-    public void sendFirebaseToken(String originalToken, String newToken){
+    public void sendFirebaseToken(String oldToken, String newToken){
         Map<String, String> tokenMsg = new HashMap<>();
-        tokenMsg.put("originalToken", originalToken);
+        tokenMsg.put("oldToken", oldToken);
         tokenMsg.put("newToken", newToken);
         send(firebaseTokenSubmissionURL, tokenMsg);
     }
