@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  server:
+    build:
+      context: .
+      dockerfile: DockerfileServer
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+    ports:
+      - '7070:7070' # todo: don't expose the port on production
+    depends_on:
+      - redis
 
   # based on https://geshan.com.np/blog/2022/01/redis-docker/
   redis:
