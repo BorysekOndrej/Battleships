@@ -116,5 +116,6 @@ project(":server") {
         implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
         implementation group: 'redis.clients', name: 'jedis', version: '4.1.1'
+        implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     }
 }

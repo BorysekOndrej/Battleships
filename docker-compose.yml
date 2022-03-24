@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   # based on https://geshan.com.np/blog/2022/01/redis-docker/
-  cache:
+  redis:
     image: redis:6.2-alpine
     restart: unless-stopped
     ports:
@@ -11,6 +11,15 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - cache:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    environment:
+      - REDIS_HOSTS=instance1:redis:6379
+    ports:
+      - '8081:8081' # todo: don't expose the port on production
+    depends_on:
+      - redis
 
 volumes:
   cache:
