@@ -97,4 +97,24 @@ public class RectangularShipTests {
 
         Assertions.assertEquals(correct, ship.isSunk(board), message);
     }
+
+    @ParameterizedTest
+    @MethodSource({"provideShipSinkingFillers", "provideNonShipSinkingFillers", "provideMixedFillers"})
+    public void checking_if_sunk_does_not_change_game_board(Function<Coords, GameBoardField> filler, boolean correct, String message) {
+        IShip ship = new RectangularShip(new Coords(0, 0), 5, true);
+        GameBoard board = new GameBoard(5, 5);
+
+        for (Coords coords : ship.getPositions()) {
+            board.set(coords, filler.apply(coords));
+        }
+
+        GameBoard original = new GameBoard(board);
+        ship.isSunk(board);
+
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Assertions.assertEquals(original.get(new Coords(x, y)), board.get(new Coords(x, y)));
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.y2022.group23.battleshipserver;
+package no.ntnu.tdt4240.y2022.group23.battleshipslogic;
 
 import java.util.List;
 import java.util.stream.Collectors;
