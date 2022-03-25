@@ -11,13 +11,15 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 public class GameAPIClient {
+    private final INetworkClient network;
     private final String id;
 
     /**
      * Creates the API object to communicate with the server during the game.
      * @param id the game id received from the server during the Lobby phase.
      */
-    public GameAPIClient(String id) {
+    public GameAPIClient(INetworkClient network, String id) {
+        this.network = network;
         this.id = id;
     }
 
@@ -56,8 +58,9 @@ public class GameAPIClient {
 
     /**
      * Receives the game state after this player's action.
-     * @return triplet composed of opponent's board, its affected coordinates and the list of yet unsunk ships
-     *      (passed as classes to avoid leaking of their placement)
+     * @return triplet composed of opponent's board, its affected coordinates and the list of yet
+     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
+     *      did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
@@ -68,8 +71,9 @@ public class GameAPIClient {
 
     /**
      * Receives the game state after opponent's action.
-     * @return triplet composed of this player's board, its affected coordinates and the list of yet unsunk ships
-     *      (passed as classes to avoid leaking of their placement)
+     * @return triplet composed of this player's board, its affected coordinates and the list of yet
+     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
+     *      did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
