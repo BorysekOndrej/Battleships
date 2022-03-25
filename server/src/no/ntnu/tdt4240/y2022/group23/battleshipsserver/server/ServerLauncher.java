@@ -21,7 +21,7 @@ public class ServerLauncher {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 		try {
-			FileInputStream serviceAccount = new FileInputStream("config/firebaseSecretAccountKey.json");
+			FileInputStream serviceAccount = new FileInputStream("config/java_server/firebaseSecretAccountKey.json");
 			FirebaseOptions options = FirebaseOptions.builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 					.build();
