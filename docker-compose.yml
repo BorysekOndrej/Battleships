@@ -34,7 +34,6 @@ services:
       - redis
 
   nginx:
-    container_name: nginx
     build: config/nginx
     depends_on:
       - server
