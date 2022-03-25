@@ -1,6 +1,12 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
 public class LobbyAPIClient {
+    private final INetworkClient network;
+
+    public LobbyAPIClient(INetworkClient network) {
+       this.network = network;
+    }
+
     /**
      * Sends a request to find a random opponent.
      */

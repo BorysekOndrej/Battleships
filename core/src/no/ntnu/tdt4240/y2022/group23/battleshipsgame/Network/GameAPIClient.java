@@ -11,13 +11,15 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 public class GameAPIClient {
+    private final INetworkClient network;
     private final String id;
 
     /**
      * Creates the API object to communicate with the server during the game.
      * @param id the game id received from the server during the Lobby phase.
      */
-    public GameAPIClient(String id) {
+    public GameAPIClient(INetworkClient network, String id) {
+        this.network = network;
         this.id = id;
     }
 
