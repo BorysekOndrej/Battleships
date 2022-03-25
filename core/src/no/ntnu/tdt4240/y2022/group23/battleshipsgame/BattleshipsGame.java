@@ -11,10 +11,10 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.INetworkClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.GameStateManager;
 
 public class BattleshipsGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	GameStateManager gsm;
-	INetworkClient networkClient;
+	private SpriteBatch batch;
+	private Texture img;
+	private GameStateManager gsm;
+	private INetworkClient networkClient;
 
 	@Override
 	public void create () {
