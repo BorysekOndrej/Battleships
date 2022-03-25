@@ -11,7 +11,7 @@ public class LobbyAPIClient {
     /**
      * Sends a request to create a private lobby.
      * The answer with the game id can be retrieved by
-     * {@link #receiveLobbyId()}.
+     * {@link #receiveGameId()}.
      */
     public void sendCreateLobbyRequest() {
         throw new UnsupportedOperationException("not implemented");
@@ -23,7 +23,7 @@ public class LobbyAPIClient {
      * @throws CommunicationTerminated if communication has been terminated
      *   by the other party
      */
-    public String receiveLobbyId() throws CommunicationTerminated {
+    public String receiveGameId() throws CommunicationTerminated {
         throw new UnsupportedOperationException("not implemented");
     }
 

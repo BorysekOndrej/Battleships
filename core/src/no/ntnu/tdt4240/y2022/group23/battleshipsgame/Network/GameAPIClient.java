@@ -56,8 +56,9 @@ public class GameAPIClient {
 
     /**
      * Receives the game state after this player's action.
-     * @return triplet composed of opponent's board, its affected coordinates and the list of yet unsunk ships
-     *      (passed as classes to avoid leaking of their placement)
+     * @return triplet composed of opponent's board, its affected coordinates and the list of yet
+     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
+     *      did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
@@ -68,8 +69,9 @@ public class GameAPIClient {
 
     /**
      * Receives the game state after opponent's action.
-     * @return triplet composed of this player's board, its affected coordinates and the list of yet unsunk ships
-     *      (passed as classes to avoid leaking of their placement)
+     * @return triplet composed of this player's board, its affected coordinates and the list of yet
+     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
+     *      did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
