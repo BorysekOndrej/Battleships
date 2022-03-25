@@ -7,7 +7,7 @@ services:
       dockerfile: DockerfileServer
     restart: unless-stopped
     volumes:
-      - ./config:/app/config
+      - ./config/java_server:/app/config/java_server
     ports:
       - '7070:7070' # todo: don't expose the port on production
     depends_on:
@@ -32,6 +32,19 @@ services:
       - '8081:8081' # todo: don't expose the port on production
     depends_on:
       - redis
+
+  nginx:
+    container_name: nginx
+    build: config/nginx
+    depends_on:
+      - server
+    # volumes:
+    #   - ./config/nginx_ssl:/etc/ssl/private/
+    ports:
+      - "80:80"
+      # - "443:443"
+    restart: unless-stopped
+
 
 volumes:
   redis_persistance:
