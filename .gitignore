@@ -121,4 +121,6 @@ classDiagramFull.png
 
 /*/build/
 
-/config/*
+/config/*.*
+!**/.gitkeep
+config/java_server/firebaseSecretAccountKey.json
