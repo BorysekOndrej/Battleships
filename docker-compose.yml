@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/java_server:/app/config/java_server
-    ports:
-      - '7070:7070' # todo: don't expose the port on production
+    # ports:
+    #   - '7070:7070' # note: don't expose the port on production
     depends_on:
       - redis
 
@@ -17,8 +17,8 @@ services:
   redis:
     image: redis:6.2-alpine
     restart: unless-stopped
-    ports:
-      - '6379:6379' # todo: don't expose the port on production
+    # ports:
+    #   - '6379:6379' # note: don't expose the port on production
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - redis_persistance:/data
