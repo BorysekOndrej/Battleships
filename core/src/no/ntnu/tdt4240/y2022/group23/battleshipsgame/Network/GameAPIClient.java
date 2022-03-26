@@ -1,12 +1,15 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
-import org.javatuples.Triplet;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameState;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
@@ -28,7 +31,11 @@ public class GameAPIClient {
      * @param placements the finalized ship placements
      */
     public void sendShipPlacement(ShipPlacements placements) {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.SEND_PLACEMENT.name());
+        request.put("id", id);
+        request.put("placements", StringSerializer.toString(placements));
+        network.send("/placements", request);
     }
 
     /**
@@ -38,7 +45,16 @@ public class GameAPIClient {
      *   by the other party
      */
     public boolean receiveCanGameStart() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> response = network.receive();
+        if (response == null)
+            return false;
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Collections.singletonList(ServerClientMessage.GAME_START),
+                responseType
+        );
+        return true;
     }
 
     /**
@@ -46,40 +62,65 @@ public class GameAPIClient {
      * @param action the chosen action
      */
     public void sendAction(IAction action) {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.SEND_ACTION.name());
+        request.put("id", id);
+        request.put("action", StringSerializer.toString(action));
+        network.send("/action", request);
     }
 
     /**
      * Sends timeout if the user run out of time picking the next move.
      */
     public void sendTimeout() {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.TIMEOUT.name());
+        request.put("id", id);
+        network.send("/timeout", request);
+    }
+
+    private GameState getNewGameState(boolean thisPlayersBoard) throws CommunicationTerminated {
+        Map<String, String> response = network.receive();
+        if (response == null)
+            return null;
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Arrays.asList(ServerClientMessage.ACTION_PERFORMED, ServerClientMessage.GAME_OVER),
+                responseType
+        );
+
+        GameBoard board = StringSerializer.fromString(response.get("board"));
+        List<Coords> changedCoords = StringSerializer.fromString(response.get("changedCoords"));
+        List<Class<? extends IShip>> unsunkShips = StringSerializer.fromString(response.get("unsunkShips"));
+        boolean gameOver = responseType == ServerClientMessage.GAME_OVER;
+        return new GameState(
+                board,
+                changedCoords,
+                unsunkShips,
+                thisPlayersBoard,
+                gameOver
+        );
     }
 
     /**
      * Receives the game state after this player's action.
-     * @return triplet composed of opponent's board, its affected coordinates and the list of yet
-     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
-     *      did not respond yet
+     * @return game state of the opponent's board, or null if server did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
-    public Triplet<GameBoard, List<Coords>, List<Class<IShip>>>
-    receiveMyActionResult() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+    public GameState receiveMyActionResult() throws CommunicationTerminated {
+        return getNewGameState(false);
     }
 
     /**
      * Receives the game state after opponent's action.
-     * @return triplet composed of this player's board, its affected coordinates and the list of yet
-     *      unsunk ships (passed as classes to avoid leaking of their placement), or null if server
-     *      did not respond yet
+     * @return game state of the opponent's board, or null if server did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
      */
-    public Triplet<GameBoard, List<Coords>, List<Class<IShip>>>
-    receiveOpponentActionResult() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+    public GameState receiveOpponentActionResult() throws CommunicationTerminated {
+        return getNewGameState(true);
     }
 
     /**
@@ -88,6 +129,10 @@ public class GameAPIClient {
      * the communication is terminated by the other party
      */
     public void endCommunication() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.END_COMMUNICATION.name());
+
+        network.send("/terminate", request);
+        throw new CommunicationTerminated("this user terminated communication");
     }
 }
