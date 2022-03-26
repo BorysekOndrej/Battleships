@@ -1,5 +1,10 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class LobbyAPIClient {
     private final INetworkClient network;
 
@@ -11,7 +16,10 @@ public class LobbyAPIClient {
      * Sends a request to find a random opponent.
      */
     public void sendJoinMatchmakingRequest() {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());
+        request.put("privateLobby", Boolean.toString(false));
+        network.send("/matchmaking_add", request);
     }
 
     /**
@@ -20,7 +28,10 @@ public class LobbyAPIClient {
      * {@link #receiveGameId()}.
      */
     public void sendCreateLobbyRequest() {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());
+        request.put("privateLobby", Boolean.toString(true));
+        network.send("/matchmaking_add", request);
     }
 
     /**
@@ -30,15 +41,52 @@ public class LobbyAPIClient {
      *   by the other party
      */
     public String receiveGameId() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> response = network.receive();
+        if (response == null)
+            return null;
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Collections.singletonList(ServerClientMessage.JOINED_LOBBY_WITH_ID),
+                responseType
+        );
+
+        return response.get("id");
     }
 
     /**
-     * Requests joining the game with the given id.
-     * @param id the id of the game to join
+     * Requests joining the game with the given id. Use {@link #wasLobbyJoinSuccessful()} to see
+     * if the join was successful.
+     * @param maybeId the id of the game to join
      */
-    public void sendJoinLobbyRequest(String id) {
-        throw new UnsupportedOperationException("not implemented");
+    public void sendJoinLobbyRequest(String maybeId) {
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.JOIN_LOBBY.toString());
+        request.put("id", maybeId);
+        network.send("/matchmaking_join", request);
+    }
+
+    /**
+     * Let's client know it if was possible to join the lobby as requested by
+     * {@link #sendJoinLobbyRequest(String)}.
+     * @return null if no response from the server was received yet, true iff join was successful
+     * @throws CommunicationTerminated if communication has been terminated
+     *      by the other party
+     */
+    public Boolean wasLobbyJoinSuccessful() throws CommunicationTerminated {
+        Map<String, String> response = network.receive();
+        if (response == null)
+            return null;
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Arrays.asList(
+                        ServerClientMessage.JOINED_LOBBY_WITH_ID,
+                        ServerClientMessage.NO_SUCH_LOBBY
+                ),
+                responseType
+        );
+        return responseType == ServerClientMessage.JOINED_LOBBY_WITH_ID;
     }
 
     /**
@@ -48,7 +96,17 @@ public class LobbyAPIClient {
      *   by the other party
      */
     public boolean receiveCanPlacementStart() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> response = network.receive();
+        if (response == null)
+            return false;
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Collections.singletonList(ServerClientMessage.PLACEMENT_START),
+                responseType
+        );
+
+        return true;
     }
 
     /**
@@ -57,6 +115,10 @@ public class LobbyAPIClient {
      * the communication is terminated by the other party
      */
     public void endCommunication() throws CommunicationTerminated {
-        throw new UnsupportedOperationException("not implemented");
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.END_COMMUNICATION.name());
+
+        network.send("/terminate", request);
+        throw new CommunicationTerminated("this user terminated communication");
     }
 }
