@@ -13,6 +13,11 @@ public class Radar extends AbstractAction {
 
     private int radius;
 
+    public Radar(Coords coords){
+        this.setRadius(1);
+        this.setCoords(coords);
+    }
+
     public Radar(Coords coords, int radius) {
         this.setRadius(radius);
         this.setCoords(coords);
