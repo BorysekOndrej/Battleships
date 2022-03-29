@@ -31,34 +31,38 @@ public class ShipPlacementState extends AbstractState {
         super(gsm);
     }
 
-    protected void handleInput(){};
+    @Override
+    public void handleInput(){};
 
     //Updates the state every dt
+    @Override
     public void update(float dt){
         if (ships.size() == 4){ //If already added 4 ships go to my board
             goToViewMyBoard();
         }
-    }
+    };
 
     //Changes state to view my board state
     private void goToViewMyBoard(){
         gsm.set(new ViewMineBoardState(gsm));
-    }
+    };
 
     //Selects the ship in number x
     private void selectShip(int number){
-    }
+    };
 
-    //Colocates a ship in the said space with said orientation
-    private void colocateShip(Coords coords,int squares,boolean horizontal){
+    //Collocates a ship in the said space with said orientation
+    private void collocateShip(Coords coords,int squares,boolean horizontal){
         RectangularShip ship = new RectangularShip(coords,squares,horizontal);
         GameBoardField shipSpace = GameBoardField.SHIP;
         gameBoard.set(coords,shipSpace);
-    }
-
-    public void render(SpriteBatch sb){
-        timer.render(SprieBatch sb);
     };
 
-    public void dispose();
+    @Override
+    public void render(SpriteBatch sb){
+        timer.render(sb);
+    };
+
+    @Override
+    public void dispose(){};
 }
