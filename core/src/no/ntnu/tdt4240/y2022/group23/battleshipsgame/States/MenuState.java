@@ -1,24 +1,40 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ActionButton;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu;
 
 public class MenuState extends AbstractState {
-    private ActionButton lobbyButton;
+    MainMenu mainMenu;
 
     protected MenuState(GameStateManager gsm) {
+        mainMenu = new MainMenu();
         super(gsm);
-        lobbyButton = new ActionButton(); //Action is executing goToLobbyState
     }
 
     //Handles the input of clicking the button
-    protected void handleInput(){};
+    protected void handleInput(){
+        if (mainMenu.createLobby.buttonTouched()){
+            goToLobbyState();
+        }
+        if (mainMenu.joinLobby.buttonTouched()){
+            goToLobbyState();
+        }
+        if (mainMenu.leaderboards.buttonTouched()){
+            goToLeaderboardState();
+        }
+    };
 
     //Changes state to lobby state
     private void goToLobbyState(){
         gsm.set(new LobbyState(gsm));
     }
 
-    public void render(SpriteBatch sb);
+    //Renders the main menu
+    public void render(SpriteBatch sb){
+        mainMenu.render(SpriteBatch sb);
+    };
 
-    public void dispose();
+    //Disposes the textures of
+    public void dispose(){
+        mainMenu.dispose();
+    };
 }
