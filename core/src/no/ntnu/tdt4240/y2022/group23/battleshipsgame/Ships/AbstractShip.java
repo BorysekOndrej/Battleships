@@ -8,8 +8,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 
 public abstract class AbstractShip implements IShip {
     private List<Coords> positions;
-    private List<Coords> positionsLeft;
-    private int partsLeft;
     private int parts;
 
     @Override
@@ -24,33 +22,18 @@ public abstract class AbstractShip implements IShip {
 
     @Override
     public boolean isSunk(GameBoard board) {
-        if (positionsLeft.size()==0){
-            for (Coords coords:positions) {
-                board.set(coords, GameBoardField.SUNK);
+        int hitFields = 0;
+        for (Coords coords:positions) {
+            if (board.get(coords) == GameBoardField.HIT || board.get(coords) == GameBoardField.SUNK) {
+                hitFields++;
             }
+        }
+        if(hitFields==positions.size()){
             return true;
         }
         else{
             return false;
         }
-    }
-
-    @Override
-    public boolean gotHit(Coords coords, GameBoard board){
-        if(positionsLeft.contains(coords)){
-            positionsLeft.remove(coords);
-            partsLeft--;
-            board.set(coords, GameBoardField.HIT);
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    @Override
-    public int getPartsLeft(){
-        return partsLeft;
     }
 
     @Override
