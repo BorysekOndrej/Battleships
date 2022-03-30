@@ -22,10 +22,15 @@ public class LobbyState extends AbstractState {
 
     @Override
     public void handleInput(){
-        if (Gdx.input.justTouched()){ //Place holder given change to
-            OPPONENT = TRUE;
+        if (Gdx.input.justTouched()){ //Place holder given change to variable
+            opponentFound();
         }
     };
+
+    //Signals that an opponent has been found
+    public void opponentFound(){
+        OPPONENT = TRUE;
+    }
 
     //Changes state to ship placement state
     private void goToShipPlacement(){

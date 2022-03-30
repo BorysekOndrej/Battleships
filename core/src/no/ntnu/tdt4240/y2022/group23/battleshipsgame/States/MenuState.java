@@ -36,7 +36,7 @@ public class MenuState extends AbstractState {
         gsm.set(new LobbyState(gsm));
     };
 
-    //Disposes the textures of
+    //Disposes the textures
     @Override
     public void dispose(){
         mainMenu.dispose();
