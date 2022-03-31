@@ -56,20 +56,19 @@ public class RedisStorage {
         }
     }
 
-    void deleteUser(String userID){
-        try (Jedis jedis = pool.getResource()) {
-            String userToken = jedis.get("user_id_" + userID);
-            jedis.del("user_id_" + userID);
-            jedis.del("user_token_" + userToken);
-        }
-    }
-
     void setNewUserToken(String userID, String token){
-        deleteUser(userID);
+        String oldToken = getUserTokenByID(userID);
+        if (token.equals(oldToken)){
+            return;
+        }
 
         try (Jedis jedis = pool.getResource()) {
             jedis.set("user_id_" + userID, token);
             jedis.set("user_token_" + token, userID);
+
+            if (oldToken != null){
+                jedis.del("user_token_" + oldToken);
+            }
         }
     }
 

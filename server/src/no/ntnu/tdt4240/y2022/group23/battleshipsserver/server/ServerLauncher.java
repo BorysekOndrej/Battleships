@@ -7,12 +7,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import io.javalin.Javalin;
+import jdk.internal.org.jline.utils.Log;
 
 public class ServerLauncher {
 	public static void main (String[] arg) {
@@ -35,18 +35,11 @@ public class ServerLauncher {
 		app.get("/", ctx -> ctx.result("Hello World"));
 
 		app.post("/token", ctx -> {
-			String oldToken = ctx.formParam("oldToken"); // this can be null
+			String userID = ctx.formParamAsClass("userID", String.class).get(); // security: todo: make sure we have some rate limiting
 			String newToken = ctx.formParamAsClass("newToken", String.class).get();
 
-			String user_id = redisStorage.getUserIDByToken(oldToken);
-			if (user_id == null){
-				do {
-					user_id = new RandomStringGenerator.Builder().withinRange('a', 'z').build().generate(32);
-				}while (redisStorage.getUserTokenByID(user_id) != null);
-			}
-			redisStorage.setNewUserToken(user_id, newToken);
-
-			ctx.status(200).result("Hello " + oldToken + " " + newToken + " " + user_id);
+			redisStorage.setNewUserToken(userID, newToken);
+			ctx.status(200).result("Hello " + newToken + " " + userID);
 		});
 
 		app.post("/matchmaking_add", ctx -> {
@@ -65,13 +58,18 @@ public class ServerLauncher {
 
 		app.post("/test_firebase_msg", ctx -> {
 			// This registration token comes from the client FCM SDKs.
-			String token = ctx.formParamAsClass("token", String.class).get();
+			String userID = ctx.formParamAsClass("userID", String.class).get();
+			String firebaseToken = redisStorage.getUserTokenByID(userID);
+			if (firebaseToken == null){
+				Log.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
+				return;
+			}
 
 			// See documentation on defining a message payload.
 			Message message = Message.builder()
 					.putData("score", "850")
 					.putData("time", "2:45")
-					.setToken(token)
+					.setToken(firebaseToken)
 					.build();
 
 			// Send a message to the device corresponding to the provided
