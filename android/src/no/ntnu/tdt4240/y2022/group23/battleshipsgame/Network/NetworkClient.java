@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 interface IFirebaseTokenUpdate {
-    void sendFirebaseToken(String originalToken, String newToken);
+    void sendFirebaseToken(String newToken);
 }
 
 public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
@@ -39,7 +39,7 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
                             Log.d("Installations", "Installation ID: " + userID);
 
                             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
-                                sendFirebaseToken(token, token);
+                                sendFirebaseToken(token);
                             });
                         } else {
                             Log.e("Installations", "Unable to get Installation ID");
@@ -81,9 +81,8 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     // Firebase token submission
 
-    public void sendFirebaseToken(String oldToken, String newToken){
+    public void sendFirebaseToken(String newToken){
         Map<String, String> tokenMsg = new HashMap<>();
-        tokenMsg.put("oldToken", oldToken);
         tokenMsg.put("newToken", newToken);
         send(firebaseTokenSubmissionURL, tokenMsg);
     }

@@ -43,6 +43,5 @@ public class BattleshipsGame extends ApplicationAdapter {
 
 	public void injectNetworkClient(INetworkClient networkClient){
 		this.networkClient = networkClient;
-		networkClient.send("https://envojlo4sdzr8.x.pipedream.net/", null);
 	}
 }
