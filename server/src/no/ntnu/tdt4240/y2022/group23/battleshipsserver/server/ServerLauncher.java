@@ -47,8 +47,7 @@ public class ServerLauncher {
 		});
 
 		app.post("/matchmaking_add", ctx -> {
-			String token = ctx.formParamAsClass("token", String.class).get();
-			String user_id = redisStorage.getUserIDByToken(token);
+			String user_id = ctx.formParamAsClass("user_id", String.class).get();
 			redisStorage.addUserToMatchmakingQueue(user_id);
 			ctx.status(200).result("Added to matchmaking set");
 
