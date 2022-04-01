@@ -8,9 +8,9 @@ public class MenuState extends AbstractState {
     MainMenu mainMenu;
 
     protected MenuState(GameStateManager gsm) {
-        mainMenu = new MainMenu();
         super(gsm);
-    };
+        mainMenu = new MainMenu();
+    }
 
     //Handles the input of clicking the button
     public void handleInput(){
@@ -20,25 +20,22 @@ public class MenuState extends AbstractState {
         if (mainMenu.joinLobby.buttonTouched()){
             goToLobbyState();
         }
-        if (mainMenu.leaderboards.buttonTouched()){
-            goToLeaderboardState();
-        }
-    };
+    }
 
     //Renders the main menu
     @Override
     public void render(SpriteBatch sb) {
-        mainMenu.render(sb);
-    };
+        //mainMenu.render(sb);
+    }
 
     //Changes state to lobby state
     private void goToLobbyState(){
         gsm.set(new LobbyState(gsm));
-    };
+    }
 
     //Disposes the textures
     @Override
     public void dispose(){
-        mainMenu.dispose();
-    };
+        //mainMenu.dispose();
+    }
 }
