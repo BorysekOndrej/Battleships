@@ -10,7 +10,12 @@ public class RedisStorage {
     public JedisPool pool;
 
     private RedisStorage(){
-         pool = new JedisPool("localhost", 6379);
+        String redisLocation = System.getenv("REDIS_LOCATION");
+        if (redisLocation == null){
+            redisLocation = "localhost";
+        }
+
+        pool = new JedisPool(redisLocation, 6379);
     }
 
     // todo: set TTL
