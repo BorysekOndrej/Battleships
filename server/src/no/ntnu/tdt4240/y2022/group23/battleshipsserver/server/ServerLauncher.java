@@ -7,14 +7,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import io.javalin.Javalin;
-import jdk.internal.org.jline.utils.Log;
 
 public class ServerLauncher {
+	private static final Logger logger = LogManager.getLogger(ServerLauncher.class);
+
 	public static void main (String[] arg) {
 		System.out.println("Server project started");
 		Javalin app = Javalin.create().start(7070);
@@ -61,7 +65,7 @@ public class ServerLauncher {
 			String userID = ctx.formParamAsClass("userID", String.class).get();
 			String firebaseToken = redisStorage.getUserTokenByID(userID);
 			if (firebaseToken == null){
-				Log.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
+				logger.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
 				return;
 			}
 
