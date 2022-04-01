@@ -2,7 +2,6 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
 import android.util.Log;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -26,10 +25,10 @@ class FirebaseClient extends FirebaseMessagingService implements INetworkClient 
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        if (firebaseUpdateCallback != null){
-            firebaseUpdateCallback.sendFirebaseToken(firebaseToken, token);
-        }
         firebaseToken = token;
+        if (firebaseUpdateCallback != null){
+            firebaseUpdateCallback.sendFirebaseToken(firebaseToken);
+        }
     }
 
     @Override

@@ -4,7 +4,7 @@ public class GameBoardChange {
     public final Coords coords;
     public final GameBoardField newField;
 
-    GameBoardChange(Coords coords, GameBoardField newVal) {
+    public GameBoardChange(Coords coords, GameBoardField newVal) {
         this.coords = coords;
         this.newField = newVal;
     }

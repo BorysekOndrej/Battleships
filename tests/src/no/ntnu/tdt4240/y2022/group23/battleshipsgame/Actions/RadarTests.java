@@ -116,7 +116,7 @@ public class RadarTests {
     @Test
     public void multiple_different_ship_can_be_detected() {
         IShip ship1 = new RectangularShip(new Coords(0, 0), 2, true);
-        IShip ship2 = new RectangularShip(new Coords(1, 3), 1, false);
+        IShip ship2 = new RectangularShip(new Coords(1, 2), 1, false);
         placements.addShip(board.getWidth(), board.getHeight(), ship1);
         placements.addShip(board.getWidth(), board.getHeight(), ship2);
 

@@ -42,11 +42,7 @@ public class ShipPlacementState extends AbstractState {
 
     @Override
     public void handleInput(){
-        Gdx.input.
     };
-
-    //Signal is sent that a ship is being touched and dragged
-    public void
 
     //Updates the state every dt
     @Override
