@@ -65,22 +65,8 @@ public abstract class AbstractShip implements IShip {
         int size = this.getPositions().size();
         List<Coords> newPositions = new ArrayList<Coords>();
         Coords start = this.getPositions().get(0);
-        Coords second = this.getPositions().get(1);
-        boolean horizontal = this.getOrientation();
-        boolean checkDirection = Math.min(second.x- start.x, second.y- start.y)<0;
-        for(int i=0;i<size;i++){
-            if(checkDirection) {
-                newPositions.add(new Coords(
-                        !horizontal ? start.x - i : start.x,
-                        !horizontal ? start.y : start.y + i
-                ));
-            }
-            else{
-                newPositions.add(new Coords(
-                        !horizontal ? start.x + i : start.x,
-                        !horizontal ? start.y : start.y - i
-                ));
-            }
+        for (int i = 0; i < size; i++) {
+            newPositions.add(new Coords(-(this.getPositions().get(i).y - start.y) + start.x, this.getPositions().get(i).x - start.x + start.y));
         }
         this.setPositions(newPositions);
     }
