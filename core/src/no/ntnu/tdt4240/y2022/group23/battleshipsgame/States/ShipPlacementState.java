@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
@@ -8,10 +9,12 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 
+import java.awt.Button;
 import java.util.List;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ShipPlacementState extends AbstractState {
@@ -21,8 +24,10 @@ public class ShipPlacementState extends AbstractState {
     private TimerPanel timer;
     private int remainingShips;
     private List<Integer> remainingShipsKinds; //Contains the amount of ships remaining on each type
+    private ShipPlacementPanel shipPlacementPanel; //Displays the remaining ships to place
 
     //Selected ship
+    private static boolean isShipSelected = FALSE; //Shows if a ship is currently selected
     private static boolean orientationCurrentShip = FALSE;
     private int squaresCurrentShip;
     private Coords coordsCurrentShip;
@@ -37,7 +42,11 @@ public class ShipPlacementState extends AbstractState {
 
     @Override
     public void handleInput(){
+        Gdx.input.
     };
+
+    //Signal is sent that a ship is being touched and dragged
+    public void
 
     //Updates the state every dt
     @Override
