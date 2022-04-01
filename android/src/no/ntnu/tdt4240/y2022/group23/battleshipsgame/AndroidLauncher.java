@@ -13,12 +13,11 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new BattleshipsGame(), config);
-
 		networkClient = NetworkClient.getInstance(getApplicationContext());
-		networkClient.send("https://envojlo4sdzr8.x.pipedream.net/", null);
-		networkClient.receive();
 
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		BattleshipsGame battleshipsGame = new BattleshipsGame();
+		battleshipsGame.injectNetworkClient(networkClient);
+		initialize(battleshipsGame, config);
 	}
 }

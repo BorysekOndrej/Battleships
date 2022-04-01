@@ -82,6 +82,7 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        api "org.javatuples:javatuples:1.2"
     }
 }
 
@@ -102,5 +103,21 @@ project(":tests") {
         testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":server") {
+    apply plugin: "java"
+
+    sourceSets.test.java.srcDirs = ["src/"]
+
+    dependencies {
+        implementation project(":core")
+        implementation group: 'io.javalin', name: 'javalin', version: '4.4.0'
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
+        implementation group: 'redis.clients', name: 'jedis', version: '4.1.1'
+        implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+        implementation 'com.google.firebase:firebase-admin:8.1.0'
     }
 }

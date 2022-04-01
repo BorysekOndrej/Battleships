@@ -1,29 +1,53 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
 import android.content.Context;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
 
 interface IFirebaseTokenUpdate {
-    void sendFirebaseToken(String originalToken, String newToken);
+    void sendFirebaseToken(String newToken);
 }
 
 public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
     private final FirebaseClient firebase;
     private final HttpsClient httpsClient;
     private static NetworkClient INSTANCE;
-    private final String firebaseTokenSubmissionURL = "https://envojlo4sdzr8.x.pipedream.net/token";
-
+    private final String firebaseTokenSubmissionURL = "https://envojlo4sdzr8.x.pipedream.net/token"; // https://requestbin.com/r/envojlo4sdzr8/
+    private String userID;
 
     private NetworkClient(Context ctx){
         httpsClient = new HttpsClient(ctx);
         firebase = new FirebaseClient();
         firebase.injectFirebaseUpdateCallback(this);
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
-            sendFirebaseToken(token, token);
-        });
+
+        // todo: This is one giant race condition waiting to happen
+        FirebaseInstallations.getInstance().getId()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (task.isSuccessful()) {
+                            userID = task.getResult();
+                            Log.d("Installations", "Installation ID: " + userID);
+
+                            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+                                sendFirebaseToken(token);
+                            });
+                        } else {
+                            Log.e("Installations", "Unable to get Installation ID");
+                            // todo: solve this
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -33,7 +57,12 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     @Override
     public boolean send(String url, Map<String, String> data) {
-        return httpsClient.send(url, data);
+        HashMap<String, String> dataShallowCopy = new HashMap<>();
+        dataShallowCopy.put("userID", userID);
+        if (data != null){
+            dataShallowCopy.putAll(data);
+        }
+        return httpsClient.send(url, dataShallowCopy);
     }
 
     // --- SINGLETON STUFF ---
@@ -52,9 +81,8 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     // Firebase token submission
 
-    public void sendFirebaseToken(String originalToken, String newToken){
+    public void sendFirebaseToken(String newToken){
         Map<String, String> tokenMsg = new HashMap<>();
-        tokenMsg.put("originalToken", originalToken);
         tokenMsg.put("newToken", newToken);
         send(firebaseTokenSubmissionURL, tokenMsg);
     }

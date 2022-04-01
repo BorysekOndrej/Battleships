@@ -117,7 +117,10 @@ classDiagram.png
 classDiagram.svg
 classDiagramFull.png
 
-## Tests
+## Tests + server
 
-/tests/build/
+/*/build/
 
+/config/*.*
+!**/.gitkeep
+config/java_server/firebaseSecretAccountKey.json

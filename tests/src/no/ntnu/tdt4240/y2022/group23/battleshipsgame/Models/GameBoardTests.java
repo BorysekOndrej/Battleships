@@ -1,7 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 public class GameBoardTests {
 
     private static Stream<int[]> provideDimensions() {
-        int[][] arrayDims = {{1, 1}, {2, 3}, {67, 13}, {1000, 5000}};
+        int[][] arrayDims = {{1, 1}, {2, 3}, {67, 13}, {100, 300}};
         return Arrays.stream(arrayDims);
     }
 
@@ -84,8 +83,6 @@ public class GameBoardTests {
     @ParameterizedTest
     @MethodSource({"provideDimsAndChange"})
     public void change_changes_its_coords(int[] dimensions, GameBoardChange change) {
-        Assumptions.assumeTrue(isInbounds(dimensions, change.coords));
-
         GameBoard board = new GameBoard(dimensions[0], dimensions[1]);
         board.apply(Collections.singletonList(change));
         Assertions.assertEquals(change.newField, board.get(change.coords));
@@ -94,8 +91,6 @@ public class GameBoardTests {
     @ParameterizedTest
     @MethodSource({"provideDimsAndChange"})
     public void change_affect_no_coords_except_its_own(int[] dimensions, GameBoardChange change) {
-        Assumptions.assumeTrue(isInbounds(dimensions, change.coords));
-
         GameBoard board = new GameBoard(dimensions[0], dimensions[1]);
         GameBoard original = new GameBoard(board);
         board.apply(Collections.singletonList(change));
@@ -107,5 +102,53 @@ public class GameBoardTests {
                 Assertions.assertEquals(original.get(new Coords(i, j)), board.get(new Coords(i, j)));
             }
         }
+    }
+
+    private static Stream<Arguments> provideDoubleChangeWithResult() {
+        return Stream.of( // disallow WATER <-> SHIP/HIT/SUNK
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.UNKNOWN, GameBoardField.UNKNOWN),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.WATER, GameBoardField.WATER),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.UNKNOWN, GameBoardField.SHIP, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.WATER, GameBoardField.UNKNOWN, GameBoardField.WATER),
+                Arguments.of(GameBoardField.WATER, GameBoardField.WATER, GameBoardField.WATER),
+                Arguments.of(GameBoardField.HIT, GameBoardField.UNKNOWN, GameBoardField.HIT),
+                Arguments.of(GameBoardField.HIT, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.HIT, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.HIT, GameBoardField.SHIP, GameBoardField.HIT),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.UNKNOWN, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.HIT, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SUNK, GameBoardField.SHIP, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.UNKNOWN, GameBoardField.SHIP),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.HIT, GameBoardField.HIT),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.SUNK, GameBoardField.SUNK),
+                Arguments.of(GameBoardField.SHIP, GameBoardField.SHIP, GameBoardField.SHIP)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDoubleChangeWithResult")
+    public void changing_twice_the_same_field_in_the_same_apply(GameBoardField fst, GameBoardField snd, GameBoardField result) {
+        GameBoard board = new GameBoard(1, 1);
+
+        board.apply(Arrays.asList(
+                new GameBoardChange(new Coords(0, 0), fst),
+                new GameBoardChange(new Coords(0, 0), snd)
+        ));
+
+        Assertions.assertEquals(result, board.get(new Coords(0, 0)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDoubleChangeWithResult")
+    public void changing_twice_the_same_field_in_different_applies(GameBoardField fst, GameBoardField snd, GameBoardField result) {
+        GameBoard board = new GameBoard(1, 1);
+
+        board.apply(Collections.singletonList(new GameBoardChange(new Coords(0, 0), fst)));
+        board.apply(Collections.singletonList(new GameBoardChange(new Coords(0, 0), snd)));
+
+        Assertions.assertEquals(result, board.get(new Coords(0, 0)));
     }
 }
