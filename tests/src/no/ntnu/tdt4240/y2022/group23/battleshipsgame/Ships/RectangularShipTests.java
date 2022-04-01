@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships;
 
+import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,6 +11,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
@@ -115,6 +118,47 @@ public class RectangularShipTests {
             for (int y = 0; y < board.getHeight(); y++) {
                 Assertions.assertEquals(original.get(new Coords(x, y)), board.get(new Coords(x, y)));
             }
+        }
+    }
+
+    private static Stream<Arguments> provideShipParts() {
+        return IntStream.rangeClosed(1, 5)
+                .mapToObj(size -> Stream.of(
+                        Pair.with(size, true),
+                        Pair.with(size, false)
+                ))
+                .flatMap(Function.identity())
+                .map(pair -> Arguments.of(pair.getValue0(), pair.getValue1(), new Coords(7, 5)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipParts")
+    public void ship_is_displaced_correctly(int size, boolean horizontal, Coords start) {
+        RectangularShip ship = new RectangularShip(start, size, horizontal);
+        ship.displace();
+        List<Coords> displaced = ship.getPositions();
+        Assertions.assertEquals(new Coords(0, 0), displaced.get(0));
+
+        assertCollectionsEqualInAnyOrder(
+                IntStream.range(0, size).mapToObj(x -> new Coords(x, 0)).collect(Collectors.toList()),
+                displaced
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipParts")
+    public void ship_is_rotated_correctly(int size, boolean horizontal, Coords start) {
+        RectangularShip ship = new RectangularShip(start, size, horizontal);
+        List<Coords> original = ship.getPositions();
+        for (int i = 0; i < 4; i++) {
+            ship.rotateClockwise();
+            List<Coords> rotated = ship.getPositions();
+
+            assertCollectionsEqualInAnyOrder(
+                    original.stream().map(coords -> new Coords(-(coords.y - start.y) + start.x, coords.x - start.x + start.y)).collect(Collectors.toList()),
+                    rotated
+            );
+            original = rotated;
         }
     }
 }
