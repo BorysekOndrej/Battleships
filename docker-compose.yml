@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   server:
@@ -30,8 +30,8 @@ services:
     image: rediscommander/redis-commander
     environment:
       - REDIS_HOSTS=instance1:redis:6379
-    ports:
-      - '8081:8081' # todo: don't expose the port on production
+    # ports:
+    #   - '8079:8081' # todo: don't expose the port on production
     depends_on:
       - redis
 
@@ -41,13 +41,19 @@ services:
       - server
     # volumes:
     #   - ./config/nginx_ssl:/etc/ssl/private/
-    ports:
-      - "80:80"
-      # - "443:443"
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
     restart: unless-stopped
 
 
 volumes:
   redis_persistance:
     driver: local
+
+# This is used on production
+# networks:
+#   default:
+#     external:
+#       name: dockerInternal
 
