@@ -1,29 +1,35 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 public class LobbyState extends AbstractState {
+    private static boolean OPPONENT = FALSE;
+
     protected LobbyState(GameStateManager gsm) {
         super(gsm);
     }
 
-    @Override
-    public void handleInput() {
-        throw new UnsupportedOperationException("not implemented");
+    public void update(float dt){
+        if (OPPONENT == TRUE){ //Wait until opponent is found, then change to ship placement
+            goToShipPlacement();
+        }
     }
 
-    @Override
-    public void update(float dt) {
-        throw new UnsupportedOperationException("not implemented");
+    protected void handleInput(){
+        if (Gdx.input.justTouched()){ //Place holder given change to
+            OPPONENT = TRUE;
+        }
+    };
+
+    //Changes state to ship placement state
+    private void goToShipPlacement(){
+        //Connect both players
+        gsm.set(new ShipPlacementState(gsm));
     }
 
-    @Override
-    public void render(SpriteBatch sb) {
-        throw new UnsupportedOperationException("not implemented");
-    }
+    public void render(SpriteBatch sb);
 
-    @Override
-    public void dispose() {
-        throw new UnsupportedOperationException("not implemented");
-    }
+    public void dispose();
 }

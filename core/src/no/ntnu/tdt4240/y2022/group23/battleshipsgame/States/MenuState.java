@@ -1,29 +1,41 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu;
 
 public class MenuState extends AbstractState {
+    MainMenu mainMenu;
+
     protected MenuState(GameStateManager gsm) {
+        mainMenu = new MainMenu();
         super(gsm);
     }
 
-    @Override
-    public void handleInput() {
-        throw new UnsupportedOperationException("not implemented");
+    //Handles the input of clicking the button
+    protected void handleInput(){
+        if (mainMenu.createLobby.buttonTouched()){
+            goToLobbyState();
+        }
+        if (mainMenu.joinLobby.buttonTouched()){
+            goToLobbyState();
+        }
+        if (mainMenu.leaderboards.buttonTouched()){
+            goToLeaderboardState();
+        }
+    };
+
+    //Changes state to lobby state
+    private void goToLobbyState(){
+        gsm.set(new LobbyState(gsm));
     }
 
-    @Override
-    public void update(float dt) {
-        throw new UnsupportedOperationException("not implemented");
-    }
+    //Renders the main menu
+    public void render(SpriteBatch sb){
+        mainMenu.render(SpriteBatch sb);
+    };
 
-    @Override
-    public void render(SpriteBatch sb) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    @Override
-    public void dispose() {
-        throw new UnsupportedOperationException("not implemented");
-    }
+    //Disposes the textures of
+    public void dispose(){
+        mainMenu.dispose();
+    };
 }
