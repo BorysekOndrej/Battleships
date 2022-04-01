@@ -92,7 +92,7 @@ public class GameAPIClient {
 
         GameBoard board = StringSerializer.fromString(response.get("board"));
         List<Coords> changedCoords = StringSerializer.fromString(response.get("changedCoords"));
-        List<Class<? extends IShip>> unsunkShips = StringSerializer.fromString(response.get("unsunkShips"));
+        List<IShip> unsunkShips = StringSerializer.fromString(response.get("unsunkShips"));
         boolean gameOver = responseType == ServerClientMessage.GAME_OVER;
         return new GameState(
                 board,

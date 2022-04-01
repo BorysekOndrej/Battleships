@@ -12,11 +12,11 @@ public class RemainingShipsPanel implements IRenderable {
         throw new UnsupportedOperationException("not implemented");
     }
 
-    public void setData(List<Class<? extends IShip>> remainingShips) {
+    public void setData(List<IShip> remainingShips) {
         throw new UnsupportedOperationException("not implemented");
     }
 
-    public Class<? extends IShip> selectedShipType(){
+    public IShip selectedShipType(){
         throw new UnsupportedOperationException("not implemented");
     }
 

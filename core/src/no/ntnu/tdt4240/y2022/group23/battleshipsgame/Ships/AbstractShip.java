@@ -36,13 +36,21 @@ public abstract class AbstractShip implements IShip {
         }
     }
 
-    @Override
     public int getType(){
         return parts;
     }
 
-    @Override
     public void setType(int parts){
         this.parts = parts;
+    }
+
+    @Override
+    public void displace() {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    @Override
+    public void rotateClockwise() {
+        throw new UnsupportedOperationException("not implemented");
     }
 }
