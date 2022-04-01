@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - dev-server
 
 jobs:
   deploy:
@@ -19,7 +20,7 @@ jobs:
         script: |
           curl -m 10 --retry 5 ${{secrets.REPORT_URL}}/start
           cd Battleships
-          git checkout dev
+          git checkout ${{ github.ref }}
           git pull --force
           ls -la
           docker-compose up --build -d
