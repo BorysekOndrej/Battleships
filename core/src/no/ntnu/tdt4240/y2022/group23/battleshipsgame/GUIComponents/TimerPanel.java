@@ -17,7 +17,7 @@ public class TimerPanel implements IRenderable {
     }
 
     @Override
-    public boolean handleInput() {
+    public void handleInput() {
         throw new UnsupportedOperationException("not implemented");
     }
 

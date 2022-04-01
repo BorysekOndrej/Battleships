@@ -6,7 +6,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class ActionPanel implements IRenderable {
     @Override
-    public boolean handleInput() {
+    public void handleInput() {
         throw new UnsupportedOperationException("not implemented");
     }
 

@@ -9,7 +9,7 @@ public class GameBoardPanel implements IRenderable {
     private GameBoard gameBoard;
 
     @Override
-    public boolean handleInput() {
+    public void handleInput() {
         throw new UnsupportedOperationException("not implemented");
     }
 
