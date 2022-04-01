@@ -19,6 +19,5 @@ public abstract class AbstractState implements IState {
         mouse = new Vector3();
     }
 
-    @Override
     public void update(float dt) {handleInput();};
 }
