@@ -40,15 +40,15 @@ public class ServerLauncher {
 
 		app.post("/token", ctx -> {
 			String userID = ctx.formParamAsClass("userID", String.class).get(); // security: todo: make sure we have some rate limiting
-			String newToken = ctx.formParamAsClass("newToken", String.class).get();
+			String token = ctx.formParamAsClass("token", String.class).get();
 
-			redisStorage.setNewUserToken(userID, newToken);
-			ctx.status(200).result("Hello " + newToken + " " + userID);
+			redisStorage.setNewUserToken(userID, token);
+			ctx.status(200).result("Hello " + token + " " + userID);
 		});
 
 		app.post("/matchmaking_add", ctx -> {
-			String newToken = ctx.formParamAsClass("token", String.class).get();
-			String user_id = redisStorage.getUserIDByToken(newToken);
+			String token = ctx.formParamAsClass("token", String.class).get();
+			String user_id = redisStorage.getUserIDByToken(token);
 			redisStorage.addUserToMatchmakingQueue(user_id);
 			ctx.status(200).result("Added to matchmaking set");
 
