@@ -22,18 +22,13 @@ public abstract class AbstractShip implements IShip {
 
     @Override
     public boolean isSunk(GameBoard board) {
-        int hitFields = 0;
         for (Coords coords:positions) {
-            if (board.get(coords) == GameBoardField.HIT || board.get(coords) == GameBoardField.SUNK) {
-                hitFields++;
+            if (!(board.get(coords) == GameBoardField.HIT || board.get(coords) == GameBoardField.SUNK)) {
+                return false;
             }
         }
-        if(hitFields==positions.size()){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return true;
+
     }
 
     @Override

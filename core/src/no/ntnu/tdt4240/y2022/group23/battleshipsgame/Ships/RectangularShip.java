@@ -9,18 +9,14 @@ public class RectangularShip extends AbstractShip {
     public RectangularShip(Coords start, int numberOfSquares, boolean horizontal){
         this.setType(numberOfSquares);
         List<Coords> positions = new ArrayList<Coords>();
-        if(horizontal){
-            positions.add(start);
-            for(int i=1;i<numberOfSquares;i++){
-                positions.add(new Coords((start.x+i), start.y));
-            }
+        for(int i=0;i<numberOfSquares;i++){
+            positions.add(new Coords(
+                    horizontal ? start.x+i : start.x,
+                    horizontal ? start.y : start.y+i
+            ));
         }
-        else{
-            positions.add(start);
-            for(int i=1;i<numberOfSquares;i++){
-                positions.add(new Coords(start.x, (start.y+i)));
-            }
-        }
+        this.setPositions(positions);
+
         this.setPositions(positions);
     }
 }
