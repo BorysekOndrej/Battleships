@@ -1,0 +1,27 @@
+name: Deploy server from dev branch
+on:
+  push:
+    branches:
+      - dev
+      - dev-server
+
+jobs:
+  deploy:
+    name: Deploy dev server
+    runs-on: ubuntu-latest
+    steps:
+    - name: SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script_stop: true
+        script: |
+          curl -m 10 --retry 5 ${{secrets.REPORT_URL}}/start
+          cd Battleships
+          git checkout ${{ github.ref_name }}
+          git pull --force
+          ls -la
+          docker-compose up --build -d
+          curl -m 10 --retry 5 ${{secrets.REPORT_URL}}

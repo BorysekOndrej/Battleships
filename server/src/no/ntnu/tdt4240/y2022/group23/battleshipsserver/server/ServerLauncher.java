@@ -7,14 +7,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import io.javalin.Javalin;
-import jdk.internal.org.jline.utils.Log;
 
 public class ServerLauncher {
+	private static final Logger logger = LogManager.getLogger(ServerLauncher.class);
+
 	public static void main (String[] arg) {
 		System.out.println("Server project started");
 		Javalin app = Javalin.create().start(7070);
@@ -36,15 +40,15 @@ public class ServerLauncher {
 
 		app.post("/token", ctx -> {
 			String userID = ctx.formParamAsClass("userID", String.class).get(); // security: todo: make sure we have some rate limiting
-			String newToken = ctx.formParamAsClass("newToken", String.class).get();
+			String token = ctx.formParamAsClass("token", String.class).get();
 
-			redisStorage.setNewUserToken(userID, newToken);
-			ctx.status(200).result("Hello " + newToken + " " + userID);
+			redisStorage.setNewUserToken(userID, token);
+			ctx.status(200).result("Hello " + token + " " + userID);
 		});
 
 		app.post("/matchmaking_add", ctx -> {
-			String newToken = ctx.formParamAsClass("token", String.class).get();
-			String user_id = redisStorage.getUserIDByToken(newToken);
+			String token = ctx.formParamAsClass("token", String.class).get();
+			String user_id = redisStorage.getUserIDByToken(token);
 			redisStorage.addUserToMatchmakingQueue(user_id);
 			ctx.status(200).result("Added to matchmaking set");
 
@@ -61,7 +65,7 @@ public class ServerLauncher {
 			String userID = ctx.formParamAsClass("userID", String.class).get();
 			String firebaseToken = redisStorage.getUserTokenByID(userID);
 			if (firebaseToken == null){
-				Log.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
+				logger.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
 				return;
 			}
 
