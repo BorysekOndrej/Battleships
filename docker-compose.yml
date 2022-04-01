@@ -51,9 +51,9 @@ volumes:
   redis_persistance:
     driver: local
 
-# This is used on production
-# networks:
-#   default:
-#     external:
-#       name: dockerInternal
+# This is used on production. Comment it out if you are running it locally.
+networks:
+  default:
+    external:
+      name: dockerInternal
 
