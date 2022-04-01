@@ -10,6 +10,8 @@ services:
       - ./config/java_server:/app/config/java_server
     # ports:
     #   - '7070:7070' # note: don't expose the port on production
+    environment:
+      - REDIS_LOCATION=redis
     depends_on:
       - redis
 
