@@ -27,17 +27,38 @@ public class Radar extends AbstractAction {
     public List<GameBoardChange> affect(ShipPlacements ships, GameBoard gameBoard) {
         Coords affectedPoint = this.getCoords();
         List<GameBoardChange> changes= new ArrayList<GameBoardChange>();
-        for(int delta_x=(affectedPoint.x-radius);delta_x<=(affectedPoint.x+radius);delta_x++){
-            for(int delta_y=(affectedPoint.y-radius);delta_y<=(affectedPoint.y+radius);delta_y++){
+
+        for(int delta_x = (Math.max(affectedPoint.x - radius, 0)); delta_x<=(Math.min(affectedPoint.x + radius, gameBoard.getWidth() - 1)); delta_x++){
+            Coords newCoords = new Coords(delta_x, this.getCoords().y);
+            if(ships.hasShipOnCoords(newCoords) && (gameBoard.get(newCoords)!= GameBoardField.HIT || gameBoard.get(newCoords)!= GameBoardField.SUNK) && !(newCoords.x==this.getCoords().x && newCoords.y==this.getCoords().y)){
+                changes.add(new GameBoardChange(newCoords, GameBoardField.SHIP));
+            }
+            else if(gameBoard.get(newCoords)== GameBoardField.UNKNOWN && newCoords!=this.getCoords() && !(newCoords.x==this.getCoords().x && newCoords.y==this.getCoords().y)){
+                changes.add(new GameBoardChange(newCoords, GameBoardField.WATER));
+            }
+        }
+        for(int delta_y = (Math.max(affectedPoint.y - radius, 0)); delta_y<=(Math.min(affectedPoint.y + radius, gameBoard.getHeight() - 1)); delta_y++){
+            Coords newCoords = new Coords(this.getCoords().x, delta_y);
+            if(ships.hasShipOnCoords(newCoords) && (gameBoard.get(newCoords)!= GameBoardField.HIT || gameBoard.get(newCoords)!= GameBoardField.SUNK)){
+                changes.add(new GameBoardChange(newCoords, GameBoardField.SHIP));
+            }
+            else if(gameBoard.get(newCoords)== GameBoardField.UNKNOWN){
+                changes.add(new GameBoardChange(newCoords, GameBoardField.WATER));
+            }
+        }
+
+        /*
+        for(int delta_x = (Math.max(affectedPoint.x - radius, 0)); delta_x<=(Math.min(affectedPoint.x + radius, gameBoard.getWidth() - 1)); delta_x++){
+            for(int delta_y = (Math.max(affectedPoint.y - radius, 0)); delta_y<=(Math.min(affectedPoint.y + radius, gameBoard.getHeight() - 1)); delta_y++){
                 Coords newCoords = new Coords(delta_x, delta_y);
                 if(ships.hasShipOnCoords(newCoords) && (gameBoard.get(newCoords)!= GameBoardField.HIT || gameBoard.get(newCoords)!= GameBoardField.SUNK)){
                     changes.add(new GameBoardChange(newCoords, GameBoardField.SHIP));
                 }
-                else{
+                else if(gameBoard.get(newCoords)== GameBoardField.UNKNOWN){
                     changes.add(new GameBoardChange(newCoords, GameBoardField.WATER));
                 }
             }
-        }
+        }*/
         return changes;
     }
 
