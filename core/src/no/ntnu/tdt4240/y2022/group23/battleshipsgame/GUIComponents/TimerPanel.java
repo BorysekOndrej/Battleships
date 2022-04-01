@@ -35,4 +35,6 @@ public class TimerPanel implements IRenderable {
     public void dispose() {
         throw new UnsupportedOperationException("not implemented");
     }
+
+    public boolean runOut() {throw new UnsupportedOperationException("not implemented");}
 }

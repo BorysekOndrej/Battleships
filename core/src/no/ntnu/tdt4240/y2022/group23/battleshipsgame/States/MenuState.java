@@ -14,10 +14,10 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
-        if (mainMenu.createLobby.buttonTouched()){
+        if (mainMenu.createLobbyButtonPressed()){
             goToLobbyState();
         }
-        if (mainMenu.joinLobby.buttonTouched()){
+        if (mainMenu.joinLobbyButtonPressed()){
             goToLobbyState();
         }
     }

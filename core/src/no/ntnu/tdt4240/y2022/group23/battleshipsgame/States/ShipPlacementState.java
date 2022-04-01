@@ -15,9 +15,12 @@ import java.util.List;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ShipPlacementState extends AbstractState {
+
+
     //Event listener
     private IBattleshipObserver selectedShipObserver;
 
@@ -71,6 +74,7 @@ public class ShipPlacementState extends AbstractState {
         selectedShip = remainingShipsPanel.selectedShipType();
         if (selectedShip != null){
             isShipSelected = TRUE;
+            //gameBoard update
         }
     }
 
