@@ -20,4 +20,6 @@ public interface IShip extends Serializable {
     void displace();
 
     void rotateClockwise();
+
+    IShip copy();
 }
