@@ -105,6 +105,8 @@ public class GameAPIClient {
 
     /**
      * Receives the game state after this player's action.
+     * IT IS STILL NECESSARY TO CALL THIS FUNCTION EVEN IF USER'S ACTION WAS A TIMEOUT!
+     * (i.e. previously called API method was {@link #sendTimeout()}).
      * @return game state of the opponent's board, or null if server did not respond yet
      * @throws CommunicationTerminated if communication has been terminated
      *      by the other party
