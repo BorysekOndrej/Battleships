@@ -15,9 +15,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import io.javalin.Javalin;
+import io.javalin.http.Context;
 
 public class ServerLauncher {
 	private static final Logger logger = LogManager.getLogger(ServerLauncher.class);
+
+	public static void matchmaking_add(Context ctx) {
+		RedisStorage redisStorage = RedisStorage.getInstance();
+
+		String user_id = ctx.formParamAsClass("user_id", String.class).get();
+		redisStorage.addUserToMatchmakingQueue(user_id);
+		ctx.status(200).result("Added to matchmaking set");
+
+		ImmutablePair<String, String> twoUsersFromMatchmaking = redisStorage.getTwoUsersFromMatchmaking();
+		if (twoUsersFromMatchmaking != null){
+			System.out.println(twoUsersFromMatchmaking.left + " " + twoUsersFromMatchmaking.right); // todo: implement
+		}
+	}
 
 	public static void main (String[] arg) {
 		System.out.println("Server project started");
@@ -46,18 +60,7 @@ public class ServerLauncher {
 			ctx.status(200).result("Hello " + token + " " + userID);
 		});
 
-		app.post("/matchmaking_add", ctx -> {
-			String user_id = ctx.formParamAsClass("user_id", String.class).get();
-			redisStorage.addUserToMatchmakingQueue(user_id);
-			ctx.status(200).result("Added to matchmaking set");
-
-			ImmutablePair<String, String> twoUsersFromMatchmaking = redisStorage.getTwoUsersFromMatchmaking();
-			if (twoUsersFromMatchmaking != null){
-				System.out.println(twoUsersFromMatchmaking.left + " " + twoUsersFromMatchmaking.right); // todo: implement
-			}
-		});
-
-
+		app.post("/matchmaking_add", ServerLauncher::matchmaking_add);
 
 		app.post("/test_firebase_msg", ctx -> {
 			// This registration token comes from the client FCM SDKs.
