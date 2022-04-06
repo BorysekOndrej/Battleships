@@ -84,6 +84,8 @@ public class RedisStorage {
 
     private <T extends Serializable> T get(String key) {
         try (Jedis jedis = pool.getResource()) {
+            if (!jedis.exists(key))
+                return null;
             return StringSerializer.fromString(jedis.get(key));
         }
     }
