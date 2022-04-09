@@ -1,36 +1,71 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
 
 public class ServerLauncher {
 	private static final Logger logger = LogManager.getLogger(ServerLauncher.class);
 
-	public static void matchmaking_add(Context ctx) {
+	public static void join_matchmaking(Context ctx) {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String user_id = ctx.formParamAsClass("user_id", String.class).get();
-		redisStorage.addUserToMatchmakingQueue(user_id);
+		String userID = ctx.formParamAsClass("userID", String.class).get();
+
+		String privateLobby = ctx.formParam("privateLobby");
+		assert "false".equals(privateLobby);
+
+		redisStorage.addUserToMatchmakingQueue(userID);
 		ctx.status(200).result("Added to matchmaking set");
 
 		ImmutablePair<String, String> twoUsersFromMatchmaking = redisStorage.getTwoUsersFromMatchmaking();
 		if (twoUsersFromMatchmaking != null){
-			System.out.println(twoUsersFromMatchmaking.left + " " + twoUsersFromMatchmaking.right); // todo: implement
+			Lobby lobby = new Lobby(false);
+			lobby.addUser(twoUsersFromMatchmaking.left);
+			lobby.addUser(twoUsersFromMatchmaking.right); // adding second player starts the game
 		}
+	}
+
+
+	public static void create_lobby(Context ctx) {
+		String userID = ctx.formParamAsClass("userID", String.class).get();
+
+		String privateLobby = ctx.formParam("privateLobby");
+		assert "true".equals(privateLobby);
+
+		Lobby lobby = new Lobby(true);
+		lobby.addUser(userID); // todo: handle exceptions
+		ctx.status(200).result("Lobby created with id "+lobby.gameID+ " and you've been invited.");
+	}
+
+
+	public static void join_lobby(Context ctx) {
+		String userID = ctx.formParamAsClass("userID", String.class).get();
+		String lobbyID = ctx.formParamAsClass("id", String.class).get();
+
+		Lobby lobby = Lobby.getLobby(lobbyID);
+		if (lobby == null){
+			FirebaseMessenger.sendMessage(userID, ServerClientMessage.NO_SUCH_LOBBY, null);
+			ctx.status(404).result("Lobby doesn't exist");
+			return;
+		}
+
+		lobby.addUser(userID); // todo: handle exceptions
+		ctx.status(200).result("User added to Lobby");
+	}
+
+	public static void end_communication(Context ctx) {
+		String userID = ctx.formParamAsClass("userID", String.class).get();
+		Lobby lobby = Lobby.getLobby(Lobby.findGameID(userID));
+		if (lobby == null){
+			return; // todo:
+		}
+		lobby.endCommunication(userID);
+		ctx.status(200).result("Ended communication and informed the other player");
 	}
 
 	public static void main (String[] arg) {
@@ -38,17 +73,6 @@ public class ServerLauncher {
 		Javalin app = Javalin.create().start(7070);
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		try {
-			FileInputStream serviceAccount = new FileInputStream("config/java_server/firebaseSecretAccountKey.json");
-			FirebaseOptions options = FirebaseOptions.builder()
-					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-					.build();
-			FirebaseApp.initializeApp(options);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
 
 		app.get("/", ctx -> ctx.result("Hello World"));
 
@@ -60,29 +84,15 @@ public class ServerLauncher {
 			ctx.status(200).result("Hello " + token + " " + userID);
 		});
 
-		app.post("/matchmaking_add", ServerLauncher::matchmaking_add);
+		app.post("/join_matchmaking", ServerLauncher::join_matchmaking);
+		app.post("/join_lobby", ServerLauncher::join_lobby);
+		app.post("/create_lobby", ServerLauncher::create_lobby);
+		app.post("/end_communication", ServerLauncher::end_communication);
 
 		app.post("/test_firebase_msg", ctx -> {
 			// This registration token comes from the client FCM SDKs.
 			String userID = ctx.formParamAsClass("userID", String.class).get();
-			String firebaseToken = redisStorage.getUserTokenByID(userID);
-			if (firebaseToken == null){
-				logger.warn("Tried to send firebase message to user "+userID+" which doesn't have registered firebase token. Skipping.");
-				return;
-			}
-
-			// See documentation on defining a message payload.
-			Message message = Message.builder()
-					.putData("score", "850")
-					.putData("time", "2:45")
-					.setToken(firebaseToken)
-					.build();
-
-			// Send a message to the device corresponding to the provided
-			// registration token.
-			String response = FirebaseMessaging.getInstance().send(message);
-			// Response is a message ID string.
-			System.out.println("Successfully sent message: " + response);
+			System.out.println("Successfully sent message");
 
 		});
 
