@@ -17,9 +17,9 @@ public class LobbyAPIClient {
      */
     public void sendJoinMatchmakingRequest() {
         Map<String, String> request = new HashMap<>();
-        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());
+        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name()); // todo: rename this enum
         request.put("privateLobby", Boolean.toString(false));
-        network.send("/matchmaking_add", request);
+        network.send("/join_matchmaking", request);
     }
 
     /**
@@ -29,9 +29,9 @@ public class LobbyAPIClient {
      */
     public void sendCreateLobbyRequest() {
         Map<String, String> request = new HashMap<>();
-        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());
+        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());  // todo: rename this enum
         request.put("privateLobby", Boolean.toString(true));
-        network.send("/matchmaking_add", request);
+        network.send("/create_lobby", request);
     }
 
     /**
@@ -63,7 +63,7 @@ public class LobbyAPIClient {
         Map<String, String> request = new HashMap<>();
         request.put("type", ClientServerMessage.JOIN_LOBBY.toString());
         request.put("id", maybeId);
-        network.send("/matchmaking_join", request);
+        network.send("/join_lobby", request);
     }
 
     /**
