@@ -7,14 +7,14 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 public class GameState {
     private final GameBoard board;
     private final List<Coords> changedCoords;
-    private final List<Class<? extends IShip>> unsunkShips;
+    private final List<IShip> unsunkShips;
     private final boolean thisPlayerBoard;
     private final boolean gameOver;
 
     public GameState(
             GameBoard board,
             List<Coords> changedCoords,
-            List<Class<? extends IShip>> unsunkShips,
+            List<IShip> unsunkShips,
             boolean thisPlayerBoard,
             boolean gameOver
     ) {
@@ -33,7 +33,7 @@ public class GameState {
         return changedCoords;
     }
 
-    public List<Class<? extends IShip>> getUnsunkShips() {
+    public List<IShip> getUnsunkShips() {
         return unsunkShips;
     }
 
