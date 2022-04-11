@@ -1,13 +1,10 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class LobbyState extends AbstractState {
-    private static boolean OPPONENT = FALSE;
+    private static boolean opponentFound = false;
 
     protected LobbyState(GameStateManager gsm) {
         super(gsm);
@@ -15,7 +12,7 @@ public class LobbyState extends AbstractState {
 
     @Override
     public void update(float dt){
-        if (OPPONENT == TRUE){ //Wait until opponent is found, then change to ship placement
+        if (opponentFound){ //Wait until opponent is found, then change to ship placement
             goToShipPlacement();
         }
     };
@@ -29,7 +26,7 @@ public class LobbyState extends AbstractState {
 
     //Signals that an opponent has been found
     public void opponentFound(){
-        OPPONENT = TRUE;
+        opponentFound = true;
     }
 
     //Changes state to ship placement state
@@ -40,7 +37,7 @@ public class LobbyState extends AbstractState {
 
     @Override
     public void render(SpriteBatch sb){
-        OPPONENT = TRUE;
+        opponentFound = true;
     };
 
     @Override

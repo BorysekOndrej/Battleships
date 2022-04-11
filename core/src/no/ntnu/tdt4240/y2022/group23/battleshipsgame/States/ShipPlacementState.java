@@ -12,11 +12,11 @@ import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObser
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.SelectedShipObserver;
 
 import java.util.List;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import org.javatuples.Pair;
 
 public class ShipPlacementState extends AbstractState {
 
@@ -29,22 +29,14 @@ public class ShipPlacementState extends AbstractState {
     private ShipPlacements shipPlacements;
     private TimerPanel timer;
     private RemainingShipsPanel remainingShipsPanel;
-    private int remainingShips;
-    private List<Integer> remainingShipsKinds; //Contains the amount of ships remaining on each type
-
-    //Selected ship
-    private static boolean isShipSelected = FALSE; //Shows if a ship is currently selected
-    private static boolean orientationCurrentShip = FALSE;
-    private int squaresCurrentShip;
-    private Coords coordsCurrentShip;
-    private IShip selectedShip;
+    private List<Pair<IShip, Integer>> remainingShips;
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
         timer = new TimerPanel();
         //timer.start(30); //Starts timer with 30 seconds
         selectedShipObserver = new SelectedShipObserver(this);
-        gameBoard = new GameBoard(400,200); //Height and width placeholders
+        gameBoard = new GameBoard(200,400); //Width and height placeholders
         shipPlacements = new ShipPlacements();
         remainingShipsPanel = new RemainingShipsPanel();
         remainingShipsPanel.addObserver(selectedShipObserver);
@@ -55,12 +47,11 @@ public class ShipPlacementState extends AbstractState {
         remainingShipsPanel.handleInput();
     };
 
-    //Updates the state every dt
     @Override
     public void update(float dt){
         handleInput();
         if (timer.runOut()){ //If timer runs out go to ViewMyBoard
-            if (remainingShips == 0){
+            if (remainingShips.isEmpty()){
                 goToViewMyBoard();
             } //Not checking opponents ships
             else{ //If the user has any remaining user he loses
@@ -68,15 +59,6 @@ public class ShipPlacementState extends AbstractState {
             }
         }
     };
-
-    //Sets the variable selected ship to the selected by the user
-    public void selectShip(){
-        selectedShip = remainingShipsPanel.selectedShipType();
-        if (selectedShip != null){
-            isShipSelected = TRUE;
-            //gameBoard update
-        }
-    }
 
     //Changes state to view my board state
     private void goToViewMyBoard(){
@@ -89,14 +71,15 @@ public class ShipPlacementState extends AbstractState {
     };
 
     //Collocates a ship in the said space with said orientation
-    private void collocateShip(Coords coords,int squares,boolean horizontal){
-        RectangularShip ship = new RectangularShip(coords,squares,horizontal);
+    private void collocateShip(){
+        IShip ship = remainingShipsPanel.selectedShipType();
+        Coords coords = new Coords(0,0); //Coordinates where to collocate the ship, currently a placeholder
         try {
             shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),ship);
             gameBoard.set(coords,GameBoardField.SHIP);
         }
         catch (Exception IllegalArgumentException){
-            int k = 0; //Could not position ship in gameBoard
+            //Could not position ship in gameBoard
         };
     };
 

@@ -1,7 +1,5 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
-import static java.lang.Boolean.FALSE;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.List;
@@ -12,7 +10,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObser
 
 public class RemainingShipsPanel implements IRenderable {
     private IBattleshipObserver observer;
-    private static boolean shipIsSelected = FALSE;
+    private boolean shipIsSelected = false;
 
     public void place(float x, float y, float width, float height) {
         throw new UnsupportedOperationException("not implemented");
