@@ -51,7 +51,7 @@ public class ServerLauncher {
 	public static void placements(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("user_id");
+		String userID = ctx.formParam("userID");
 		ShipPlacements userPlacements = StringSerializer.fromString(ctx.formParam("placements"));
 
 		redisStorage.setShipPlacements(userID, userPlacements);
@@ -75,7 +75,7 @@ public class ServerLauncher {
 	public static void action(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("user_id");
+		String userID = ctx.formParam("userID");
 		IAction action = StringSerializer.fromString(ctx.formParam("action"));
 
 		String opponentID = redisStorage.getOpponentId(userID);
@@ -102,7 +102,7 @@ public class ServerLauncher {
 	public static void timeout(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("user_id");
+		String userID = ctx.formParam("userID");
 
 		String opponentID = redisStorage.getOpponentId(userID);
 		GameBoard opponentBoard = redisStorage.getUserGameBoard(opponentID);
@@ -125,7 +125,7 @@ public class ServerLauncher {
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("user_id");
+		String userID = ctx.formParam("userID");
 		String opponentID = redisStorage.getOpponentId(userID);
 
 		Message.Builder messageBuilder = Message.builder()
