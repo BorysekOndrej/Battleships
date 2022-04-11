@@ -21,7 +21,9 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
     private final FirebaseClient firebase;
     private final HttpsClient httpsClient;
     private static NetworkClient INSTANCE;
-    private final String firebaseTokenSubmissionURL = "https://envojlo4sdzr8.x.pipedream.net/token"; // https://requestbin.com/r/envojlo4sdzr8/
+    private final String baseURL = System.getenv("BASE_URL") != null ?
+            System.getenv("BASE_URL") :
+            "https://battleships.borysek.eu";
     private String userID;
 
     private NetworkClient(Context ctx){
@@ -57,6 +59,10 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     @Override
     public boolean send(String url, Map<String, String> data) {
+        if (url.startsWith("/")){
+            url = baseURL + url;
+        }
+
         HashMap<String, String> dataShallowCopy = new HashMap<>();
         dataShallowCopy.put("userID", userID);
         if (data != null){
@@ -84,7 +90,7 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
     public void sendFirebaseToken(String newToken){
         Map<String, String> tokenMsg = new HashMap<>();
         tokenMsg.put("newToken", newToken);
-        send(firebaseTokenSubmissionURL, tokenMsg);
+        send("/token", tokenMsg);
     }
 
 }
