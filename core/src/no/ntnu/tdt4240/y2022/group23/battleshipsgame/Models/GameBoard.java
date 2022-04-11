@@ -33,6 +33,7 @@ public class GameBoard implements Serializable {
     }
 
     public GameBoardField get(Coords coords) { return board.get(coords.x).get(coords.y); }
+
     public void set(Coords coords, GameBoardField field) { board.get(coords.x).set(coords.y, field); }
 
     public void apply(List<GameBoardChange> changes) {
