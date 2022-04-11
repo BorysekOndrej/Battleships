@@ -113,7 +113,11 @@ public class RedisStorage {
     }
 
     String getOpponentId(String userID) {
-        throw new UnsupportedOperationException("not implemented");
+        Lobby lobby = Lobby.getUsersGame(userID); // this creates circular dependency
+        if (lobby == null){
+            return null; // todo: throw exception?
+        }
+        return lobby.getOpponentID(userID);
     }
 
     // --- SINGLETON STUFF ---

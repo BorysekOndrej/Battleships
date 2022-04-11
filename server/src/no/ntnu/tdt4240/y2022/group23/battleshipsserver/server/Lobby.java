@@ -32,6 +32,9 @@ public class Lobby implements Serializable {
     }
 
     public static Lobby getLobby(String gameID){
+        if (gameID == null){
+            return null;
+        }
         try (Jedis jedis = pool.getResource()) {
             String lobbySerialized = jedis.get("lobby_" + gameID);
             if (lobbySerialized == null){
@@ -46,6 +49,10 @@ public class Lobby implements Serializable {
         try (Jedis jedis = pool.getResource()) {
             return jedis.get("user_active_in_lobby_"+userID);
         }
+    }
+
+    public static Lobby getUsersGame(String userID){
+        return getLobby(findGameID(userID));
     }
 
     public void addUser(String userID){
@@ -90,6 +97,15 @@ public class Lobby implements Serializable {
                 continue;
             }
             FirebaseMessenger.sendMessage(userID, ServerClientMessage.OTHER_ENDED_COMMUNICATION,null);
+        }
+    }
+
+    public String getOpponentID(String userID){
+        for (String userID2: users) {
+            if (!userID2.equals(userID)){
+                continue;
+            }
+            return userID2;
         }
     }
 
