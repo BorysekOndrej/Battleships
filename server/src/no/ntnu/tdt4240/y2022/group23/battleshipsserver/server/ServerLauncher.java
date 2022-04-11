@@ -1,6 +1,5 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 
@@ -49,19 +48,6 @@ public class ServerLauncher {
 	}
 
 
-	private static void sendMessage(Message.Builder messageBuilder, String userID) throws FirebaseMessagingException {
-		RedisStorage redisStorage = RedisStorage.getInstance();
-
-		String userToken = redisStorage.getUserTokenByID(userID);
-		Message message = messageBuilder.setToken(userToken).build();
-
-		// Send a message to the device corresponding to the provided
-		// registration token.
-		String response = FirebaseMessaging.getInstance().send(message);
-		// Response is a message ID string.
-		System.out.println("Successfully sent message: " + response);
-	}
-
 	public static void placements(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
@@ -80,9 +66,9 @@ public class ServerLauncher {
 			Message.Builder messageBuilder = Message.builder()
 					.putData("type", ServerClientMessage.GAME_START.name());
 
-			sendMessage(messageBuilder, userID);
+			FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
 			// DANGER messageBuilder may have been altered by the previous call?
-			sendMessage(messageBuilder, opponentID);
+			FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
 		}
 	}
 
@@ -109,8 +95,8 @@ public class ServerLauncher {
 				.putData("changedCoords", StringSerializer.toString(changedCoords))
 				.putData("unsunkShips", StringSerializer.toString(unsunkShips));
 
-		sendMessage(messageBuilder, userID);
-		sendMessage(messageBuilder, opponentID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
 	}
 
 	public static void timeout(Context ctx) throws FirebaseMessagingException {
@@ -132,8 +118,8 @@ public class ServerLauncher {
 				.putData("changedCoords", StringSerializer.toString(changedCoords))
 				.putData("unsunkShips", StringSerializer.toString(unsunkShips));
 
-		sendMessage(messageBuilder, userID);
-		sendMessage(messageBuilder, opponentID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
 	}
 
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
@@ -145,7 +131,7 @@ public class ServerLauncher {
 		Message.Builder messageBuilder = Message.builder()
 				.putData("type", ServerClientMessage.OTHER_ENDED_COMMUNICATION.name());
 
-		sendMessage(messageBuilder, opponentID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
 	}
 
 	public static void create_lobby(Context ctx) {

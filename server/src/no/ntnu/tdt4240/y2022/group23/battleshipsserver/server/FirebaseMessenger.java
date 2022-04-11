@@ -76,4 +76,18 @@ public class FirebaseMessenger {
     }
 
 
+    public static void sendMessageUsingMsgBuilder(Message.Builder messageBuilder, String userID) throws FirebaseMessagingException {
+        // todo: remove either this method, or the sendMessage alternative method
+        getInstance();
+        RedisStorage redisStorage = RedisStorage.getInstance();
+
+        String userToken = redisStorage.getUserTokenByID(userID);
+        Message message = messageBuilder.setToken(userToken).build();
+
+        // Send a message to the device corresponding to the provided
+        // registration token.
+        String response = FirebaseMessaging.getInstance().send(message);
+        // Response is a message ID string.
+        System.out.println("Successfully sent message: " + response);
+    }
 }
