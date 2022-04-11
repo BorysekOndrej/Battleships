@@ -2,6 +2,8 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.javatuples.Pair;
+
 import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
@@ -10,13 +12,13 @@ import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObser
 
 public class RemainingShipsPanel implements IRenderable {
     private IBattleshipObserver observer;
-    private boolean shipIsSelected = false;
+    private Boolean collocateShip = false;
 
     public void place(float x, float y, float width, float height) {
         throw new UnsupportedOperationException("not implemented");
     }
 
-    public void setData(List<IShip> remainingShips) {
+    public void setData(List<Pair<IShip, Integer>> remainingShips) {
         throw new UnsupportedOperationException("not implemented");
     }
 
@@ -31,7 +33,7 @@ public class RemainingShipsPanel implements IRenderable {
 
     @Override
     public void handleInput() {
-        if (shipIsSelected){ //Place holder, this call should be done if the ship is selected
+        if (collocateShip){ //Place holder, this call should be done if the ship is collocated
             observer.notice();
         }
         throw new UnsupportedOperationException("not implemented");

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class LobbyState extends AbstractState {
-    private static boolean opponentFound = false;
+    private boolean opponentFound = false;
 
     protected LobbyState(GameStateManager gsm) {
         super(gsm);

@@ -7,19 +7,16 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObserver;
-import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.SelectedShipObserver;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.CollocateShipObserver;
 
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.javatuples.Pair;
 
 public class ShipPlacementState extends AbstractState {
-
 
     //Event listener
     private IBattleshipObserver selectedShipObserver;
@@ -31,11 +28,12 @@ public class ShipPlacementState extends AbstractState {
     private RemainingShipsPanel remainingShipsPanel;
     private List<Pair<IShip, Integer>> remainingShips;
 
+
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
         timer = new TimerPanel();
         //timer.start(30); //Starts timer with 30 seconds
-        selectedShipObserver = new SelectedShipObserver(this);
+        selectedShipObserver = new CollocateShipObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders
         shipPlacements = new ShipPlacements();
         remainingShipsPanel = new RemainingShipsPanel();
@@ -70,8 +68,7 @@ public class ShipPlacementState extends AbstractState {
         gsm.set(new FinishedGameState(gsm));
     };
 
-    //Collocates a ship in the said space with said orientation
-    private void collocateShip(){
+    public void collocateShip(){
         IShip ship = remainingShipsPanel.selectedShipType();
         Coords coords = new Coords(0,0); //Coordinates where to collocate the ship, currently a placeholder
         try {
