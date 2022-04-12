@@ -17,7 +17,7 @@ import redis.clients.jedis.JedisPool;
 public class Lobby implements Serializable {
     protected String gameID;
     protected List<String> users = new ArrayList<>();
-    protected boolean isPrivate = false;
+    protected boolean isPrivate;
 
     private static final JedisPool pool = RedisStorage.getInstance().pool;
 
@@ -41,7 +41,7 @@ public class Lobby implements Serializable {
                 return null;
             }
 
-            return (Lobby) StringSerializer.fromString(lobbySerialized);
+            return StringSerializer.fromString(lobbySerialized);
         }
     }
 
