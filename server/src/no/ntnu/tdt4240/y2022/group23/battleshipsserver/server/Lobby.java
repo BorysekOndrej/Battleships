@@ -64,10 +64,14 @@ public class Lobby implements Serializable {
         }
         users.add(userID);
         save();
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("id", gameID);
+
         FirebaseMessenger.sendMessage(
                 userID,
                 ServerClientMessage.JOINED_LOBBY_WITH_ID,
-                Map.of("id", gameID)
+                map
         );
 
         if (users.size() == 2){
@@ -107,6 +111,7 @@ public class Lobby implements Serializable {
             }
             return userID2;
         }
+        return null;
     }
 
 }
