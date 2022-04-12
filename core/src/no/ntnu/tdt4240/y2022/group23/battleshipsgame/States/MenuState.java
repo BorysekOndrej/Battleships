@@ -7,7 +7,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu;
 public class MenuState extends AbstractState {
     MainMenu mainMenu;
 
-    protected MenuState(GameStateManager gsm) {
+    public MenuState(GameStateManager gsm) {
         super(gsm);
         mainMenu = new MainMenu();
     }

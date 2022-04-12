@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
@@ -19,25 +20,26 @@ import org.javatuples.Pair;
 public class ShipPlacementState extends AbstractState {
 
     //Event listener
-    private IBattleshipObserver selectedShipObserver;
+    private IBattleshipObserver collocateShipObserver;
 
     //Models to the game
     private GameBoard gameBoard;
+    private GameBoardPanel gameBoardPanel;
     private ShipPlacements shipPlacements;
     private TimerPanel timer;
     private RemainingShipsPanel remainingShipsPanel;
     private List<Pair<IShip, Integer>> remainingShips;
 
-
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
         timer = new TimerPanel();
         //timer.start(30); //Starts timer with 30 seconds
-        selectedShipObserver = new CollocateShipObserver(this);
+        collocateShipObserver = new CollocateShipObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders
+        gameBoardPanel = new GameBoardPanel();
         shipPlacements = new ShipPlacements();
         remainingShipsPanel = new RemainingShipsPanel();
-        remainingShipsPanel.addObserver(selectedShipObserver);
+        remainingShipsPanel.addObserver(collocateShipObserver);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class ShipPlacementState extends AbstractState {
             if (remainingShips.isEmpty()){
                 goToViewMyBoard();
             } //Not checking opponents ships
-            else{ //If the user has any remaining user he loses
+            else{ //If the user has any remaining ships to place, user he loses
                 goToFinishedGame();
             }
         }
@@ -63,7 +65,7 @@ public class ShipPlacementState extends AbstractState {
         gsm.set(new ViewMineBoardState(gsm));
     };
 
-    //Changes state to view my board state
+    //Changes state to finished game state
     private void goToFinishedGame(){
         gsm.set(new FinishedGameState(gsm));
     };
