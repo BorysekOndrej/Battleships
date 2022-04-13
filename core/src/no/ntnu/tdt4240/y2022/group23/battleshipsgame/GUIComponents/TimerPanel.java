@@ -16,7 +16,6 @@ public class TimerPanel implements IRenderable {
     private int xCord;
     private int yCord;
     private boolean run;
-    private boolean finished;
     private long start;
 
     public TimerPanel(int x, int y){
@@ -24,7 +23,6 @@ public class TimerPanel implements IRenderable {
         yCord = y;
         timeLeft = 0;
         run = false;
-        finished = false;
 
         //generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon-Regular.otf"));
     }
@@ -38,7 +36,6 @@ public class TimerPanel implements IRenderable {
     */
 
     public void startTimer(int period){
-        finished = false;
         timeLeft = period;
         run = true;
         long start = System.nanoTime();
@@ -56,16 +53,15 @@ public class TimerPanel implements IRenderable {
     @Override
     public void update(float dt) {
         if(run){
-            long finish = System.nanoTime();;
+            long finish = System.nanoTime();
             if((finish - start) >= 1000000000 ){
                 if(timeLeft==1){
-                    finished = true;
                     run = false;
                     System.out.print("FINISHED\n");
                 }
                 else{
                     timeLeft--;
-                    System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));
+                    System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));//can be simplified to timeLeft in seconds
                     start = finish;
                 }
             }
@@ -83,6 +79,6 @@ public class TimerPanel implements IRenderable {
     }
 
     public boolean runOut() {
-        return finished;
+        return !run;
     }
 }
