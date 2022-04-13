@@ -10,32 +10,41 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
 
 public class TimerPanel implements IRenderable {
-    private Timer timer;
+    private int timeLeft;
     //private FreeTypeFontGenerator generator;
-    private BitmapFont font;
+    //private BitmapFont font;
     private int xCord;
     private int yCord;
+    private boolean run;
+    private boolean finished;
+    private long start;
 
     public TimerPanel(int x, int y){
         xCord = x;
         yCord = y;
-        timer = new Timer();
-        /*
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon-Regular.otf"));
+        timeLeft = 0;
+        run = false;
+        finished = false;
+
+        //generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon-Regular.otf"));
+    }
+    /*
+    private void initFonts(){
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = 24;
         params.color = Color.BLACK;
         font = generator.generateFont(params);
-
-         */
     }
+    */
 
+    public void startTimer(int period){
+        finished = false;
+        timeLeft = period;
+        run = true;
+        long start = System.nanoTime();
+    }
 
     public void place(float x, float y, float width, float height) {
-        throw new UnsupportedOperationException("not implemented");
-    }
-
-    public void setData(Timer timer) {
         throw new UnsupportedOperationException("not implemented");
     }
 
@@ -46,20 +55,34 @@ public class TimerPanel implements IRenderable {
 
     @Override
     public void update(float dt) {
-        throw new UnsupportedOperationException("not implemented");
+        if(run){
+            long finish = System.nanoTime();;
+            if((finish - start) >= 1000000000 ){
+                if(timeLeft==1){
+                    finished = true;
+                    run = false;
+                    System.out.print("FINISHED\n");
+                }
+                else{
+                    timeLeft--;
+                    System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));
+                    start = finish;
+                }
+            }
+        }
     }
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.begin();
-        font.draw(sb, "Test", xCord, yCord);
-        sb.end();
+
     }
 
     @Override
     public void dispose() {
-        font.dispose();
+        //font.dispose();
     }
 
-    public boolean runOut() {throw new UnsupportedOperationException("not implemented");}
+    public boolean runOut() {
+        return finished;
+    }
 }

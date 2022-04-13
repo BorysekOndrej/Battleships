@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +16,7 @@ public class TestState extends AbstractState {
     private final Texture background;
     private GameBoardPanel gameBoardPanel;
     private RemainingShipsPanel shipsPanel;
+    private TimerPanel timer;
 
     public TestState(GameStateManager gsm) {
         super(gsm);
@@ -23,7 +25,11 @@ public class TestState extends AbstractState {
         //gameBoardPanel.setPosition((BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2,  (BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2);
         shipsPanel = new RemainingShipsPanel(63, 1100);
         //shipsPanel.setPosition(37, 1100);
+        timer = new TimerPanel(100, 100);
+        timer.startTimer(90);
     }
+
+
 
     @Override
     public void handleInput(){
@@ -36,6 +42,7 @@ public class TestState extends AbstractState {
     public void update(float dt) {
         gameBoardPanel.update(dt);
         shipsPanel.update(dt);
+        timer.update(dt);
     }
 
     @Override
