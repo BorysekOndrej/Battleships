@@ -29,10 +29,12 @@ public class GameBoardPanel implements IRenderable {
 
     //private final Rectangle bonds;
 
-    private int xCord = 0;
-    private int yCord = 0;
+    private int xCord;
+    private int yCord;
 
-    public GameBoardPanel(){
+    public GameBoardPanel(int x, int y){
+        xCord = x;
+        yCord = y;
         gameBoardTex = new Texture("game_board/gameboard.png");
         unknownField = new Texture("game_board/unknown.png");
         waterField = new Texture("game_board/water.png");
@@ -108,7 +110,7 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void render(SpriteBatch sb){
-        sb.begin();
+        //sb.begin();
         sb.draw(gameBoardTex, xCord, yCord);
 
         for(int i = 0; i < GAMEBOARD_ROWS; i++){
@@ -119,7 +121,7 @@ public class GameBoardPanel implements IRenderable {
                 drawField(actualField, sb, xLocus, yLocus);
             }
         }
-        sb.end();
+        //sb.end();
     }
 
     public void dispose(){

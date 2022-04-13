@@ -2,20 +2,27 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.javatuples.Pair;
 
 public class TestState extends AbstractState {
 
+    private final Texture background;
     private GameBoardPanel gameBoardPanel;
+    private RemainingShipsPanel shipsPanel;
 
     public TestState(GameStateManager gsm) {
         super(gsm);
-        gameBoardPanel = new GameBoardPanel();
-        gameBoardPanel.setPosition((BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2,  (BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2);
+        background = new Texture("play_state/play_state_background.png");
+        gameBoardPanel = new GameBoardPanel(63, 63);
+        //gameBoardPanel.setPosition((BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2,  (BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2);
+        shipsPanel = new RemainingShipsPanel(63, 1100);
+        //shipsPanel.setPosition(37, 1100);
     }
 
     @Override
@@ -27,16 +34,24 @@ public class TestState extends AbstractState {
 
     @Override
     public void update(float dt) {
-        gameBoardPanel.handleInput();
+        gameBoardPanel.update(dt);
+        shipsPanel.update(dt);
     }
 
     @Override
     public void render(SpriteBatch sb) {
+        sb.begin();
+        sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
         gameBoardPanel.render(sb);
+        shipsPanel.render(sb);
+        sb.end();
     }
 
 
     @Override
-    public void dispose(){};
+    public void dispose(){
+        gameBoardPanel.dispose();
+        shipsPanel.dispose();
+    }
 }
 
