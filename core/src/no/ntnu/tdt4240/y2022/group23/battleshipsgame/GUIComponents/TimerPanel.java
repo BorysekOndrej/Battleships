@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+//import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
 
 public class TimerPanel implements IRenderable {
     private Timer timer;
-    private FreeTypeFontGenerator generator;
+    //private FreeTypeFontGenerator generator;
     private BitmapFont font;
     private int xCord;
     private int yCord;
@@ -20,11 +20,14 @@ public class TimerPanel implements IRenderable {
         xCord = x;
         yCord = y;
         timer = new Timer();
+        /*
         generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon-Regular.otf"));
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = 24;
         params.color = Color.BLACK;
         font = generator.generateFont(params);
+
+         */
     }
 
 

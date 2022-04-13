@@ -32,7 +32,7 @@ public class ShipPlacementState extends AbstractState {
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
-        timer = new TimerPanel();
+        timer = new TimerPanel(200, 100);
         //timer.start(30); //Starts timer with 30 seconds
         collocateShipObserver = new CollocateShipObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders

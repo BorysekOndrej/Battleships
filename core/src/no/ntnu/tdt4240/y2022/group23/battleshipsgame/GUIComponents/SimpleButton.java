@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
+
 public class SimpleButton {
 
     private Texture texture;
@@ -19,7 +21,7 @@ public class SimpleButton {
     }
 
     public boolean buttonTouched() {
-        return (Gdx.input.justTouched() && buttonBounds.contains(Gdx.input.getX(), MainMenu.HEIGHT - Gdx.input.getY()));
+        return (Gdx.input.justTouched() && buttonBounds.contains(Gdx.input.getX(), BattleshipsGame.HEIGHT - Gdx.input.getY()));
     }
 
     public Texture getTexture() {

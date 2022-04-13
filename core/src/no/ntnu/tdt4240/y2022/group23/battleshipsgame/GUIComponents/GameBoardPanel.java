@@ -3,36 +3,36 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+//import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.Rectangle;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
 public class GameBoardPanel implements IRenderable {
     private static final int FIELD_SIZE = 86;
-    private static final int GAMEBORAD_OFFSET = 2;
-    private static final int GAMEBORAD_ROWS = 10;
+    private static final int GAMEBOARD_OFFSET = 2;
+    private static final int GAMEBOARD_ROWS = 10;
 
+    private final GameBoard gameBoard;
 
-    private GameBoard gameBoard;
+    private final Texture gameBoardTex;
 
-    private Texture gameBoardTex;
+    private final Texture unknownField;
+    private final Texture waterField;
+    private final Texture hitField;
+    private final Texture sunkField;
+    private final Texture shipField;
 
-    private Texture unknownField;
-    private Texture waterField;
-    private Texture hitField;
-    private Texture sunkField;
-    private Texture shipField;
+    //private final Rectangle bonds;
 
-    private int xCord;
-    private int yCord;
+    private int xCord = 0;
+    private int yCord = 0;
 
-    private Rectangle bonds;
-
-    public GameBoardPanel(int x, int y){
+    public GameBoardPanel(){
         gameBoardTex = new Texture("game_board/gameboard.png");
         unknownField = new Texture("game_board/unknown.png");
         waterField = new Texture("game_board/water.png");
@@ -40,12 +40,9 @@ public class GameBoardPanel implements IRenderable {
         sunkField = new Texture("game_board/sunk.png");
         shipField = new Texture("game_board/ship.png");
 
-        xCord = x;
-        yCord = y;
+        //bonds = new Rectangle(xCord + GAMEBOARD_OFFSET + FIELD_SIZE, yCord - GAMEBOARD_OFFSET, gameBoardTex.getWidth() - 2*GAMEBOARD_OFFSET - FIELD_SIZE, gameBoardTex.getHeight()- 2*GAMEBOARD_OFFSET - FIELD_SIZE);
 
-        bonds = new Rectangle(xCord, yCord, gameBoardTex.getWidth(), gameBoardTex.getHeight());
-
-        gameBoard = new GameBoard(GAMEBORAD_ROWS, GAMEBORAD_ROWS);
+        gameBoard = new GameBoard(GAMEBOARD_ROWS, GAMEBOARD_ROWS);
         gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(1,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(2,0), GameBoardField.SUNK);
@@ -56,21 +53,24 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(4,4), GameBoardField.WATER);
     }
 
-    //Args: int x: Gdx.input.getX();
-    //      int y: Gdx.input.getY();
+    public void setPosition(int x, int y){
+        xCord = x;
+        yCord = y;
+    }
+
     public Coords getFieldCoords(int x, int y){
         int xRelative = x - xCord;
-        int yRelative = y - (1920 - yCord - gameBoardTex.getHeight());
-        Coords result = new Coords((int) ((xRelative - GAMEBORAD_OFFSET) / FIELD_SIZE - 1), (int) -((yRelative - GAMEBORAD_OFFSET) / FIELD_SIZE - 1));
+        int yRelative = y - (BattleshipsGame.HEIGHT - yCord - gameBoardTex.getHeight());
+        Coords result = new Coords((xRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1, (yRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1);
         if(coordsValid(result)) return result;
         else  {
-            System.out.println("Coords out of bonds");
+            //System.out.println("Coords out of bonds");
             return null;
         }
     }
 
     public boolean coordsValid(Coords coords){
-        return (coords.x >= 0 && coords.x < GAMEBORAD_ROWS) && (coords.y >= 0 && coords.y < GAMEBORAD_ROWS);
+        return (coords.x >= 0 && coords.x < GAMEBOARD_ROWS) && (coords.y >= 0 && coords.y < GAMEBOARD_ROWS);
     }
 
 
@@ -96,7 +96,7 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void handleInput(){
-        if(Gdx.input.justTouched() /*&& bonds.contains(Gdx.input.getX() - xCord, Gdx.input.getY() - yCord)*/){
+        if(Gdx.input.justTouched()){
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
             Coords res = getFieldCoords(x, y);
@@ -106,15 +106,16 @@ public class GameBoardPanel implements IRenderable {
     public void update(float dt){
         handleInput();
     }
+
     public void render(SpriteBatch sb){
         sb.begin();
         sb.draw(gameBoardTex, xCord, yCord);
 
-        for(int i = 0; i < GAMEBORAD_ROWS; i++){
-            for(int j = 0; j < GAMEBORAD_ROWS; j++){
+        for(int i = 0; i < GAMEBOARD_ROWS; i++){
+            for(int j = 0; j < GAMEBOARD_ROWS; j++){
                 GameBoardField actualField = gameBoard.get(new Coords(i, j));
-                int xLocus = xCord + GAMEBORAD_OFFSET + FIELD_SIZE * (i + 1);
-                int yLocus = yCord + GAMEBORAD_OFFSET + FIELD_SIZE * (GAMEBORAD_ROWS - 1 - j);
+                int xLocus = xCord + GAMEBOARD_OFFSET + FIELD_SIZE * (i + 1);
+                int yLocus = yCord + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - j);
                 drawField(actualField, sb, xLocus, yLocus);
             }
         }
@@ -129,4 +130,12 @@ public class GameBoardPanel implements IRenderable {
         sunkField.dispose();
         shipField.dispose();
     }
+    public int getGameBoardHeight(){
+        return gameBoardTex.getHeight();
+    }
+
+    public int getGameBoardWidth(){
+        return gameBoardTex.getWidth();
+    }
+
 }

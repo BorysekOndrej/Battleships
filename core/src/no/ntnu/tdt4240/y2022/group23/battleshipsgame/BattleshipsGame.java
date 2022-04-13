@@ -11,8 +11,11 @@ import java.util.Map;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.INetworkClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.GameStateManager;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.MenuState;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.TestState;
 
 public class BattleshipsGame extends ApplicationAdapter {
+	final static public int HEIGHT = 1792;
+	final static public int WIDTH = 1076;
 	private SpriteBatch batch;
 	private GameStateManager gsm;
 	private INetworkClient networkClient;
