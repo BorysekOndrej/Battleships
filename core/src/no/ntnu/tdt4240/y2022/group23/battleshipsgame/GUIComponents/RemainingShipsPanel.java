@@ -1,13 +1,20 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import org.javatuples.Pair;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
@@ -19,7 +26,6 @@ public class RemainingShipsPanel implements IRenderable {
     private final static int BONDS_WIDTH = 150;
     private final static int BONDS_HEIGHT = 175;
     private final static int BONDS_OFFSET = 37;
-
 
     private IBattleshipObserver observer;
     private Boolean collocateShip = false;
@@ -35,7 +41,10 @@ public class RemainingShipsPanel implements IRenderable {
     private final Rectangle ship3bonds;
     private final Rectangle ship4bonds;
 
+    private BitmapFont font;
+
     private boolean markedShips[] = {false, false, false, false};
+    private int numberOfShips[] = {4, 3, 2, 1};
 
     private int xCord;
     private int yCord;
@@ -43,6 +52,10 @@ public class RemainingShipsPanel implements IRenderable {
     public RemainingShipsPanel(int x, int y){
         xCord = x;
         yCord = y;
+
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
+        font.getData().setScale(3);
 
         panelTex = new Texture("ships_panel/ships_panel.png");
         ship1markedTex = new Texture("ships_panel/panel_1_marked.png");
@@ -54,12 +67,6 @@ public class RemainingShipsPanel implements IRenderable {
         ship3bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
         ship2bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH * 2, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
         ship1bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH * 3, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
-
-    }
-
-    public void setPosition(int x, int y) {
-        xCord = x;
-        yCord = y;
     }
 
     private boolean ship1bondsPressed(){
@@ -90,12 +97,38 @@ public class RemainingShipsPanel implements IRenderable {
         markedShips[type-1] = true;
     }
 
+
+
     public void setData(List<Pair<IShip, Integer>> remainingShips) {
         throw new UnsupportedOperationException("not implemented");
     }
 
     public IShip selectedShipType(){
         throw new UnsupportedOperationException("not implemented");
+    }
+    /* Function returns current selected ship type as an int
+       Returns 0 if none ship is selected
+     */
+    public int selectedShipType1(){
+        for(int i = 0; i < markedShips.length; i++){
+            if(markedShips[i]) return i+1;
+        }
+        return 0;
+    }
+
+    public void setData(int shipsData[]){
+        if(shipsData.length != 4){
+            throw new InputMismatchException("Wrong input\n");
+        }
+        numberOfShips = shipsData;
+    }
+
+    public void decrementShipNumber(int shipType){
+        numberOfShips[shipType-1]--;
+    }
+
+    public void incrementShipNumber(int shipType){
+        numberOfShips[shipType-1]++;
     }
 
     //Adds observer to the observable object
@@ -111,19 +144,15 @@ public class RemainingShipsPanel implements IRenderable {
         if (Gdx.input.justTouched()){
             if(ship1bondsPressed()) {
                 markShip(1);
-                System.out.print("1 pressed\n");
             }
             if(ship2bondsPressed()) {
                 markShip(2);
-                System.out.print("2 pressed\n");
             }
             if(ship3bondsPressed()) {
                 markShip(3);
-                System.out.print("3 pressed\n");
             }
             if(ship4bondsPressed()) {
                 markShip(4);
-                System.out.print("4 pressed\n");
             }
         }
     }
@@ -135,14 +164,17 @@ public class RemainingShipsPanel implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-        //sb.begin();
         sb.draw(panelTex, xCord, yCord);
+        font.draw(sb,String.format("x%d",numberOfShips[3]), xCord + BONDS_OFFSET+60, yCord + 147);
+        font.draw(sb,String.format("x%d",numberOfShips[2]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH, yCord + 147);
+        font.draw(sb,String.format("x%d",numberOfShips[1]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH * 2, yCord + 147);
+        font.draw(sb,String.format("x%d",numberOfShips[0]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH * 3, yCord + 147);
+
         if (markedShips[3]) sb.draw(ship4markedTex, xCord + BONDS_OFFSET - 5, yCord + 31);
         if (markedShips[2]) sb.draw(ship3markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH - 5, yCord + 52);
         if (markedShips[1]) sb.draw(ship2markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yCord + 74);
         if (markedShips[0]) sb.draw(ship1markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yCord + 94);
 
-        //sb.end();
     }
 
     @Override

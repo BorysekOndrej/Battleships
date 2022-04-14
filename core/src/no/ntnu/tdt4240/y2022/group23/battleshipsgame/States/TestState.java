@@ -25,8 +25,8 @@ public class TestState extends AbstractState {
         //gameBoardPanel.setPosition((BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2,  (BattleshipsGame.WIDTH- gameBoardPanel.getGameBoardWidth()) / 2);
         shipsPanel = new RemainingShipsPanel(63, 1100);
         //shipsPanel.setPosition(37, 1100);
-        timer = new TimerPanel(100, 100);
-        timer.startTimer(90);
+        timer = new TimerPanel(BattleshipsGame.WIDTH - 262 - 63, BattleshipsGame.HEIGHT - 125 - 63);
+        timer.startTimer(20);
     }
 
 
@@ -51,6 +51,7 @@ public class TestState extends AbstractState {
         sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
         gameBoardPanel.render(sb);
         shipsPanel.render(sb);
+        timer.render(sb);
         sb.end();
     }
 

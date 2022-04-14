@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
@@ -32,7 +33,7 @@ public class ShipPlacementState extends AbstractState {
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
-        timer = new TimerPanel(200, 100);
+        timer = new TimerPanel(BattleshipsGame.WIDTH - 262 - 37, 125 + 37);
         //timer.start(30); //Starts timer with 30 seconds
         collocateShipObserver = new CollocateShipObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders

@@ -1,18 +1,16 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
 
 public class TimerPanel implements IRenderable {
     private int timeLeft;
-    //private FreeTypeFontGenerator generator;
-    //private BitmapFont font;
+    private Texture panel;
+    private BitmapFont font;
     private int xCord;
     private int yCord;
     private boolean run;
@@ -23,32 +21,20 @@ public class TimerPanel implements IRenderable {
         yCord = y;
         timeLeft = 0;
         run = false;
-
-        //generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Arcon-Regular.otf"));
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
+        font.getData().setScale(6);
+        panel = new Texture("timer_panel/timer_panel.png");
     }
-    /*
-    private void initFonts(){
-        FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        params.size = 24;
-        params.color = Color.BLACK;
-        font = generator.generateFont(params);
-    }
-    */
 
     public void startTimer(int period){
         timeLeft = period;
         run = true;
-        long start = System.nanoTime();
-    }
-
-    public void place(float x, float y, float width, float height) {
-        throw new UnsupportedOperationException("not implemented");
+        font.setColor(Color.BLACK);
     }
 
     @Override
-    public void handleInput() {
-        throw new UnsupportedOperationException("not implemented");
-    }
+    public void handleInput() {}
 
     @Override
     public void update(float dt) {
@@ -61,7 +47,8 @@ public class TimerPanel implements IRenderable {
                 }
                 else{
                     timeLeft--;
-                    System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));//can be simplified to timeLeft in seconds
+                    if(timeLeft<11) font.setColor(Color.RED);
+                    //System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));//can be simplified to timeLeft in seconds
                     start = finish;
                 }
             }
@@ -70,12 +57,14 @@ public class TimerPanel implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-
+        sb.draw(panel, xCord, yCord);
+        font.draw(sb, String.format("%02d:%02d\n", timeLeft/60, timeLeft%60), xCord + 20, yCord + 95);
     }
 
     @Override
     public void dispose() {
-        //font.dispose();
+        font.dispose();
+        panel.dispose();
     }
 
     public boolean runOut() {

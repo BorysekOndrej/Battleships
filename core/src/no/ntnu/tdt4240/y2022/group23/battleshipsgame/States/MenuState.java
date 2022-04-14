@@ -19,15 +19,12 @@ public class MenuState extends AbstractState {
             System.out.print(Gdx.input.getX()+ ", " + Gdx.input.getY() + "\n");
         }
         if (mainMenu.createLobbyButtonPressed()){
-            System.out.print("gowno\n");
             //goToLobbyState();
         }
         if (mainMenu.joinLobbyButtonPressed()){
-            System.out.print("gowno1\n");
             //goToLobbyState();
         }
         if (mainMenu.leaderBoardButtonPressed()){
-            System.out.print("gowno2\n");
             gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
