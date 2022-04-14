@@ -9,12 +9,12 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class TimerPanel implements IRenderable {
     private int timeLeft;
-    private Texture panel;
-    private BitmapFont font;
-    private int xCord;
-    private int yCord;
+    private final Texture panel;
+    private final BitmapFont font;
+    private final int xCord;
+    private final int yCord;
     private boolean run;
-    private long start;
+    private float currentPeriod;
 
     public TimerPanel(int x, int y){
         xCord = x;
@@ -39,8 +39,8 @@ public class TimerPanel implements IRenderable {
     @Override
     public void update(float dt) {
         if(run){
-            long finish = System.nanoTime();
-            if((finish - start) >= 1000000000 ){
+            currentPeriod += dt;
+            if(currentPeriod >= 1f ){
                 if(timeLeft==1){
                     run = false;
                     System.out.print("FINISHED\n");
@@ -49,7 +49,7 @@ public class TimerPanel implements IRenderable {
                     timeLeft--;
                     if(timeLeft<11) font.setColor(Color.RED);
                     //System.out.print(String.format("%02d:%02d\n", timeLeft/60, timeLeft%60));//can be simplified to timeLeft in seconds
-                    start = finish;
+                    currentPeriod =0;
                 }
             }
         }

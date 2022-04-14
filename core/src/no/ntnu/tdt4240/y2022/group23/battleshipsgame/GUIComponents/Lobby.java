@@ -1,22 +1,65 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class Lobby implements IRenderable {
+    private final Texture background;
+    private final Texture returnTex;
+    private final SimpleButton returnButton;
+
+    private final Array<TextureRegion> frames;
+    private final float maxFrameTime = 0.7f;
+    private float currentFrameTime;
+    private final int frameCount = 4;
+    private int frame = 0;
+
+    public Lobby(){
+        background = new Texture("lobby_state/lobby_state_background.png");
+        returnTex = new Texture("lobby_state/return.png");
+        returnButton = new SimpleButton(BattleshipsGame.WIDTH/2 - returnTex.getWidth()/2, BattleshipsGame.HEIGHT/2 - returnTex.getHeight()*2, returnTex);
+
+        TextureRegion region = new TextureRegion(new Texture("lobby_state/waiting_animation.png"));
+        frames = new Array<>();
+        int frameWidth = region.getRegionWidth() / frameCount;
+        for(int i = 0; i < frameCount; i++){
+            frames.add(new TextureRegion(region, i * frameWidth, 0, frameWidth, region.getRegionHeight()));
+        }
+    }
+
+    public TextureRegion getFrame(){
+        return frames.get(frame);
+    }
 
     @Override
     public void handleInput() { throw new UnsupportedOperationException("not implemented"); }
 
     @Override
-    public void update(float dt) { throw new UnsupportedOperationException("not implemented");}
+    public void update(float dt) {
+        currentFrameTime += dt;
+        if(currentFrameTime > maxFrameTime){
+            frame++;
+            currentFrameTime = 0;
+        }
+        if(frame >= frameCount) frame = 0;
+    }
 
     @Override
-    public void render(SpriteBatch sb) { throw new UnsupportedOperationException("not implemented");}
+    public void render(SpriteBatch sb) {
+        sb.begin();
+        sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
+        sb.draw(getFrame(), (returnButton.getPosX()+100), (returnButton.getPosY())+400);
+        sb.draw(returnButton.getTexture(), returnButton.getPosX(), returnButton.getPosY());
+        sb.end();
+    }
 
     @Override
     public void dispose() { throw new UnsupportedOperationException("not implemented");}
 
-    public boolean backButtonPressed(){return false;}
+    public boolean backButtonPressed(){return returnButton.buttonTouched();}
 }

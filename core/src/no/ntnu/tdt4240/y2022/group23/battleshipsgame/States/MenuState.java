@@ -19,10 +19,10 @@ public class MenuState extends AbstractState {
             System.out.print(Gdx.input.getX()+ ", " + Gdx.input.getY() + "\n");
         }
         if (mainMenu.createLobbyButtonPressed()){
-            //goToLobbyState();
+            goToLobbyState();
         }
         if (mainMenu.joinLobbyButtonPressed()){
-            //goToLobbyState();
+            goToLobbyState();
         }
         if (mainMenu.leaderBoardButtonPressed()){
             gsm.set(new TestState(gsm));//temporarily added for debuging

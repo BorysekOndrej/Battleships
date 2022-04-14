@@ -18,16 +18,21 @@ public class LobbyState extends AbstractState {
     @Override
     public void update(float dt){
         handleInput();
+        lobby.update(dt);
+        /*
         if (opponentFound){ //Wait until opponent is found, then change to ship placement
             goToShipPlacement();
-        }
+        }*/
     };
 
     @Override
     public void handleInput(){
+        /*
         if (Gdx.input.justTouched()){ //Place holder given change to variable
             opponentFound();
         }
+
+         */
         if (lobby.backButtonPressed()){
             goToMenu();
         }
@@ -51,6 +56,7 @@ public class LobbyState extends AbstractState {
 
     @Override
     public void render(SpriteBatch sb){
+        lobby.render(sb);
         opponentFound = true;
     };
 
