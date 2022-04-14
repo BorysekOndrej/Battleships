@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
@@ -9,6 +10,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 public abstract class AbstractShip implements IShip {
     private List<Coords> positions;
     private int parts;
+    private boolean horizontal;
 
     public AbstractShip() {}
 
@@ -46,13 +48,33 @@ public abstract class AbstractShip implements IShip {
         this.parts = parts;
     }
 
+    public boolean getOrientation(){
+        return horizontal;
+    }
+
+    public void setOrientation(boolean horizontal){
+        this.horizontal = horizontal;
+    }
+
     @Override
     public void displace() {
-        throw new UnsupportedOperationException("not implemented");
+        int size = this.getPositions().size();
+        List<Coords> newPositions = new ArrayList<Coords>();
+        Coords start = new Coords(0,0);
+        for(int i=0;i<size;i++){
+            newPositions.add(new Coords(start.x+i, start.y));
+        }
+        this.setPositions(newPositions);
     }
 
     @Override
     public void rotateClockwise() {
-        throw new UnsupportedOperationException("not implemented");
+        int size = this.getPositions().size();
+        List<Coords> newPositions = new ArrayList<Coords>();
+        Coords start = this.getPositions().get(0);
+        for (int i = 0; i < size; i++) {
+            newPositions.add(new Coords(-(this.getPositions().get(i).y - start.y) + start.x, this.getPositions().get(i).x - start.x + start.y));
+        }
+        this.setPositions(newPositions);
     }
 }
