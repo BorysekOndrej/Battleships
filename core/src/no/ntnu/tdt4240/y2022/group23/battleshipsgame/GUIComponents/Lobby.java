@@ -25,7 +25,7 @@ public class Lobby implements IRenderable {
         background = new Texture("lobby_state/lobby_state_background.png");
         returnButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("lobby_state/return.png"));
 
-        TextureRegion region = new TextureRegion(new Texture("lobby_state/waiting_animation.png"));
+        TextureRegion region = new TextureRegion(new Texture("lobby_state/waiting_animation1.png"));
         frames = new Array<>();
         int frameWidth = region.getRegionWidth() / frameCount;
         for(int i = 0; i < frameCount; i++){
