@@ -31,6 +31,7 @@ public abstract class AbstractShip implements IShip {
 
     }
 
+    @Override
     public int getType(){
         return parts;
     }

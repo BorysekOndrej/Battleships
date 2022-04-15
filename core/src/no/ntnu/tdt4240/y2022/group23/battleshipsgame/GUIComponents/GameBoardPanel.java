@@ -10,8 +10,10 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.CollocateShipObserver;
 
 public class GameBoardPanel implements IRenderable {
+    private CollocateShipObserver observer;
     private static final int FIELD_SIZE = 86;
     private static final int GAMEBORAD_OFFSET = 2;
     private static final int GAMEBORAD_ROWS = 10;
@@ -95,17 +97,24 @@ public class GameBoardPanel implements IRenderable {
         }
     }
 
+    //Adds observer to the observable object
+    public void addCollocateObserver(CollocateShipObserver observer){
+        this.observer = observer;
+    }
+
     public void handleInput(){
         if(Gdx.input.justTouched() /*&& bonds.contains(Gdx.input.getX() - xCord, Gdx.input.getY() - yCord)*/){
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
             Coords res = getFieldCoords(x, y);
-            if (res != null) System.out.println(res.toString());
+            if (res != null) observer.notice(res); //System.out.println(res.toString());
         }
     }
+
     public void update(float dt){
         handleInput();
     }
+
     public void render(SpriteBatch sb){
         sb.begin();
         sb.draw(gameBoardTex, xCord, yCord);

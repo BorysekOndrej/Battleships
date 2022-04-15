@@ -5,22 +5,23 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShip
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Pair;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObserver;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.CollocateShipObserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import org.javatuples.Pair;
 
 public class ShipPlacementState extends AbstractState {
 
     //Event listener
-    private IBattleshipObserver collocateShipObserver;
+    private CollocateShipObserver collocateShipObserver;
 
     //Models to the game
     private GameBoard gameBoard;
@@ -37,9 +38,20 @@ public class ShipPlacementState extends AbstractState {
         collocateShipObserver = new CollocateShipObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders
         gameBoardPanel = new GameBoardPanel();
+        gameBoardPanel.addCollocateObserver(collocateShipObserver);
         shipPlacements = new ShipPlacements();
         remainingShipsPanel = new RemainingShipsPanel();
-        remainingShipsPanel.addObserver(collocateShipObserver);
+        remainingShips = new ArrayList<>();
+
+        //Create remaining ships list
+        //4 square ship
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),4,true),4));
+        //3 square ship
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),3,true),3));
+        //2 square ship
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),2,true),2));
+        //1 square ship
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,true),1));
     }
 
     @Override
@@ -68,14 +80,30 @@ public class ShipPlacementState extends AbstractState {
     //Changes state to finished game state
     private void goToFinishedGame(){
         gsm.set(new FinishedGameState(gsm));
-    };
+    }
 
-    public void collocateShip(){
+    //Subtracts a remaining ship from the type specified
+    private void subtractRemaining(int shipType){
+        for (Pair pair: remainingShips){
+            IShip ship = (IShip) pair.getKey();
+            if (ship.getType() == shipType){
+                pair.setValue((int) pair.getValue() - 1);
+            }
+        }
+    }
+
+    public void collocateShip(Coords coords){
         IShip ship = remainingShipsPanel.selectedShipType();
-        Coords coords = new Coords(0,0); //Coordinates where to collocate the ship, currently a placeholder
         try {
+            int shipType = ship.getType();
+            subtractRemaining(shipType);
+
             shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),ship);
+            remainingShipsPanel.setData(remainingShips);
+
             gameBoard.set(coords,GameBoardField.SHIP);
+            
+            //Need to add to GameBoardPanel
         }
         catch (Exception IllegalArgumentException){
             //Could not position ship in gameBoard
