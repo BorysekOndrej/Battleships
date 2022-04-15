@@ -7,28 +7,22 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
 public class MainMenu implements IRenderable {
+    final static public int BUTTON_WIDTH = 409;
+    final static public int BUTTON_HEIGHT = 170;
 
     private final Texture background;
-    private final Texture createLobbyTex;
     private final SimpleButton createLobbyButton;
-
-    private final Texture joinLobbyTex;
     private final SimpleButton joinLobbyButton;
-
-    private final Texture leaderBoardTex;
     private final SimpleButton leaderBoardButton;
 
     public MainMenu(){
         background = new Texture("main_menu/main_menu_background.png");
 
-        createLobbyTex = new Texture("main_menu/create_lobby.png");
-        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - createLobbyTex.getWidth()/2, BattleshipsGame.HEIGHT/2 - createLobbyTex.getHeight()/2, createLobbyTex);
+        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));
 
-        joinLobbyTex = new Texture("main_menu/join_lobby.png");
-        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - joinLobbyTex.getWidth()/2, BattleshipsGame.HEIGHT/2 - joinLobbyTex.getHeight()*2, joinLobbyTex);
+        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("main_menu/join_lobby.png"));
 
-        leaderBoardTex = new Texture("main_menu/leaderboard.png");
-        leaderBoardButton = new SimpleButton(BattleshipsGame.WIDTH/2 - leaderBoardTex.getWidth()/2, BattleshipsGame.HEIGHT/2 - leaderBoardTex.getHeight()*7/2, leaderBoardTex);
+        leaderBoardButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/leaderboard.png"));
 
     }
     public boolean createLobbyButtonPressed(){
@@ -55,18 +49,18 @@ public class MainMenu implements IRenderable {
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
-        sb.draw(createLobbyButton.getTexture(), createLobbyButton.getPosX(), createLobbyButton.getPosY());
-        sb.draw(joinLobbyButton.getTexture(), joinLobbyButton.getPosX(), joinLobbyButton.getPosY());
-        sb.draw(leaderBoardButton.getTexture(), leaderBoardButton.getPosX(), leaderBoardButton.getPosY());
+        createLobbyButton.render(sb);
+        joinLobbyButton.render(sb);
+        leaderBoardButton.render(sb);
         sb.end();
     }
 
     @Override
     public void dispose() {
         background.dispose();
-        joinLobbyTex.dispose();
-        createLobbyTex.dispose();
-        leaderBoardTex.dispose();
+        joinLobbyButton.dispose();
+        createLobbyButton.dispose();
+        leaderBoardButton.dispose();
     }
 }
 

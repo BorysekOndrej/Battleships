@@ -1,5 +1,8 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
+import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu.BUTTON_WIDTH;
+import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu.BUTTON_HEIGHT;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,7 +13,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class Lobby implements IRenderable {
     private final Texture background;
-    private final Texture returnTex;
     private final SimpleButton returnButton;
 
     private final Array<TextureRegion> frames;
@@ -21,8 +23,7 @@ public class Lobby implements IRenderable {
 
     public Lobby(){
         background = new Texture("lobby_state/lobby_state_background.png");
-        returnTex = new Texture("lobby_state/return.png");
-        returnButton = new SimpleButton(BattleshipsGame.WIDTH/2 - returnTex.getWidth()/2, BattleshipsGame.HEIGHT/2 - returnTex.getHeight()*2, returnTex);
+        returnButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("lobby_state/return.png"));
 
         TextureRegion region = new TextureRegion(new Texture("lobby_state/waiting_animation.png"));
         frames = new Array<>();
@@ -54,12 +55,15 @@ public class Lobby implements IRenderable {
         sb.begin();
         sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
         sb.draw(getFrame(), (returnButton.getPosX()+100), (returnButton.getPosY())+400);
-        sb.draw(returnButton.getTexture(), returnButton.getPosX(), returnButton.getPosY());
+        returnButton.render(sb);
         sb.end();
     }
 
     @Override
-    public void dispose() { throw new UnsupportedOperationException("not implemented");}
+    public void dispose() {
+        background.dispose();
+        returnButton.dispose();
+    }
 
     public boolean backButtonPressed(){return returnButton.buttonTouched();}
 }

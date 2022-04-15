@@ -58,7 +58,7 @@ public class TimerPanel implements IRenderable {
     @Override
     public void render(SpriteBatch sb) {
         sb.draw(panel, xCord, yCord);
-        font.draw(sb, String.format("%02d:%02d\n", timeLeft/60, timeLeft%60), xCord + 20, yCord + 95);
+        font.draw(sb, String.format("%02d:%02d\n", timeLeft/60, timeLeft%60), xCord + 20, yCord + 115);
     }
 
     @Override

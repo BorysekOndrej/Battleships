@@ -173,8 +173,7 @@ public class RemainingShipsPanel implements IRenderable {
         if (markedShips[3]) sb.draw(ship4markedTex, xCord + BONDS_OFFSET - 5, yCord + 31);
         if (markedShips[2]) sb.draw(ship3markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH - 5, yCord + 52);
         if (markedShips[1]) sb.draw(ship2markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yCord + 74);
-        if (markedShips[0]) sb.draw(ship1markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yCord + 95);
-
+        if (markedShips[0]) sb.draw(ship1markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yCord + 96);
     }
 
     @Override
