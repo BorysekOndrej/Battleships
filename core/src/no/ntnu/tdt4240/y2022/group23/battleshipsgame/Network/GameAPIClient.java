@@ -1,5 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
+import org.javatuples.Triplet;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,20 +12,18 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameState;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 public class GameAPIClient {
     private final INetworkClient network;
-    private final String id;
 
     /**
      * Creates the API object to communicate with the server during the game.
-     * @param id the game id received from the server during the Lobby phase.
      */
-    public GameAPIClient(INetworkClient network, String id) {
+    public GameAPIClient(INetworkClient network) {
         this.network = network;
-        this.id = id;
     }
 
     /**
@@ -33,28 +33,33 @@ public class GameAPIClient {
     public void sendShipPlacement(ShipPlacements placements) {
         Map<String, String> request = new HashMap<>();
         request.put("type", ClientServerMessage.SEND_PLACEMENT.name());
-        request.put("id", id);
         request.put("placements", StringSerializer.toString(placements));
         network.send("/placements", request);
     }
 
     /**
      * Checks whether everything is ready for the game itself to start.
-     * @return true iff the game itself can start
+     * @return triplet where the first attribute is true iff the game can start and if so, the
+     *   second attribute shows this player's board and the third attribute shows the opponent's
+     *   board
      * @throws CommunicationTerminated if communication has been terminated
      *   by the other party
      */
-    public boolean receiveCanGameStart() throws CommunicationTerminated {
+    public Triplet<Boolean, GameBoard, GameBoard> receiveCanGameStart() throws CommunicationTerminated {
         Map<String, String> response = network.receive();
         if (response == null)
-            return false;
+            return new Triplet<>(false, null, null);
 
         ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
         ResponseCheckers.checkUnexpectedType(
                 Collections.singletonList(ServerClientMessage.GAME_START),
                 responseType
         );
-        return true;
+        return new Triplet<>(
+                true,
+                StringSerializer.fromString(response.get("myBoard")),
+                StringSerializer.fromString(response.get("opponentBoard"))
+        );
     }
 
     /**
@@ -64,7 +69,6 @@ public class GameAPIClient {
     public void sendAction(IAction action) {
         Map<String, String> request = new HashMap<>();
         request.put("type", ClientServerMessage.SEND_ACTION.name());
-        request.put("id", id);
         request.put("action", StringSerializer.toString(action));
         network.send("/action", request);
     }
@@ -75,7 +79,6 @@ public class GameAPIClient {
     public void sendTimeout() {
         Map<String, String> request = new HashMap<>();
         request.put("type", ClientServerMessage.TIMEOUT.name());
-        request.put("id", id);
         network.send("/timeout", request);
     }
 
@@ -93,13 +96,13 @@ public class GameAPIClient {
         GameBoard board = StringSerializer.fromString(response.get("board"));
         List<Coords> changedCoords = StringSerializer.fromString(response.get("changedCoords"));
         List<IShip> unsunkShips = StringSerializer.fromString(response.get("unsunkShips"));
-        boolean gameOver = responseType == ServerClientMessage.GAME_OVER;
+        NextTurn nextTurn = NextTurn.valueOf(response.get("nextTurn"));
         return new GameState(
                 board,
                 changedCoords,
                 unsunkShips,
                 thisPlayersBoard,
-                gameOver
+                nextTurn
         );
     }
 
