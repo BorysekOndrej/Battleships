@@ -9,20 +9,20 @@ public class GameState {
     private final List<Coords> changedCoords;
     private final List<IShip> unsunkShips;
     private final boolean thisPlayerBoard;
-    private final boolean gameOver;
+    private final NextTurn nextTurn;
 
     public GameState(
             GameBoard board,
             List<Coords> changedCoords,
             List<IShip> unsunkShips,
             boolean thisPlayerBoard,
-            boolean gameOver
+            NextTurn nextTurn
     ) {
         this.board = board;
         this.changedCoords = changedCoords;
         this.unsunkShips = unsunkShips;
         this.thisPlayerBoard = thisPlayerBoard;
-        this.gameOver = gameOver;
+        this.nextTurn = nextTurn;
     }
 
     public GameBoard getBoard() {
@@ -37,8 +37,8 @@ public class GameState {
         return unsunkShips;
     }
 
-    public boolean isGameOver() {
-        return gameOver;
+    public NextTurn getNextTurn() {
+        return nextTurn;
     }
 
     public boolean isThisPlayerBoard() {
