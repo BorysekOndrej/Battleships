@@ -10,7 +10,7 @@ import java.util.Base64;
 
 // adapted from
 // https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
-class StringSerializer {
+public class StringSerializer {
     public static <T extends Serializable> String toString(T obj) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {

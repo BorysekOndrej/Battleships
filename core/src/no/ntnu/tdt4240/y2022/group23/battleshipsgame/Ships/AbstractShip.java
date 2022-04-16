@@ -12,6 +12,13 @@ public abstract class AbstractShip implements IShip {
     private int parts;
     private boolean horizontal;
 
+    public AbstractShip() {}
+
+    protected AbstractShip(List<Coords> positions) {
+        this.positions = positions;
+        this.parts = positions.size();
+    }
+
     @Override
     public List<Coords> getPositions() {
         return positions;

@@ -1,0 +1,53 @@
+version: '3.3'
+
+services:
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: DockerfileServer
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./config/java_server:/app/config/java_server
+  #   # ports:
+  #   #   - '7070:7070' # note: don't expose the port on production
+  #   environment:
+  #     - REDIS_LOCATION=redis
+  #   depends_on:
+  #     - redis
+
+  # based on https://geshan.com.np/blog/2022/01/redis-docker/
+  redis:
+    image: redis:6.2-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379' # note: don't expose the port on production
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis_persistance:/data
+      - ./config/redis:/usr/local/etc/redis
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    environment:
+      - REDIS_HOSTS=instance1:redis:6379
+    ports:
+      - '8079:8081' # todo: don't expose the port on production
+    depends_on:
+      - redis
+
+  # nginx:
+  #   build: config/nginx
+  #   depends_on:
+  #     - server
+  #   # volumes:
+  #   #   - ./config/nginx_ssl:/etc/ssl/private/
+  #   ports:
+  #     - "80:80"
+  #   #   - "443:443"
+  #   restart: unless-stopped
+
+
+volumes:
+  redis_persistance:
+    driver: local
+
