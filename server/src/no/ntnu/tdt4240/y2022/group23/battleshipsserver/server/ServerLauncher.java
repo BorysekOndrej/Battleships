@@ -21,7 +21,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.StringSerializer;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.TurnEvaluator;
 
-
 public class ServerLauncher {
 	private static final int GAME_BOARD_WIDTH = 10;
 	private static final int GAME_BOARD_HEIGHT = 10;
@@ -123,15 +122,15 @@ public class ServerLauncher {
 	}
 
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
-		RedisStorage redisStorage = RedisStorage.getInstance();
+		String userID = ctx.formParamAsClass("userID", String.class).get();
 
-		String userID = ctx.formParam("userID");
-		String opponentID = redisStorage.getOpponentId(userID);
+		Lobby lobby = Lobby.getLobby(Lobby.findGameID(userID));
+		if (lobby == null){
+			return; // todo:
+		}
+		lobby.endCommunication(userID);
 
-		Message.Builder messageBuilder = Message.builder()
-				.putData("type", ServerClientMessage.OTHER_ENDED_COMMUNICATION.name());
-
-		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
+		ctx.status(200).result("Ended communication and informed the other player");
 	}
 
 	public static void create_lobby(Context ctx) {
@@ -161,16 +160,6 @@ public class ServerLauncher {
 		ctx.status(200).result("User added to Lobby");
 	}
 
-	public static void end_communication(Context ctx) {
-		String userID = ctx.formParamAsClass("userID", String.class).get();
-		Lobby lobby = Lobby.getLobby(Lobby.findGameID(userID));
-		if (lobby == null){
-			return; // todo:
-		}
-		lobby.endCommunication(userID);
-		ctx.status(200).result("Ended communication and informed the other player");
-	}
-
 	public static void main (String[] arg) {
 		logger.info("Server project started");
 		Javalin app = Javalin.create().start(7070);
@@ -195,14 +184,5 @@ public class ServerLauncher {
 		app.post("/join_matchmaking", ServerLauncher::join_matchmaking);
 		app.post("/join_lobby", ServerLauncher::join_lobby);
 		app.post("/create_lobby", ServerLauncher::create_lobby);
-		app.post("/end_communication", ServerLauncher::end_communication);
-
-		app.post("/test_firebase_msg", ctx -> {
-			// This registration token comes from the client FCM SDKs.
-			String userID = ctx.formParamAsClass("userID", String.class).get();
-			System.out.println("Successfully sent message");
-
-		});
-
 	}
 }
