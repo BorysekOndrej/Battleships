@@ -39,4 +39,15 @@ public class RectangularShip extends AbstractShip {
     public IShip copy() {
         return new RectangularShip(this.getPositions());
     }
+
+    @Override
+    public void displace() {
+        int size = this.getPositions().size();
+        List<Coords> newPositions = new ArrayList<Coords>();
+        Coords start = new Coords(0,0);
+        for(int i=0;i<size;i++){
+            newPositions.add(new Coords(start.x+i, start.y));
+        }
+        this.setPositions(newPositions);
+    }
 }
