@@ -2,28 +2,41 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.FinishedGame;
+
 public class FinishedGameState extends AbstractState {
+
+    private FinishedGame finishedGame;
+
     protected FinishedGameState(GameStateManager gsm) {
         super(gsm);
+        finishedGame = new FinishedGame();
     }
+
+    //Changes state to menu state
+    private void goToMenu(){
+        gsm.set(new MenuState(gsm));
+    };
 
     @Override
     public void handleInput() {
-        throw new UnsupportedOperationException("not implemented");
+        if (finishedGame.backButtonPressed()){
+            goToMenu();
+        }
     }
 
     @Override
     public void update(float dt) {
-        throw new UnsupportedOperationException("not implemented");
+        finishedGame.update(dt);
     }
 
     @Override
     public void render(SpriteBatch sb) {
-        throw new UnsupportedOperationException("not implemented");
+        finishedGame.render(sb);
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("not implemented");
+        finishedGame.dispose();
     }
 }

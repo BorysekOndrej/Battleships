@@ -10,10 +10,11 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
-import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.CollocateShipObserver;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
 public class GameBoardPanel implements IRenderable {
-    private CollocateShipObserver observer;
+    private GameBoardObserver observer;
+
     private static final int FIELD_SIZE = 86;
     private static final int GAMEBORAD_OFFSET = 2;
     private static final int GAMEBORAD_ROWS = 10;
@@ -98,7 +99,7 @@ public class GameBoardPanel implements IRenderable {
     }
 
     //Adds observer to the observable object
-    public void addCollocateObserver(CollocateShipObserver observer){
+    public void addGameBoardObserver(GameBoardObserver observer){
         this.observer = observer;
     }
 

@@ -10,7 +10,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.CollocateShipObserver;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public class ShipPlacementState extends AbstractState {
+public class ShipPlacementState extends AbstractState implements IGameBoardState{
 
     //Event listener
-    private CollocateShipObserver collocateShipObserver;
+    private GameBoardObserver gameBoardObserver;
 
     //Models to the game
     private GameBoard gameBoard;
@@ -35,10 +35,10 @@ public class ShipPlacementState extends AbstractState {
         super(gsm);
         timer = new TimerPanel();
         //timer.start(30); //Starts timer with 30 seconds
-        collocateShipObserver = new CollocateShipObserver(this);
+        gameBoardObserver = new GameBoardObserver(this);
         gameBoard = new GameBoard(200,400); //Width and height placeholders
         gameBoardPanel = new GameBoardPanel();
-        gameBoardPanel.addCollocateObserver(collocateShipObserver);
+        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
         shipPlacements = new ShipPlacements();
         remainingShipsPanel = new RemainingShipsPanel();
         remainingShips = new ArrayList<>();
@@ -57,6 +57,8 @@ public class ShipPlacementState extends AbstractState {
     @Override
     public void handleInput(){
         remainingShipsPanel.handleInput();
+        gameBoardPanel.handleInput();
+        timer.handleInput();
     };
 
     @Override
@@ -84,15 +86,17 @@ public class ShipPlacementState extends AbstractState {
 
     //Subtracts a remaining ship from the type specified
     private void subtractRemaining(int shipType){
-        for (Pair pair: remainingShips){
-            IShip ship = (IShip) pair.getKey();
+        for (Pair<IShip,Integer> pair: remainingShips){
+            IShip ship = pair.getKey();
             if (ship.getType() == shipType){
-                pair.setValue((int) pair.getValue() - 1);
+                pair.setValue(pair.getValue() - 1);
+                break;
             }
         }
     }
 
-    public void collocateShip(Coords coords){
+    @Override
+    public void gameBoardTouch(Coords coords){
         IShip ship = remainingShipsPanel.selectedShipType();
         try {
             int shipType = ship.getType();
@@ -102,13 +106,13 @@ public class ShipPlacementState extends AbstractState {
             remainingShipsPanel.setData(remainingShips);
 
             gameBoard.set(coords,GameBoardField.SHIP);
-            
+
             //Need to add to GameBoardPanel
         }
         catch (Exception IllegalArgumentException){
             //Could not position ship in gameBoard
-        };
-    };
+        }
+    }
 
     @Override
     public void render(SpriteBatch sb){

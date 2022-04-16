@@ -2,9 +2,13 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class ActionPanel implements IRenderable {
+
+    public IAction selectedActionType(){ throw new UnsupportedOperationException("not implemented"); }
+
     @Override
     public void handleInput() {
         throw new UnsupportedOperationException("not implemented");
