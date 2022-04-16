@@ -57,17 +57,6 @@ public abstract class AbstractShip implements IShip {
     }
 
     @Override
-    public void displace() {
-        int size = this.getPositions().size();
-        List<Coords> newPositions = new ArrayList<Coords>();
-        Coords start = new Coords(0,0);
-        for(int i=0;i<size;i++){
-            newPositions.add(new Coords(start.x+i, start.y));
-        }
-        this.setPositions(newPositions);
-    }
-
-    @Override
     public void rotateClockwise() {
         int size = this.getPositions().size();
         List<Coords> newPositions = new ArrayList<Coords>();
