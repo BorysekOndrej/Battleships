@@ -65,14 +65,17 @@ public class Lobby implements Serializable {
         users.add(userID);
         save();
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("id", gameID);
+        if (isPrivate) {
+            // don't send this message if the game lobby is started via matchmaking
+            HashMap<String, String> map = new HashMap<>();
+            map.put("id", gameID);
 
-        FirebaseMessenger.sendMessage(
-                userID,
-                ServerClientMessage.JOINED_LOBBY_WITH_ID,
-                map
-        );
+            FirebaseMessenger.sendMessage(
+                    userID,
+                    ServerClientMessage.JOINED_LOBBY_WITH_ID,
+                    map
+            );
+        }
 
         if (users.size() == 2){
             this.startGame();
