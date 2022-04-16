@@ -27,10 +27,14 @@ public class ServerLauncher {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServerLauncher.class);
 
+	private static String getUserID(Context ctx){
+		return ctx.formParamAsClass("userID", String.class).get();
+	}
+
 	public static void join_matchmaking(Context ctx) {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParamAsClass("userID", String.class).get();
+		String userID = getUserID(ctx);
 
 		String privateLobby = ctx.formParam("privateLobby");
 		assert "false".equals(privateLobby);
@@ -50,7 +54,7 @@ public class ServerLauncher {
 	public static void placements(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("userID");
+		String userID = getUserID(ctx);
 		ShipPlacements userPlacements = StringSerializer.fromString(ctx.formParam("placements"));
 
 		redisStorage.setShipPlacements(userID, userPlacements);
@@ -74,7 +78,7 @@ public class ServerLauncher {
 	public static void action(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("userID");
+		String userID = getUserID(ctx);
 		IAction action = StringSerializer.fromString(ctx.formParam("action"));
 
 		String opponentID = redisStorage.getOpponentId(userID);
@@ -101,7 +105,7 @@ public class ServerLauncher {
 	public static void timeout(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
-		String userID = ctx.formParam("userID");
+		String userID = getUserID(ctx);
 
 		String opponentID = redisStorage.getOpponentId(userID);
 		GameBoard opponentBoard = redisStorage.getUserGameBoard(opponentID);
@@ -122,7 +126,7 @@ public class ServerLauncher {
 	}
 
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
-		String userID = ctx.formParamAsClass("userID", String.class).get();
+		String userID = getUserID(ctx);
 
 		Lobby lobby = Lobby.getLobby(Lobby.findGameID(userID));
 		if (lobby == null){
@@ -134,7 +138,7 @@ public class ServerLauncher {
 	}
 
 	public static void create_lobby(Context ctx) {
-		String userID = ctx.formParamAsClass("userID", String.class).get();
+		String userID = getUserID(ctx);
 
 		String privateLobby = ctx.formParam("privateLobby");
 		assert "true".equals(privateLobby);
@@ -146,7 +150,7 @@ public class ServerLauncher {
 
 
 	public static void join_lobby(Context ctx) {
-		String userID = ctx.formParamAsClass("userID", String.class).get();
+		String userID = getUserID(ctx);
 		String lobbyID = ctx.formParamAsClass("id", String.class).get();
 
 		Lobby lobby = Lobby.getLobby(lobbyID);
@@ -169,7 +173,7 @@ public class ServerLauncher {
 		app.get("/", ctx -> ctx.result("Hello World"));
 
 		app.post("/token", ctx -> {
-			String userID = ctx.formParamAsClass("userID", String.class).get(); // security: todo: make sure we have some rate limiting
+			String userID = getUserID(ctx); // security: todo: make sure we have some rate limiting
 			String token = ctx.formParamAsClass("token", String.class).get();
 
 			redisStorage.setNewUserToken(userID, token);
