@@ -7,18 +7,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ClientServerMessage;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
 
 public class FirebaseMessenger {
-    private static final Logger logger = LogManager.getLogger(FirebaseMessenger.class);
+    private static final Logger logger = LoggerFactory.getLogger(FirebaseMessenger.class);
     private static FirebaseMessenger INSTANCE;
 
     private FirebaseMessenger(){
@@ -61,7 +61,7 @@ public class FirebaseMessenger {
         try {
             String response = FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            logger.warn(e.getStackTrace());
+            logger.warn(Arrays.toString(e.getStackTrace()));
         }
 
     }

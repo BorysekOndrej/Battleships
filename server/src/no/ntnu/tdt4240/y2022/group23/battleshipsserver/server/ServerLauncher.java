@@ -4,8 +4,8 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class ServerLauncher {
 	private static final int GAME_BOARD_WIDTH = 10;
 	private static final int GAME_BOARD_HEIGHT = 10;
 
-	private static final Logger logger = LogManager.getLogger(ServerLauncher.class);
+	private static final Logger logger = LoggerFactory.getLogger(ServerLauncher.class);
 
 	public static void join_matchmaking(Context ctx) {
 		RedisStorage redisStorage = RedisStorage.getInstance();
@@ -172,7 +172,7 @@ public class ServerLauncher {
 	}
 
 	public static void main (String[] arg) {
-		System.out.println("Server project started");
+		logger.info("Server project started");
 		Javalin app = Javalin.create().start(7070);
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
