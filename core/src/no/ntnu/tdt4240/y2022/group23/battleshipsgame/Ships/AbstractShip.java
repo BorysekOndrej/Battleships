@@ -66,4 +66,18 @@ public abstract class AbstractShip implements IShip {
         }
         this.setPositions(newPositions);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof IShip) {
+            IShip ship1 = ((IShip) obj).copy();
+            IShip ship2 = this.copy();
+            ship1.displace();
+            ship2.displace();
+            if (ship1.getPositions().containsAll(ship2.getPositions()) && ship2.getPositions().containsAll(ship1.getPositions())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
