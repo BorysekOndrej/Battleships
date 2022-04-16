@@ -11,8 +11,6 @@ public interface IShip extends Serializable {
     void setPositions(List<Coords> positions);
     boolean isSunk(GameBoard board);
 
-    int getType();
-
     /**
      * Shifts the ship's position so that it does not betray its position nor orientation:
      * - the first coordinate of {@link #getPositions()} after a call to this method is (0, 0)

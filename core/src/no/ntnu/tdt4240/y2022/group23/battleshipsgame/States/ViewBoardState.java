@@ -8,7 +8,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPane
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameState;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
@@ -24,9 +23,9 @@ public class ViewBoardState extends AbstractState implements IGameBoardState {
     protected ActionPanel actionPanel;
 
     protected List<IShip> ships;
-    protected GameBoard gameBoard;
-    //Is it stored both players? The server has both in the same model?
-    //If not, both should be stored in this state and updated after each attack
+
+    protected GameBoard myGameBoard;
+    protected GameBoard opponentGameBoard;
 
     protected ShipPlacements shipPlacements;
 
@@ -39,6 +38,7 @@ public class ViewBoardState extends AbstractState implements IGameBoardState {
         timer = new TimerPanel();
         //Either retrieve the gameBoard from past iterations, or use the one from GameState
         //in that case it would be good to store it in the gsm
+        Triplet<boolean, GameBoard, GameBoard> serverInfo;
         gameBoardPanel.addGameBoardObserver(gameBoardObserver);
         gameBoardObserver = new GameBoardObserver(this);
     }

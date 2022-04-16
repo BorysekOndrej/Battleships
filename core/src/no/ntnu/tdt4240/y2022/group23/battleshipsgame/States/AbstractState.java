@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
+
 // Game state manager is inspired by the YT series linked in the assignment 01.
 // https://www.youtube.com/watch?v=rzBVTPaUUDg
 // It's also the same O. Borysek submitted as part of assignment 01.
@@ -20,5 +22,5 @@ public abstract class AbstractState implements IState {
     }
 
     @Override
-    public void update(float dt) {handleInput();};
+    public void update(float dt) throws CommunicationTerminated {handleInput();};
 }

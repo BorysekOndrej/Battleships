@@ -14,11 +14,14 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
+        if (mainMenu.matchmakingButtonPressed()){
+            goToMatchmaking();
+        }
         if (mainMenu.createLobbyButtonPressed()){
-            goToLobbyState();
+            goToCreateLobby();
         }
         if (mainMenu.joinLobbyButtonPressed()){
-            goToLobbyState();
+            goToJoinLobby();
         }
     }
 
@@ -28,10 +31,14 @@ public class MenuState extends AbstractState {
         //mainMenu.render(sb);
     }
 
-    //Changes state to lobby state
-    private void goToLobbyState(){
-        gsm.set(new LobbyState(gsm));
-    }
+    //Changes state to create lobby state
+    private void goToMatchmaking(){ gsm.set(new MatchmakingLobbyState(gsm));}
+
+    //Changes state to create lobby state
+    private void goToCreateLobby(){ gsm.set(new CreateLobbyState(gsm));}
+
+    //Changes state to create lobby state
+    private void goToJoinLobby(){ gsm.set(new JoinLobbyState(gsm));}
 
     @Override
     public void dispose(){

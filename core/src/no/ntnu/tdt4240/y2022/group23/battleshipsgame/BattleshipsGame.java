@@ -20,7 +20,7 @@ public class BattleshipsGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		gsm = new GameStateManager();
+		gsm = new GameStateManager(networkClient);
 		gsm.push(new MenuState(gsm));
 	}
 

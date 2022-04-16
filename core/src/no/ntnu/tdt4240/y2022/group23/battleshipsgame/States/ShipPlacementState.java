@@ -85,10 +85,10 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     }
 
     //Subtracts a remaining ship from the type specified
-    private void subtractRemaining(int shipType){
+    private void subtractRemaining(IShip selectedShip){
         for (Pair<IShip,Integer> pair: remainingShips){
-            IShip ship = pair.getKey();
-            if (ship.getType() == shipType){
+            IShip currentShip = pair.getKey();
+            if (selectedShip.getPositions().size() == currentShip.getPositions().size()){
                 pair.setValue(pair.getValue() - 1);
                 break;
             }
@@ -97,12 +97,11 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     @Override
     public void gameBoardTouch(Coords coords){
-        IShip ship = remainingShipsPanel.selectedShipType();
+        IShip selectedShip = remainingShipsPanel.selectedShipType();
         try {
-            int shipType = ship.getType();
-            subtractRemaining(shipType);
+            subtractRemaining(selectedShip);
 
-            shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),ship);
+            shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),selectedShip);
             remainingShipsPanel.setData(remainingShips);
 
             gameBoard.set(coords,GameBoardField.SHIP);
