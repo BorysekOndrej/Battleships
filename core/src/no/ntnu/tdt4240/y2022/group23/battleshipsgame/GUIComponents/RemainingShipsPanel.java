@@ -54,6 +54,7 @@ public class RemainingShipsPanel implements IRenderable {
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
 
+        //debugging default list
         remainingShips = new ArrayList<>();
         remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),8, false), 8));
         remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 2));
@@ -92,8 +93,8 @@ public class RemainingShipsPanel implements IRenderable {
         markedShips = null;
     }
 
-    private void markShip(int type){
-        markedShips = type;
+    private void markShip(int nr){
+        markedShips = nr;
     }
 
     public void setData(List<Pair<IShip, Integer>> remainingShips) {

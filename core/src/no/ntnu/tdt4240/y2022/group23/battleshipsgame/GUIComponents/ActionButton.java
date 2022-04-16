@@ -9,7 +9,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class ActionButton implements IRenderable {
-    AbstractAction action;
     private final Texture activeTex;
     private final Texture inactiveTex;
     private boolean active;
