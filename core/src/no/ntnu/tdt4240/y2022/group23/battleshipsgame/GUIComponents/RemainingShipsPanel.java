@@ -10,16 +10,13 @@ import com.badlogic.gdx.math.Rectangle;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.InputMismatchException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObserver;
 
 public class RemainingShipsPanel implements IRenderable {
@@ -43,19 +40,25 @@ public class RemainingShipsPanel implements IRenderable {
 
     private BitmapFont font;
 
-    private boolean markedShips[] = {false, false, false, false};
-    private int numberOfShips[] = {4, 3, 2, 1};
+    private Integer markedShips = null;
+    private List<Pair<IShip, Integer>> remainingShips;
 
-    private int xCord;
-    private int yCord;
+    private int xPos;
+    private int yPos;
 
     public RemainingShipsPanel(int x, int y){
-        xCord = x;
-        yCord = y;
+        xPos = x;
+        yPos = y;
 
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
+
+        remainingShips = new ArrayList<>();
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),8, false), 8));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 2));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(3, 1),2, false), 3));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(4, 1),1, false), 4));
 
         panelTex = new Texture("ships_panel/ships_panel.png");
         ship1markedTex = new Texture("ships_panel/panel_1_marked.png");
@@ -63,10 +66,10 @@ public class RemainingShipsPanel implements IRenderable {
         ship3markedTex = new Texture("ships_panel/panel_3_marked.png");
         ship4markedTex = new Texture("ships_panel/panel_4_marked.png");
 
-        ship4bonds = new Rectangle(xCord + BONDS_OFFSET, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
-        ship3bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
-        ship2bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH * 2, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
-        ship1bonds = new Rectangle(xCord + BONDS_OFFSET + BONDS_WIDTH * 3, yCord, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
+        ship4bonds = new Rectangle(xPos + BONDS_OFFSET, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
+        ship3bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
+        ship2bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH * 2, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
+        ship1bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH * 3, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
     }
 
     private boolean ship1bondsPressed(){
@@ -86,49 +89,20 @@ public class RemainingShipsPanel implements IRenderable {
     }
 
     private void resetMarkedShips(){
-        markedShips[0] = false;
-        markedShips[1] = false;
-        markedShips[2] = false;
-        markedShips[3] = false;
+        markedShips = null;
     }
 
     private void markShip(int type){
-        resetMarkedShips();
-        markedShips[type-1] = true;
+        markedShips = type;
     }
 
-
-
     public void setData(List<Pair<IShip, Integer>> remainingShips) {
-        throw new UnsupportedOperationException("not implemented");
+        this.remainingShips = remainingShips;
     }
 
     public IShip selectedShipType(){
-        throw new UnsupportedOperationException("not implemented");
-    }
-    /* Function returns current selected ship type as an int
-       Returns 0 if none ship is selected
-     */
-    public int selectedShipType1(){
-        for(int i = 0; i < markedShips.length; i++){
-            if(markedShips[i]) return i+1;
-        }
-        return 0;
-    }
-
-    public void setData(int shipsData[]){
-        if(shipsData.length != 4){
-            throw new InputMismatchException("Wrong input\n");
-        }
-        numberOfShips = shipsData;
-    }
-
-    public void decrementShipNumber(int shipType){
-        numberOfShips[shipType-1]--;
-    }
-
-    public void incrementShipNumber(int shipType){
-        numberOfShips[shipType-1]++;
+        if(markedShips == null) return null;
+        return this.remainingShips.get(markedShips).getValue0();
     }
 
     //Adds observer to the observable object
@@ -141,18 +115,19 @@ public class RemainingShipsPanel implements IRenderable {
         if (collocateShip){ //Place holder, this call should be done if the ship is collocated
             observer.notice();
         }
+
         if (Gdx.input.justTouched()){
             if(ship1bondsPressed()) {
-                markShip(1);
+                markShip(0);
             }
             if(ship2bondsPressed()) {
-                markShip(2);
+                markShip(1);
             }
             if(ship3bondsPressed()) {
-                markShip(3);
+                markShip(2);
             }
             if(ship4bondsPressed()) {
-                markShip(4);
+                markShip(3);
             }
         }
     }
@@ -164,16 +139,30 @@ public class RemainingShipsPanel implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.draw(panelTex, xCord, yCord);
-        font.draw(sb,String.format("x%d",numberOfShips[3]), xCord + BONDS_OFFSET+60, yCord + 147);
-        font.draw(sb,String.format("x%d",numberOfShips[2]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH, yCord + 147);
-        font.draw(sb,String.format("x%d",numberOfShips[1]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH * 2, yCord + 147);
-        font.draw(sb,String.format("x%d",numberOfShips[0]), xCord + BONDS_OFFSET+60 + BONDS_WIDTH * 3, yCord + 147);
+        sb.draw(panelTex, xPos, yPos);
+        font.draw(sb,String.format("x%d", remainingShips.get(0).getValue1()), xPos + BONDS_OFFSET+60, yPos + 147);
+        font.draw(sb,String.format("x%d",remainingShips.get(1).getValue1()), xPos + BONDS_OFFSET+60 + BONDS_WIDTH, yPos + 147);
+        font.draw(sb,String.format("x%d",remainingShips.get(2).getValue1()), xPos + BONDS_OFFSET+60 + BONDS_WIDTH * 2, yPos + 147);
+        font.draw(sb,String.format("x%d",remainingShips.get(3).getValue1()), xPos + BONDS_OFFSET+60 + BONDS_WIDTH * 3, yPos + 147);
 
-        if (markedShips[3]) sb.draw(ship4markedTex, xCord + BONDS_OFFSET - 5, yCord + 31);
-        if (markedShips[2]) sb.draw(ship3markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH - 5, yCord + 52);
-        if (markedShips[1]) sb.draw(ship2markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yCord + 74);
-        if (markedShips[0]) sb.draw(ship1markedTex, xCord + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yCord + 96);
+        if(markedShips != null) {
+            switch (markedShips) {
+                case 3:
+                    sb.draw(ship4markedTex, xPos + BONDS_OFFSET - 5, yPos + 31);
+                    break;
+                case 2:
+                    sb.draw(ship3markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH - 5, yPos + 52);
+                    break;
+                case 1:
+                    sb.draw(ship2markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yPos + 74);
+                    break;
+                case 0:
+                    sb.draw(ship1markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yPos + 96);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override

@@ -25,7 +25,10 @@ public class TestState extends AbstractState {
     private ActionPanel actionPanel;
 
     private final SimpleButton confirmButton;
+    private boolean confirmButtonActive = true;
     private final SimpleButton switchButton;
+    private boolean switchButtonActive = true;
+    private final Texture inactiveButton;
 
     public TestState(GameStateManager gsm) {
         super(gsm);
@@ -40,10 +43,17 @@ public class TestState extends AbstractState {
         actionPanel = new ActionPanel(63, 63 * 2 + 38 + 950 + 250);
 
         confirmButton = new SimpleButton(63 + 38 + 650 , 63 * 2 + 950 + 106 + 38, new Texture("play_state/confirm.png"));
-
         switchButton = new SimpleButton(63 + 38 + 650 , 63 * 2 + 950, new Texture("play_state/switch.png"));
+        inactiveButton = new Texture("play_state/inactive_button.png");
     }
 
+    public void setConfirmButtonActiveness(boolean isActive){
+        confirmButtonActive = isActive;
+    }
+
+    public void setSwitchButtonActiveness(boolean isActive){
+        switchButtonActive = isActive;
+    }
 
 
     @Override
@@ -67,7 +77,9 @@ public class TestState extends AbstractState {
         timer.render(sb);
         actionPanel.render(sb);
         confirmButton.render(sb);
+        if(!confirmButtonActive) sb.draw(inactiveButton, 63 + 38 + 650 , 63 * 2 + 950 + 106 + 38);
         switchButton.render(sb);
+        if(!switchButtonActive) sb.draw(inactiveButton, 63 + 38 + 650 , 63 * 2 + 950);
         sb.end();
     }
 

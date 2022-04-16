@@ -13,7 +13,7 @@ public class MainMenu implements IRenderable {
     private final Texture background;
     private final SimpleButton createLobbyButton;
     private final SimpleButton joinLobbyButton;
-    private final SimpleButton leaderBoardButton;
+    private final SimpleButton randomButton;
 
     public MainMenu(){
         background = new Texture("main_menu/main_menu_background.png");
@@ -22,7 +22,7 @@ public class MainMenu implements IRenderable {
 
         joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("main_menu/join_lobby.png"));
 
-        leaderBoardButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/leaderboard.png"));
+        randomButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/random.png"));
 
     }
     public boolean createLobbyButtonPressed(){
@@ -34,7 +34,7 @@ public class MainMenu implements IRenderable {
     }
 
     public boolean leaderBoardButtonPressed(){
-        return leaderBoardButton.buttonTouched();
+        return randomButton.buttonTouched();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MainMenu implements IRenderable {
         sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
         createLobbyButton.render(sb);
         joinLobbyButton.render(sb);
-        leaderBoardButton.render(sb);
+        randomButton.render(sb);
         sb.end();
     }
 
@@ -60,7 +60,7 @@ public class MainMenu implements IRenderable {
         background.dispose();
         joinLobbyButton.dispose();
         createLobbyButton.dispose();
-        leaderBoardButton.dispose();
+        randomButton.dispose();
     }
 }
 

@@ -19,6 +19,8 @@ public class GameBoardPanel implements IRenderable {
 
     private final GameBoard gameBoard;
 
+    private Coords markedFieldCoords = null;
+
     private final Texture gameBoardTex;
 
     private final Texture unknownField;
@@ -26,21 +28,23 @@ public class GameBoardPanel implements IRenderable {
     private final Texture hitField;
     private final Texture sunkField;
     private final Texture shipField;
+    private final Texture markedField;
 
     //private final Rectangle bonds;
 
-    private int xCord;
-    private int yCord;
+    private int xPos;
+    private int yPos;
 
     public GameBoardPanel(int x, int y){
-        xCord = x;
-        yCord = y;
+        xPos = x;
+        yPos = y;
         gameBoardTex = new Texture("game_board/gameboard.png");
         unknownField = new Texture("game_board/unknown.png");
         waterField = new Texture("game_board/water.png");
         hitField = new Texture("game_board/hit.png");
         sunkField = new Texture("game_board/sunk.png");
         shipField = new Texture("game_board/ship.png");
+        markedField = new Texture("game_board/marked_field.png");
 
         //bonds = new Rectangle(xCord + GAMEBOARD_OFFSET + FIELD_SIZE, yCord - GAMEBOARD_OFFSET, gameBoardTex.getWidth() - 2*GAMEBOARD_OFFSET - FIELD_SIZE, gameBoardTex.getHeight()- 2*GAMEBOARD_OFFSET - FIELD_SIZE);
 
@@ -53,16 +57,17 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
         gameBoard.set(new Coords(4,4), GameBoardField.WATER);
+
     }
 
     public void setPosition(int x, int y){
-        xCord = x;
-        yCord = y;
+        xPos = x;
+        yPos = y;
     }
 
     public Coords getFieldCoords(int x, int y){
-        int xRelative = x - xCord;
-        int yRelative = y - (BattleshipsGame.HEIGHT - yCord - gameBoardTex.getHeight());
+        int xRelative = x - xPos;
+        int yRelative = y - (BattleshipsGame.HEIGHT - yPos - gameBoardTex.getHeight());
         Coords result = new Coords((xRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1, (yRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1);
         if(coordsValid(result)) return result;
         else  {
@@ -97,12 +102,20 @@ public class GameBoardPanel implements IRenderable {
         }
     }
 
+    public void drawMarkedField(SpriteBatch sb, Coords coords){
+        if(coords != null){
+            int xLocus = xPos + GAMEBOARD_OFFSET + FIELD_SIZE * (coords.x + 1) - 2;
+            int yLocus = yPos + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - coords.y) - 2;
+            sb.draw(markedField, xLocus, yLocus);
+        }
+    }
+
     public void handleInput(){
         if(Gdx.input.justTouched()){
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
-            Coords res = getFieldCoords(x, y);
-            if (res != null) System.out.println(res.toString());
+            markedFieldCoords = getFieldCoords(x, y);
+            //if (markedFieldCoords != null) System.out.println(markedFieldCoords.toString()); // debugging only
         }
     }
     public void update(float dt){
@@ -110,18 +123,17 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void render(SpriteBatch sb){
-        //sb.begin();
-        sb.draw(gameBoardTex, xCord, yCord);
+        sb.draw(gameBoardTex, xPos, yPos);
 
         for(int i = 0; i < GAMEBOARD_ROWS; i++){
             for(int j = 0; j < GAMEBOARD_ROWS; j++){
                 GameBoardField actualField = gameBoard.get(new Coords(i, j));
-                int xLocus = xCord + GAMEBOARD_OFFSET + FIELD_SIZE * (i + 1);
-                int yLocus = yCord + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - j);
+                int xLocus = xPos + GAMEBOARD_OFFSET + FIELD_SIZE * (i + 1);
+                int yLocus = yPos + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - j);
                 drawField(actualField, sb, xLocus, yLocus);
             }
         }
-        //sb.end();
+        drawMarkedField(sb, markedFieldCoords);
     }
 
     public void dispose(){
@@ -131,6 +143,7 @@ public class GameBoardPanel implements IRenderable {
         hitField.dispose();
         sunkField.dispose();
         shipField.dispose();
+        markedField.dispose();
     }
     public int getGameBoardHeight(){
         return gameBoardTex.getHeight();
@@ -138,6 +151,10 @@ public class GameBoardPanel implements IRenderable {
 
     public int getGameBoardWidth(){
         return gameBoardTex.getWidth();
+    }
+
+    public Coords getMarkedField(){
+        return markedFieldCoords;
     }
 
 }
