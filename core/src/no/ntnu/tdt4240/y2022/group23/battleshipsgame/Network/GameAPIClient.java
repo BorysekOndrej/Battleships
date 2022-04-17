@@ -1,6 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
-import org.javatuples.Triplet;
+import org.javatuples.Quartet;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,26 +39,27 @@ public class GameAPIClient {
 
     /**
      * Checks whether everything is ready for the game itself to start.
-     * @return triplet where the first attribute is true iff the game can start and if so, the
-     *   second attribute shows this player's board and the third attribute shows the opponent's
-     *   board
+     * @return quartet where the first attribute is true iff the game can start and if so, the
+     *   second attribute shows this player's board, the third attribute shows the opponent's
+     *   board and the fourth attribute says who starts the game
      * @throws CommunicationTerminated if communication has been terminated
      *   by the other party
      */
-    public Triplet<Boolean, GameBoard, GameBoard> receiveCanGameStart() throws CommunicationTerminated {
+    public Quartet<Boolean, GameBoard, GameBoard, NextTurn> receiveCanGameStart() throws CommunicationTerminated {
         Map<String, String> response = network.receive();
         if (response == null)
-            return new Triplet<>(false, null, null);
+            return new Quartet<>(false, null, null, null);
 
         ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
         ResponseCheckers.checkUnexpectedType(
                 Collections.singletonList(ServerClientMessage.GAME_START),
                 responseType
         );
-        return new Triplet<>(
+        return new Quartet<>(
                 true,
                 StringSerializer.fromString(response.get("myBoard")),
-                StringSerializer.fromString(response.get("opponentBoard"))
+                StringSerializer.fromString(response.get("opponentBoard")),
+                NextTurn.valueOf(response.get("nextTurn"))
         );
     }
 
