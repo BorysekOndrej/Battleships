@@ -34,8 +34,12 @@ public abstract class AbstractLobbyState extends AbstractState {
     };
 
     @Override
-    public void render(SpriteBatch sb){}
+    public void render(SpriteBatch sb){
+        lobby.render(sb);
+    }
 
     @Override
-    public void dispose(){};
+    public void dispose(){
+        lobby.dispose();
+    };
 }

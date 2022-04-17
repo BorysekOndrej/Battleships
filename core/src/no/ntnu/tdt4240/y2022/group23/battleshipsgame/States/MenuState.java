@@ -28,7 +28,7 @@ public class MenuState extends AbstractState {
     //Renders the main menu
     @Override
     public void render(SpriteBatch sb) {
-        //mainMenu.render(sb);
+        mainMenu.render(sb);
     }
 
     //Changes state to create lobby state
@@ -42,6 +42,6 @@ public class MenuState extends AbstractState {
 
     @Override
     public void dispose(){
-        //mainMenu.dispose();
+        mainMenu.dispose();
     }
 }

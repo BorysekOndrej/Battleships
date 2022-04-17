@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.FinishedGame;
 
 public class FinishedGameState extends AbstractState {
-
     private FinishedGame finishedGame;
 
-    protected FinishedGameState(GameStateManager gsm) {
+    protected FinishedGameState(GameStateManager gsm, boolean isPlayerWinner) {
         super(gsm);
         finishedGame = new FinishedGame();
     }
@@ -20,7 +19,7 @@ public class FinishedGameState extends AbstractState {
 
     @Override
     public void handleInput() {
-        if (finishedGame.backButtonPressed()){
+        if (finishedGame.goToMenuButtonPressed()){
             goToMenu();
         }
     }

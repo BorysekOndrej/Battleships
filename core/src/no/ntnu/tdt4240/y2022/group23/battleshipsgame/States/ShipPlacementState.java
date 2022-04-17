@@ -5,9 +5,13 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShip
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Pair;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.GameAPIClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
@@ -17,30 +21,35 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.javatuples.Quartet;
+
 
 public class ShipPlacementState extends AbstractState implements IGameBoardState{
+    //Game API
+    private GameAPIClient gameAPIClient;
 
     //Event listener
     private GameBoardObserver gameBoardObserver;
 
     //Models to the game
     private GameBoard gameBoard;
-    private GameBoardPanel gameBoardPanel;
     private ShipPlacements shipPlacements;
-    private TimerPanel timer;
-    private RemainingShipsPanel remainingShipsPanel;
+    private Timer timer;
     private List<Pair<IShip, Integer>> remainingShips;
+
+    private GameBoardPanel gameBoardPanel;
+    private TimerPanel timerPanel;
+    private RemainingShipsPanel remainingShipsPanel;
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
-        timer = new TimerPanel();
-        //timer.start(30); //Starts timer with 30 seconds
+        gameAPIClient = new GameAPIClient(gsm.getNetworkClient());
         gameBoardObserver = new GameBoardObserver(this);
+
+        //Model components
         gameBoard = new GameBoard(200,400); //Width and height placeholders
-        gameBoardPanel = new GameBoardPanel();
-        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
         shipPlacements = new ShipPlacements();
-        remainingShipsPanel = new RemainingShipsPanel();
+        timer = new Timer();
         remainingShips = new ArrayList<>();
 
         //Create remaining ships list
@@ -52,20 +61,32 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),2,true),2));
         //1 square ship
         remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,true),1));
+
+        //GUI Components
+        timerPanel = new TimerPanel(0,0); //x and y are placeholders
+        gameBoardPanel = new GameBoardPanel(0,0); //x and y are placeholders
+        remainingShipsPanel = new RemainingShipsPanel();
+
+        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
+        //timer.start(30); //Starts timer with 30 seconds
     }
 
     @Override
     public void handleInput(){
         remainingShipsPanel.handleInput();
         gameBoardPanel.handleInput();
-        timer.handleInput();
+        timerPanel.handleInput();
     };
 
     @Override
-    public void update(float dt){
+    public void update(float dt) throws CommunicationTerminated {
+        Quartet<Boolean, GameBoard, GameBoard, NextTurn > gameInitialization = gameAPIClient.receiveCanGameStart();
         handleInput();
-        if (timer.runOut()){ //If timer runs out go to ViewMyBoard
-            if (remainingShips.isEmpty()){
+        timerPanel.setData(timer);
+
+        if (timerPanel.runOut()){ //If timer runs out go to ViewMyBoard
+            if (gameInitialization.getValue0()){
+                gameAPIClient.sendShipPlacement(shipPlacements);
                 goToViewMyBoard();
             } //Not checking opponents ships
             else{ //If the user has any remaining ships to place, user he loses
@@ -81,7 +102,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     //Changes state to finished game state
     private void goToFinishedGame(){
-        gsm.set(new FinishedGameState(gsm));
+        gsm.set(new FinishedGameState(gsm,false));
     }
 
     //Subtracts a remaining ship from the type specified
@@ -105,8 +126,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
             remainingShipsPanel.setData(remainingShips);
 
             gameBoard.set(coords,GameBoardField.SHIP);
-
-            //Need to add to GameBoardPanel
+            gameBoardPanel.setData(gameBoard);
         }
         catch (Exception IllegalArgumentException){
             //Could not position ship in gameBoard
@@ -115,9 +135,15 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     @Override
     public void render(SpriteBatch sb){
-        //timer.render(sb);
+        gameBoardPanel.render(sb);
+        remainingShipsPanel.render(sb);
+        timerPanel.render(sb);
     };
 
     @Override
-    public void dispose(){};
+    public void dispose(){
+        gameBoardPanel.dispose();
+        remainingShipsPanel.dispose();
+        timerPanel.dispose();
+    };
 }

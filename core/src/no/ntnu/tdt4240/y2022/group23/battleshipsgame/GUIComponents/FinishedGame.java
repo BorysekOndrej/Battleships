@@ -6,7 +6,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class FinishedGame implements IRenderable {
 
-    public boolean backButtonPressed(){return false;}
+    public boolean goToMenuButtonPressed(){return false;}
 
     @Override
     public void handleInput() { throw new UnsupportedOperationException("not implemented"); }

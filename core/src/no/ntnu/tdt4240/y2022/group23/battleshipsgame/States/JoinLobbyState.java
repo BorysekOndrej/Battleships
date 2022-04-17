@@ -18,6 +18,7 @@ public class JoinLobbyState extends AbstractLobbyState{
         if (true){ //PLACEHOLDER FOR USER CLICKING BUTTON TO JOIN LOBBY
             if (gameId == null){
                 gameId = lobbyAPIClient.receiveGameId();
+                lobbyAPIClient.sendJoinLobbyRequest(gameId); //Check this
             }
         }
     }
