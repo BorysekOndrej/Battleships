@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -63,15 +64,32 @@ public class ServerLauncher {
 		ShipPlacements opponentPlacements = redisStorage.getUserShipPlacements(opponentID);
 
 		if (opponentPlacements != null) {
-			redisStorage.setUserGameBoard(userID, new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT));
-			redisStorage.setUserGameBoard(opponentID, new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT));
+			GameBoard userBoard = new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT);
+			GameBoard opponentBoard = new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT);
 
-			Message.Builder messageBuilder = Message.builder()
-					.putData("type", ServerClientMessage.GAME_START.name());
+			GameBoard userBoardRevealed = new GameBoard(userBoard).reveal(userPlacements);
+			GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(opponentPlacements);
 
-			FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
-			// DANGER messageBuilder may have been altered by the previous call?
-			FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
+			redisStorage.setUserGameBoard(userID, userBoard);
+			redisStorage.setUserGameBoard(opponentID, opponentBoard);
+
+			boolean userStarts = new Random().nextBoolean();
+
+			Message.Builder userMessageBuilder = Message.builder()
+					.putData("type", ServerClientMessage.GAME_START.name())
+					.putData("myBoard", StringSerializer.toString(userBoardRevealed))
+					.putData("opponentBoard", StringSerializer.toString(opponentBoard))
+					.putData("nextTurn", (userStarts ? NextTurn.MY_TURN : NextTurn.OTHERS_TURN).name());
+
+			FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
+
+			Message.Builder opponentMessageBuilder = Message.builder()
+					.putData("type", ServerClientMessage.GAME_START.name())
+					.putData("myBoard", StringSerializer.toString(opponentBoardRevealed))
+					.putData("opponentBoard", StringSerializer.toString(userBoard))
+					.putData("nextTurn", (userStarts ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN).name());
+
+			FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
 		}
 	}
 
@@ -83,23 +101,37 @@ public class ServerLauncher {
 
 		String opponentID = redisStorage.getOpponentId(userID);
 		GameBoard opponentBoard = redisStorage.getUserGameBoard(opponentID);
-		ShipPlacements shipPlacements = redisStorage.getUserShipPlacements(opponentID);
+		ShipPlacements opponentPlacements = redisStorage.getUserShipPlacements(opponentID);
 
-		TurnEvaluator evaluator = new TurnEvaluator(shipPlacements, opponentBoard, action);
+		TurnEvaluator evaluator = new TurnEvaluator(opponentPlacements, opponentBoard, action);
 
 		ServerClientMessage type = evaluator.nextTurn() == NextTurn.GAME_OVER ? ServerClientMessage.GAME_OVER : ServerClientMessage.ACTION_PERFORMED;
-		GameBoard board = evaluator.boardAfterTurn();
+		GameBoard opponentBoardAfter = evaluator.boardAfterTurn();
 		ArrayList<GameBoardChange> changedCoords = new ArrayList<>(evaluator.getChangedCoords());
-		ArrayList<IShip> unsunkShips = new ArrayList<>(shipPlacements.getUnsunkShipsDisplaced(board));
+		ArrayList<IShip> unsunkShips = new ArrayList<>(opponentPlacements.getUnsunkShipsDisplaced(opponentBoardAfter));
+		NextTurn nextTurn = evaluator.nextTurn();
 
-		Message.Builder messageBuilder = Message.builder()
+		GameBoard opponentBoardAfterRevealed = new GameBoard(opponentBoardAfter).reveal(opponentPlacements);
+		NextTurn switchedTurn = nextTurn == NextTurn.GAME_OVER ?
+				NextTurn.GAME_OVER :
+				nextTurn == NextTurn.MY_TURN ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN;
+
+		Message.Builder userMessageBuilder = Message.builder()
 				.putData("type", type.name())
-				.putData("board", StringSerializer.toString(board))
+				.putData("board", StringSerializer.toString(opponentBoardAfter))
 				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips));
+				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
+				.putData("nextTurn", nextTurn.name());
 
-		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
-		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
+		Message.Builder opponentMessageBuilder = Message.builder()
+				.putData("type", type.name())
+				.putData("board", StringSerializer.toString(opponentBoardAfterRevealed))
+				.putData("changedCoords", StringSerializer.toString(changedCoords))
+				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
+				.putData("nextTurn", switchedTurn.name());
+
+		FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
 	}
 
 	public static void timeout(Context ctx) throws FirebaseMessagingException {
