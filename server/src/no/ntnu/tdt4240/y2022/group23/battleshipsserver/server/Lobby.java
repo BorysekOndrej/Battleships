@@ -6,8 +6,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.StringSerializer;
@@ -15,9 +13,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class Lobby implements Serializable {
-    protected String gameID;
+    private String gameID;
     protected List<String> users = new ArrayList<>();
     protected boolean isPrivate;
+    protected String inviteID = null;
 
     private static final JedisPool pool = RedisStorage.getInstance().pool;
 
@@ -27,11 +26,25 @@ public class Lobby implements Serializable {
         // find empty lobby id
         do {
             this.gameID = RandomStringUtils.randomAlphanumeric(32);
-        }while(getLobby(gameID) != null);
+        }while(getLobbyByID(gameID) != null);
+
+
+        if (isPrivate){
+            // find empty invite id
+
+            try (Jedis jedis = pool.getResource()) {
+                do {
+                    this.inviteID = RandomStringUtils.randomNumeric(6);
+                }while(jedis.get("invite_" + this.inviteID) != null);
+
+                jedis.setex("invite_" + this.inviteID, 60*60, this.gameID); // invite code has 60 minute timeout
+            }
+        }
+
         save();
     }
 
-    public static Lobby getLobby(String gameID){
+    private static Lobby getLobbyByID(String gameID){
         if (gameID == null){
             return null;
         }
@@ -45,6 +58,15 @@ public class Lobby implements Serializable {
         }
     }
 
+    public static Lobby getLobbyByInvite(String inviteID){
+        if (inviteID == null){
+            return null;
+        }
+        try (Jedis jedis = pool.getResource()) {
+            return getLobbyByID(jedis.get("invite_" + inviteID));
+        }
+    }
+
     public static String findGameID(String userID){
         try (Jedis jedis = pool.getResource()) {
             return jedis.get("user_active_in_lobby_"+userID);
@@ -52,7 +74,7 @@ public class Lobby implements Serializable {
     }
 
     public static Lobby getUsersGame(String userID){
-        return getLobby(findGameID(userID));
+        return getLobbyByID(findGameID(userID));
     }
 
     public void addUser(String userID){
@@ -65,14 +87,17 @@ public class Lobby implements Serializable {
         users.add(userID);
         save();
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("id", gameID);
+        if (isPrivate) {
+            // don't send this message if the game lobby is started via matchmaking
+            HashMap<String, String> map = new HashMap<>();
+            map.put("id", inviteID);
 
-        FirebaseMessenger.sendMessage(
-                userID,
-                ServerClientMessage.JOINED_LOBBY_WITH_ID,
-                map
-        );
+            FirebaseMessenger.sendMessage(
+                    userID,
+                    ServerClientMessage.JOINED_LOBBY_WITH_ID,
+                    map
+            );
+        }
 
         if (users.size() == 2){
             this.startGame();
@@ -93,9 +118,27 @@ public class Lobby implements Serializable {
         for (String userID: users) {
             FirebaseMessenger.sendMessage(userID, ServerClientMessage.PLACEMENT_START, null);
         }
+
+        deleteInviteCode();
+    }
+
+    private void deleteInviteCode(){
+        if (inviteID == null){
+            return;
+        }
+
+        try (Jedis jedis = pool.getResource()) {
+            if (jedis.get("invite_" + this.inviteID) != null){
+                jedis.del("invite_" + this.inviteID);
+                this.inviteID = null;
+                save();
+            }
+        }
     }
 
     public void endCommunication(String userIDWhichCanceled){
+        deleteInviteCode();
+
         for (String userID: users) {
             if (userID.equals(userIDWhichCanceled)){
                 continue;
