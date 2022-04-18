@@ -53,6 +53,12 @@ public class FirebaseMessenger {
         if (args != null){
             messageBuilder = messageBuilder.putAllData(args);
         }
+
+        logger.info("FCM messages to devices with token prefix TEST_ are not actually sent: "+ messageBuilder);
+        if (firebaseToken.startsWith("TEST_")){
+            return;
+        }
+
         Message message = messageBuilder
             .setToken(firebaseToken)
             .build();
@@ -82,6 +88,12 @@ public class FirebaseMessenger {
         RedisStorage redisStorage = RedisStorage.getInstance();
 
         String userToken = redisStorage.getUserTokenByID(userID);
+
+        logger.info("FCM messages to devices with token prefix TEST_ are not actually sent: "+ messageBuilder);
+        if (userToken.startsWith("TEST_")){
+            return;
+        }
+
         Message message = messageBuilder.setToken(userToken).build();
 
         // Send a message to the device corresponding to the provided
