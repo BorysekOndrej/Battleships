@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
-public class MainMenu implements IRenderable {
+public class MenuStateGUI implements IRenderable {
     final static public int BUTTON_WIDTH = 409;
     final static public int BUTTON_HEIGHT = 170;
 
@@ -15,7 +15,7 @@ public class MainMenu implements IRenderable {
     private final SimpleButton joinLobbyButton;
     private final SimpleButton randomButton;
 
-    public MainMenu(){
+    public MenuStateGUI(){
         background = new Texture("main_menu/main_menu_background.png");
 
         createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));

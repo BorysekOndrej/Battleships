@@ -10,7 +10,7 @@ public class TurnIndicator implements IRenderable {
 
     private final Texture yourTurnTex;
     private final Texture enemyTurnTex;
-    private boolean yourTurn = true;
+    private boolean yourTurn;
 
     int xCord;
     int yCord;

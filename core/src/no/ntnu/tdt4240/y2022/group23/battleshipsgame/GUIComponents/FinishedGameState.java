@@ -3,8 +3,8 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu.BUTTON_WIDTH;
-import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu.BUTTON_HEIGHT;
+import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MenuStateGUI.BUTTON_WIDTH;
+import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MenuStateGUI.BUTTON_HEIGHT;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
