@@ -160,7 +160,7 @@ public class ServerLauncher {
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
 		String userID = getUserID(ctx);
 
-		Lobby lobby = Lobby.getLobby(Lobby.findGameID(userID));
+		Lobby lobby = Lobby.getUsersGame(userID);
 		if (lobby == null){
 			return; // todo:
 		}
@@ -177,15 +177,15 @@ public class ServerLauncher {
 
 		Lobby lobby = new Lobby(true);
 		lobby.addUser(userID); // todo: handle exceptions
-		ctx.status(200).result("Lobby created with id "+lobby.gameID+ " and you've been invited.");
+		ctx.status(200).result(lobby.inviteID+"|Lobby created with invite ID and you've been invited.");
 	}
 
 
 	public static void join_lobby(Context ctx) {
 		String userID = getUserID(ctx);
-		String lobbyID = ctx.formParamAsClass("id", String.class).get();
+		String inviteID = ctx.formParamAsClass("id", String.class).get();
 
-		Lobby lobby = Lobby.getLobby(lobbyID);
+		Lobby lobby = Lobby.getLobbyByInvite(inviteID);
 		if (lobby == null){
 			FirebaseMessenger.sendMessage(userID, ServerClientMessage.NO_SUCH_LOBBY, null);
 			ctx.status(404).result("Lobby doesn't exist");
