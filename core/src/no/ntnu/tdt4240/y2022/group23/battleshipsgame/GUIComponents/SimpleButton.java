@@ -12,30 +12,40 @@ public class SimpleButton implements IRenderable {
 
     private Texture texture;
     private final Rectangle buttonBounds;
-    private final int posX;
-    private final int posY;
+    private final int xPos;
+    private final int yPos;
+    private boolean enabled;
 
-    public SimpleButton(int posX, int posY, Texture texture){
+    public SimpleButton(int xPos, int yPos, Texture texture){
         this.texture = texture;
-        this.posX = posX;
-        this.posY = posY;
-        buttonBounds = new Rectangle(posX, posY, texture.getWidth(), texture.getHeight());
+        this.xPos = xPos;
+        this.yPos = yPos;
+        buttonBounds = new Rectangle(xPos, yPos, texture.getWidth(), texture.getHeight());
+        enabled = true;
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
+    }
+
+    public boolean buttonContains() {
+        return (buttonBounds.contains(Gdx.input.getX(), BattleshipsGame.HEIGHT - Gdx.input.getY()));
     }
 
     public boolean buttonTouched() {
-        return (Gdx.input.justTouched() && buttonBounds.contains(Gdx.input.getX(), BattleshipsGame.HEIGHT - Gdx.input.getY()));
+        return (Gdx.input.justTouched() && enabled && buttonBounds.contains(Gdx.input.getX(), BattleshipsGame.HEIGHT - Gdx.input.getY()));
     }
 
     public Texture getTexture() {
         return texture;
     }
 
-    public int getPosX() {
-        return posX;
+    public int getXPos() {
+        return xPos;
     }
 
-    public int getPosY() {
-        return posY;
+    public int getYPos() {
+        return yPos;
     }
 
     public Rectangle getButtonBounds() {
@@ -50,7 +60,7 @@ public class SimpleButton implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.draw(texture, posX, posY);
+        sb.draw(texture, xPos, yPos);
     }
 
     @Override
