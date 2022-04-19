@@ -10,6 +10,7 @@ import java.util.List;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
 public class PlayStateGUI implements IRenderable {
@@ -114,14 +115,14 @@ public class PlayStateGUI implements IRenderable {
     }
 
     ///// gameBoardPanel methods
+    public void setData(GameBoard board){
+        gameBoardPanel.setData(board);
+    }
+
+    //TODO: observer with getMarkedField()
 
 
-
-
-
-
-
-
+    
     @Override
     public void handleInput(){}
 
