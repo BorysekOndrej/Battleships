@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+
 /**
  * Stores the information about the state of the game available to the player at given moment.
  */
@@ -18,6 +20,7 @@ public class GameBoard implements Serializable {
             board.add(newCol);
         }
     }
+
     public GameBoard(GameBoard other) {
         // we can't easily clone GameBoard, because we need deepclone
         // we can't easily clone board, because List doesn't have clone, only ArrayList does have it
@@ -29,6 +32,21 @@ public class GameBoard implements Serializable {
                 newCol.add(other.get(new Coords(x, y)));
             }
             board.add(newCol);
+        }
+    }
+
+    public GameBoard(int width, int height, ShipPlacements placements, IShip ship) {
+        this(width, height);
+        reveal(placements);
+
+        boolean canAdd = placements.canAdd(width, height, ship);
+
+        for (Coords coord : ship.getPositions()) {
+            if (canAdd) {
+                set(coord, GameBoardField.SHIP);
+            } else {
+                set(coord, GameBoardField.COLLIDE);
+            }
         }
     }
 
@@ -44,4 +62,23 @@ public class GameBoard implements Serializable {
 
     public int getWidth() { return board.get(0).size(); }
     public int getHeight() { return board.size(); }
+
+    public GameBoard reveal(ShipPlacements placements) {
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                Coords coords = new Coords(x, y);
+
+                if (get(coords) != GameBoardField.UNKNOWN) {
+                    continue;
+                }
+
+                if (placements.hasShipOnCoords(coords)) {
+                    set(coords, GameBoardField.SHIP);
+                } else {
+                    set(coords, GameBoardField.WATER);
+                }
+            }
+        }
+        return this;
+    }
 }
