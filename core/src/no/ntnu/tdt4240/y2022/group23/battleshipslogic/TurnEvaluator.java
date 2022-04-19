@@ -14,6 +14,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 public class TurnEvaluator {
     private final GameBoard beforeBoard;
     private final GameBoard afterBoard;
+    private final List<GameBoardChange> changedCoords;
     private final NextTurn nextTurn;
 
     private void sinkShips(ShipPlacements ships, List<GameBoardChange> changes) {
@@ -45,13 +46,13 @@ public class TurnEvaluator {
         afterBoard = new GameBoard(beforeBoard);
         afterBoard.apply(changes);
 
-        changes = filterUnchanged(changes);
+        changedCoords = filterUnchanged(changes);
 
-         if (!hitAny(changes)) {
+         if (!hitAny(changedCoords)) {
              nextTurn = NextTurn.OTHERS_TURN;
              return;
          }
-         sinkShips(ships, changes);
+         sinkShips(ships, changedCoords);
 
          nextTurn = ships.allSunk(afterBoard) ? NextTurn.GAME_OVER : NextTurn.MY_TURN;
     }
@@ -64,4 +65,6 @@ public class TurnEvaluator {
      * (MY_TURN) or the opponent (OTHERS_TURN) or if the game is over
      */
     public NextTurn nextTurn() { return nextTurn; }
+
+    public List<GameBoardChange> getChangedCoords() { return changedCoords; }
 }

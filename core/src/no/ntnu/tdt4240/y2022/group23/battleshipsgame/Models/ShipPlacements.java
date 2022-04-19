@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 
@@ -64,5 +65,12 @@ public class ShipPlacements implements Serializable {
             }
         }
         return true;
+    }
+
+    public List<IShip> getUnsunkShipsDisplaced(GameBoard board) {
+        return ships.stream()
+                .filter(ship -> !ship.isSunk(board))
+                .map(ship -> { IShip newShip = ship.copy(); newShip.displace(); return newShip; })
+                .collect(Collectors.toList());
     }
 }

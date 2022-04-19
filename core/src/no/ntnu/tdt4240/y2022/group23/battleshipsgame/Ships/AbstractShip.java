@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
@@ -9,6 +10,14 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 public abstract class AbstractShip implements IShip {
     private List<Coords> positions;
     private int parts;
+    private boolean horizontal;
+
+    public AbstractShip() {}
+
+    protected AbstractShip(List<Coords> positions) {
+        this.positions = positions;
+        this.parts = positions.size();
+    }
 
     @Override
     public List<Coords> getPositions() {
@@ -35,13 +44,36 @@ public abstract class AbstractShip implements IShip {
         this.parts = parts;
     }
 
-    @Override
-    public void displace() {
-        throw new UnsupportedOperationException("not implemented");
+    public boolean getOrientation(){
+        return horizontal;
+    }
+
+    public void setOrientation(boolean horizontal){
+        this.horizontal = horizontal;
     }
 
     @Override
     public void rotateClockwise() {
-        throw new UnsupportedOperationException("not implemented");
+        int size = this.getPositions().size();
+        List<Coords> newPositions = new ArrayList<Coords>();
+        Coords start = this.getPositions().get(0);
+        for (int i = 0; i < size; i++) {
+            newPositions.add(new Coords(-(this.getPositions().get(i).y - start.y) + start.x, this.getPositions().get(i).x - start.x + start.y));
+        }
+        this.setPositions(newPositions);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof IShip) {
+            IShip ship1 = ((IShip) obj).copy();
+            IShip ship2 = this.copy();
+            ship1.displace();
+            ship2.displace();
+            if (ship1.getPositions().containsAll(ship2.getPositions()) && ship2.getPositions().containsAll(ship1.getPositions())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
