@@ -30,8 +30,6 @@ public class GameBoardPanel implements IRenderable {
     private final Texture shipField;
     private final Texture markedField;
 
-    //private final Rectangle bonds;
-
     private int xPos;
     private int yPos;
 
@@ -46,8 +44,7 @@ public class GameBoardPanel implements IRenderable {
         shipField = new Texture("game_board/ship.png");
         markedField = new Texture("game_board/marked_field.png");
 
-        //bonds = new Rectangle(xCord + GAMEBOARD_OFFSET + FIELD_SIZE, yCord - GAMEBOARD_OFFSET, gameBoardTex.getWidth() - 2*GAMEBOARD_OFFSET - FIELD_SIZE, gameBoardTex.getHeight()- 2*GAMEBOARD_OFFSET - FIELD_SIZE);
-
+        //DEBUGGING ONLY
         gameBoard = new GameBoard(GAMEBOARD_ROWS, GAMEBOARD_ROWS);
         gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(1,0), GameBoardField.SUNK);
@@ -71,7 +68,6 @@ public class GameBoardPanel implements IRenderable {
         Coords result = new Coords((xRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1, (yRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1);
         if(coordsValid(result)) return result;
         else  {
-            //System.out.println("Coords out of bonds");
             return null;
         }
     }
@@ -79,7 +75,6 @@ public class GameBoardPanel implements IRenderable {
     public boolean coordsValid(Coords coords){
         return (coords.x >= 0 && coords.x < GAMEBOARD_ROWS) && (coords.y >= 0 && coords.y < GAMEBOARD_ROWS);
     }
-
 
     public void drawField(GameBoardField field, SpriteBatch sb, int xCord, int yCord){
         switch (field) {
@@ -115,7 +110,6 @@ public class GameBoardPanel implements IRenderable {
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
             markedFieldCoords = getFieldCoords(x, y);
-            //if (markedFieldCoords != null) System.out.println(markedFieldCoords.toString()); // debugging only
         }
     }
     public void update(float dt){

@@ -1,20 +1,12 @@
-package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
+package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ActionPanel;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.SimpleButton;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TurnIndicator;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import org.javatuples.Pair;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
-public class TestState extends AbstractState {
+public class PlayStateGUI implements IRenderable {
     final static public int BIG_GAP = 63;
     final static public int SMALL_GAP = 38;
     final static public int GAME_BOARD_SIZE = 950;
@@ -38,8 +30,7 @@ public class TestState extends AbstractState {
     private boolean switchButtonActive = true;
     private final Texture inactiveButton;
 
-    public TestState(GameStateManager gsm) {
-        super(gsm);
+    public PlayStateGUI() {
         background = new Texture("play_state/play_state_background.png");
         gameBoardPanel = new GameBoardPanel(BIG_GAP, BIG_GAP);
         turnIndicator = new TurnIndicator(BIG_GAP, BattleshipsGame.HEIGHT - ACTION_PANEL_HEIGHT - BIG_GAP, true);
@@ -99,4 +90,3 @@ public class TestState extends AbstractState {
         switchButton.dispose();
     }
 }
-

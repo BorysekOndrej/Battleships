@@ -13,7 +13,7 @@ public class DigitsPanel implements IRenderable {
     final static public int FIELD_HEIGHT = 176;
     final static public int FIELD_OFFSET = 4;
     private final Texture panel;
-    private Rectangle bonds;
+    private final Rectangle bonds;
     private final int xPos;
     private final int yPos;
     private String code;
@@ -44,7 +44,7 @@ public class DigitsPanel implements IRenderable {
             int xRel = x - xPos + FIELD_OFFSET;
             int yRel = y - (BattleshipsGame.HEIGHT - yPos - panel.getHeight() + FIELD_OFFSET);
             int result = xRel / FIELD_WIDTH;
-            if(yRel/FIELD_HEIGHT == 1) result +=5;
+            if(yRel/FIELD_HEIGHT == 1) result += 5;
             return result;
         }
         else return null;

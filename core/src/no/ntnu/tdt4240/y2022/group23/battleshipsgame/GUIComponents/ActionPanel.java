@@ -13,15 +13,18 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.Radar;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.SingleShot;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 
 public class ActionPanel implements IRenderable {
-    private Texture  panel;
-    private ActionButton singleShot;
-    private ActionButton radar;
-    private ActionButton nuke;
-    private ActionButton surr;
+    final static public int OFFSET = 10;
+    final static public int GAP = 26;
+    final static public int FIELD_WIDTH = 125;
+
+
+    private final Texture  panel;
+    private final ActionButton singleShot;
+    private final ActionButton radar;
+    private final ActionButton nuke;
+    private final ActionButton surr;
     private final Texture buttonMarked;
 
     private Integer markedActions = null;
@@ -43,10 +46,10 @@ public class ActionPanel implements IRenderable {
 
 
         panel = new Texture("action_panel/action_panel.png");
-        singleShot = new ActionButton(new Texture("action_panel/attack_button.png"), xPos + 10 + 26, yPos + 10 +10);
-        radar = new ActionButton(new Texture("action_panel/radar_button.png"), xPos + 10 + 26 * 2 + 125, yPos + 10 +10);
-        nuke = new ActionButton(new Texture("action_panel/nuke_button.png"), xPos + 10 + 26 * 3 + 125 * 2, yPos + 10 +10);
-        surr = new ActionButton(new Texture("action_panel/surr_button.png"), xPos + 10 + 26 * 4 + 125 * 3, yPos + 10 +10);
+        singleShot = new ActionButton(new Texture("action_panel/attack_button.png"), xPos + OFFSET + GAP, yPos + OFFSET * 2);
+        radar = new ActionButton(new Texture("action_panel/radar_button.png"), xPos + OFFSET + GAP * 2 + FIELD_WIDTH, yPos + OFFSET * 2);
+        nuke = new ActionButton(new Texture("action_panel/nuke_button.png"), xPos + OFFSET + GAP * 3 + FIELD_WIDTH * 2, yPos + OFFSET * 2);
+        surr = new ActionButton(new Texture("action_panel/surr_button.png"), xPos + OFFSET + GAP * 4 + FIELD_WIDTH * 3, yPos + OFFSET * 2);
         buttonMarked = new Texture("action_panel/button_marked.png");
     }
 
@@ -69,11 +72,9 @@ public class ActionPanel implements IRenderable {
     public void handleInput() {
         if(singleShot.buttonTouched()){
             markAction(0);
-            //singleShot.setActive(false);
         }
         if (radar.buttonTouched()) {
             markAction(1);
-            //radar.setActive(false);
         }
         if(nuke.buttonTouched()){
             markAction(2);
@@ -127,5 +128,8 @@ public class ActionPanel implements IRenderable {
         panel.dispose();
         singleShot.dispose();
         radar.dispose();
+        nuke.dispose();
+        surr.dispose();
+        buttonMarked.dispose();
     }
 }

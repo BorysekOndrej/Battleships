@@ -2,8 +2,6 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
 import static no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MenuStateGUI.BUTTON_WIDTH;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,10 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class JoinLobbyStateGUI extends RandOppLobbyStateGUI implements IRenderable {
-
     private String code = "";
     private final BitmapFont font;
-    private final SimpleButton codeInputButton;
     private final Texture codeTex;
     private final DigitsPanel digitsPanel;
     private final Texture enterCode;
@@ -29,7 +25,6 @@ public class JoinLobbyStateGUI extends RandOppLobbyStateGUI implements IRenderab
         font.getData().setScale(8);
         enterCode = new Texture("lobby_state/enter_code.png");
         codeTex = new Texture("lobby_state/code.png");
-        codeInputButton = new SimpleButton((int)(super.getButtonPos().x + BUTTON_WIDTH/2 - codeTex.getWidth()/2), (int)(super.getButtonPos().y + 40), codeTex);
         codeReady = false;
     }
 
@@ -77,4 +72,6 @@ public class JoinLobbyStateGUI extends RandOppLobbyStateGUI implements IRenderab
         font.dispose();
         digitsPanel.dispose();
     }
+
+    public boolean backButtonPressed(){return super.backButtonPressed();}
 }
