@@ -19,6 +19,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserve
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.javatuples.Pair;
@@ -41,6 +42,8 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     private GameBoardPanel gameBoardPanel;
     private TimerPanel timerPanel;
     private RemainingShipsPanel remainingShipsPanel;
+
+    private IShip selectedShip = null;
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
@@ -74,9 +77,14 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     @Override
     public void handleInput(){
-        remainingShipsPanel.handleInput();
-        gameBoardPanel.handleInput();
-        timerPanel.handleInput();
+        if (!timerPanel.runOut()){ //If the user has time still
+            if (Gdx.input.justTouched() && selectedShip != null){ //Rotate ship (?)
+                rotateShip();
+            }
+            remainingShipsPanel.handleInput();
+            gameBoardPanel.handleInput();
+            timerPanel.handleInput();
+        }
     };
 
     @Override
@@ -86,12 +94,12 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         //timerPanel.setData(timer);
 
         if (timerPanel.runOut()){ //If timer runs out go to ViewMyBoard
-            if (gameInitialization.getValue0()){
+            if (hasShipRemainings()){
+                goToFinishedGame();
+            }
+            else if (gameInitialization.getValue0()){
                 gameAPIClient.sendShipPlacement(shipPlacements);
                 goToViewMyBoard();
-            } //Not checking opponents ships
-            else{ //If the user has any remaining ships to place, user he loses
-                goToFinishedGame();
             }
         }
     };
@@ -104,6 +112,16 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     //Changes state to finished game state
     private void goToFinishedGame(){
         gsm.set(new FinishedGameState(gsm,false));
+    }
+
+    //Checks if user has any remaining ship
+    private boolean hasShipRemainings(){
+        for (Pair<IShip,Integer> pair: remainingShips){
+            if (pair.getValue1() != 0){
+                return true;
+            }
+        }
+        return false;
     }
 
     //Subtracts a remaining ship from the type specified
@@ -120,19 +138,34 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     @Override
     public void gameBoardTouch(Coords coords){
-        IShip selectedShip = remainingShipsPanel.selectedShipType();
-        try {
-            subtractRemaining(selectedShip);
+        selectedShip = remainingShipsPanel.selectedShipType();
 
-            shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),selectedShip);
-            remainingShipsPanel.setData(remainingShips);
-
+        if (selectedShip != null){
             gameBoard.set(coords,GameBoardField.SHIP);
             //gameBoardPanel.setData(gameBoard);
         }
-        catch (Exception IllegalArgumentException){
-            //Could not position ship in gameBoard
+    }
+
+    //Adds ship to ship placement
+    private void collocateShip(){
+        if (selectedShip != null){
+            try {
+                shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),selectedShip);
+                subtractRemaining(selectedShip);
+                remainingShipsPanel.setData(remainingShips);
+            }
+            catch (Exception IllegalArgumentException){
+                //Could not position ship in ship placement
+                selectedShip = null;
+                //todo: eliminate ship from game board
+            }
         }
+    }
+
+    //Rotates selected ship
+    private void rotateShip(){
+        selectedShip.rotateClockwise();
+        //todo: rotate ship on game board
     }
 
     @Override
