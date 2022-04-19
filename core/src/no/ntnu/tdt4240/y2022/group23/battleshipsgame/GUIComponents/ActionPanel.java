@@ -63,7 +63,6 @@ public class ActionPanel implements IRenderable {
         return this.actions.get(markedActions).getValue0();
     }
 
-    //Below Boolean in argument stand for if action is active
     public void setData(List<Pair<AbstractAction, Boolean>> actions) {
         this.actions = actions;
     }

@@ -44,7 +44,7 @@ public class RandOppLobbyStateGUI implements IRenderable {
         return new Vector2(returnButton.getXPos(), returnButton.getYPos());
     }
 
-    public TextureRegion getFrame(){
+    private TextureRegion getFrame(){
         return frames.get(frame);
     }
 

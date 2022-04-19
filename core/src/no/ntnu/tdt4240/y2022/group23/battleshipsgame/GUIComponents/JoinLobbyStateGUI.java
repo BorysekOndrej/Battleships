@@ -40,7 +40,6 @@ public class JoinLobbyStateGUI extends RandOppLobbyStateGUI implements IRenderab
 
     @Override
     public void handleInput() {
-        super.handleInput();
     }
 
     @Override

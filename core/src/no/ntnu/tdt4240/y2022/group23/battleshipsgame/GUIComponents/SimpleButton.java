@@ -23,6 +23,9 @@ public class SimpleButton implements IRenderable {
         buttonBounds = new Rectangle(xPos, yPos, texture.getWidth(), texture.getHeight());
         enabled = true;
     }
+    public boolean isEnabled(){
+        return enabled;
+    }
 
     public void setEnabled(boolean enabled){
         this.enabled = enabled;

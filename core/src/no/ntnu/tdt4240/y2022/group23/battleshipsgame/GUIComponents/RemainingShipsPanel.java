@@ -38,13 +38,15 @@ public class RemainingShipsPanel implements IRenderable {
     private final Rectangle ship3bonds;
     private final Rectangle ship4bonds;
 
-    private BitmapFont font;
+    private final BitmapFont font;
 
     private Integer markedShips = null;
     private List<Pair<IShip, Integer>> remainingShips;
 
-    private int xPos;
-    private int yPos;
+    private boolean enabled;
+
+    private final int xPos;
+    private final int yPos;
 
     public RemainingShipsPanel(int x, int y){
         xPos = x;
@@ -53,6 +55,8 @@ public class RemainingShipsPanel implements IRenderable {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
+
+        enabled = true;
 
         //debugging default list
         remainingShips = new ArrayList<>();
@@ -71,6 +75,10 @@ public class RemainingShipsPanel implements IRenderable {
         ship3bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
         ship2bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH * 2, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
         ship1bonds = new Rectangle(xPos + BONDS_OFFSET + BONDS_WIDTH * 3, yPos, BONDS_WIDTH, BONDS_HEIGHT + BONDS_OFFSET * 2);
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
     }
 
     private boolean ship1bondsPressed(){
@@ -117,18 +125,20 @@ public class RemainingShipsPanel implements IRenderable {
             observer.notice();
         }
 
-        if (Gdx.input.justTouched()){
-            if(ship1bondsPressed()) {
-                markShip(0);
-            }
-            if(ship2bondsPressed()) {
-                markShip(1);
-            }
-            if(ship3bondsPressed()) {
-                markShip(2);
-            }
-            if(ship4bondsPressed()) {
-                markShip(3);
+        if(enabled){
+            if (Gdx.input.justTouched()){
+                if(ship1bondsPressed()) {
+                    markShip(0);
+                }
+                if(ship2bondsPressed()) {
+                    markShip(1);
+                }
+                if(ship3bondsPressed()) {
+                    markShip(2);
+                }
+                if(ship4bondsPressed()) {
+                    markShip(3);
+                }
             }
         }
     }
@@ -146,22 +156,24 @@ public class RemainingShipsPanel implements IRenderable {
         font.draw(sb,String.format("x%d",remainingShips.get(2).getValue1()), xPos + BONDS_OFFSET+60 + BONDS_WIDTH * 2, yPos + 147);
         font.draw(sb,String.format("x%d",remainingShips.get(3).getValue1()), xPos + BONDS_OFFSET+60 + BONDS_WIDTH * 3, yPos + 147);
 
-        if(markedShips != null) {
-            switch (markedShips) {
-                case 3:
-                    sb.draw(ship4markedTex, xPos + BONDS_OFFSET - 5, yPos + 31);
-                    break;
-                case 2:
-                    sb.draw(ship3markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH - 5, yPos + 52);
-                    break;
-                case 1:
-                    sb.draw(ship2markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yPos + 74);
-                    break;
-                case 0:
-                    sb.draw(ship1markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yPos + 96);
-                    break;
-                default:
-                    break;
+        if(enabled){
+            if(markedShips != null) {
+                switch (markedShips) {
+                    case 3:
+                        sb.draw(ship4markedTex, xPos + BONDS_OFFSET - 5, yPos + 31);
+                        break;
+                    case 2:
+                        sb.draw(ship3markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH - 5, yPos + 52);
+                        break;
+                    case 1:
+                        sb.draw(ship2markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 2 - 5, yPos + 74);
+                        break;
+                    case 0:
+                        sb.draw(ship1markedTex, xPos + BONDS_OFFSET + BONDS_WIDTH * 3 - 5, yPos + 96);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

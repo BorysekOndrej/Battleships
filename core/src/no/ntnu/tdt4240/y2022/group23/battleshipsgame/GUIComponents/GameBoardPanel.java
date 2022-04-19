@@ -14,10 +14,10 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
 public class GameBoardPanel implements IRenderable {
     private static final int FIELD_SIZE = 86;
-    private static final int GAMEBOARD_OFFSET = 2;
-    private static final int GAMEBOARD_ROWS = 10;
+    private static final int GAME_BOARD_OFFSET = 2;
+    private static final int GAME_BOARD_ROWS = 10;
 
-    private final GameBoard gameBoard;
+    private GameBoard gameBoard;
 
     private Coords markedFieldCoords = null;
 
@@ -30,8 +30,8 @@ public class GameBoardPanel implements IRenderable {
     private final Texture shipField;
     private final Texture markedField;
 
-    private int xPos;
-    private int yPos;
+    private final int xPos;
+    private final int yPos;
 
     public GameBoardPanel(int x, int y){
         xPos = x;
@@ -45,7 +45,7 @@ public class GameBoardPanel implements IRenderable {
         markedField = new Texture("game_board/marked_field.png");
 
         //DEBUGGING ONLY
-        gameBoard = new GameBoard(GAMEBOARD_ROWS, GAMEBOARD_ROWS);
+        gameBoard = new GameBoard(GAME_BOARD_ROWS, GAME_BOARD_ROWS);
         gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(1,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(2,0), GameBoardField.SUNK);
@@ -54,29 +54,27 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
         gameBoard.set(new Coords(4,4), GameBoardField.WATER);
-
     }
 
-    public void setPosition(int x, int y){
-        xPos = x;
-        yPos = y;
+    public void setData(GameBoard board){
+        this.gameBoard = board;
     }
 
     public Coords getFieldCoords(int x, int y){
         int xRelative = x - xPos;
         int yRelative = y - (BattleshipsGame.HEIGHT - yPos - gameBoardTex.getHeight());
-        Coords result = new Coords((xRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1, (yRelative - GAMEBOARD_OFFSET) / FIELD_SIZE - 1);
+        Coords result = new Coords((xRelative - GAME_BOARD_OFFSET) / FIELD_SIZE - 1, (yRelative - GAME_BOARD_OFFSET) / FIELD_SIZE - 1);
         if(coordsValid(result)) return result;
         else  {
             return null;
         }
     }
 
-    public boolean coordsValid(Coords coords){
-        return (coords.x >= 0 && coords.x < GAMEBOARD_ROWS) && (coords.y >= 0 && coords.y < GAMEBOARD_ROWS);
+    private boolean coordsValid(Coords coords){
+        return (coords.x >= 0 && coords.x < GAME_BOARD_ROWS) && (coords.y >= 0 && coords.y < GAME_BOARD_ROWS);
     }
 
-    public void drawField(GameBoardField field, SpriteBatch sb, int xCord, int yCord){
+    private void drawField(GameBoardField field, SpriteBatch sb, int xCord, int yCord){
         switch (field) {
             case UNKNOWN:
                 sb.draw(unknownField, xCord, yCord);
@@ -97,10 +95,10 @@ public class GameBoardPanel implements IRenderable {
         }
     }
 
-    public void drawMarkedField(SpriteBatch sb, Coords coords){
+    private void drawMarkedField(SpriteBatch sb, Coords coords){
         if(coords != null){
-            int xLocus = xPos + GAMEBOARD_OFFSET + FIELD_SIZE * (coords.x + 1) - 2;
-            int yLocus = yPos + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - coords.y) - 2;
+            int xLocus = xPos + GAME_BOARD_OFFSET + FIELD_SIZE * (coords.x + 1) - 2;
+            int yLocus = yPos + GAME_BOARD_OFFSET + FIELD_SIZE * (GAME_BOARD_ROWS - 1 - coords.y) - 2;
             sb.draw(markedField, xLocus, yLocus);
         }
     }
@@ -119,11 +117,11 @@ public class GameBoardPanel implements IRenderable {
     public void render(SpriteBatch sb){
         sb.draw(gameBoardTex, xPos, yPos);
 
-        for(int i = 0; i < GAMEBOARD_ROWS; i++){
-            for(int j = 0; j < GAMEBOARD_ROWS; j++){
+        for(int i = 0; i < GAME_BOARD_ROWS; i++){
+            for(int j = 0; j < GAME_BOARD_ROWS; j++){
                 GameBoardField actualField = gameBoard.get(new Coords(i, j));
-                int xLocus = xPos + GAMEBOARD_OFFSET + FIELD_SIZE * (i + 1);
-                int yLocus = yPos + GAMEBOARD_OFFSET + FIELD_SIZE * (GAMEBOARD_ROWS - 1 - j);
+                int xLocus = xPos + GAME_BOARD_OFFSET + FIELD_SIZE * (i + 1);
+                int yLocus = yPos + GAME_BOARD_OFFSET + FIELD_SIZE * (GAME_BOARD_ROWS - 1 - j);
                 drawField(actualField, sb, xLocus, yLocus);
             }
         }

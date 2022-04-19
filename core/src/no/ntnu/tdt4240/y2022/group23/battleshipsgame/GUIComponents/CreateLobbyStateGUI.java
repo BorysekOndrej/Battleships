@@ -54,5 +54,7 @@ public class CreateLobbyStateGUI extends RandOppLobbyStateGUI implements IRender
         font.dispose();
     }
 
-    public boolean backButtonPressed(){return super.backButtonPressed();}
+    public boolean backButtonPressed(){
+        return super.backButtonPressed();
+    }
 }
