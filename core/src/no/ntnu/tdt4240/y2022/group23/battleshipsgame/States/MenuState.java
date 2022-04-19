@@ -1,15 +1,16 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MainMenu;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.MenuStateGUI;
 
 public class MenuState extends AbstractState {
-    MainMenu mainMenu;
+    MenuStateGUI mainMenu;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
-        mainMenu = new MainMenu();
+        mainMenu = new MenuStateGUI();
     }
 
     //Handles the input of clicking the button
@@ -22,6 +23,9 @@ public class MenuState extends AbstractState {
         }
         if (mainMenu.joinLobbyButtonPressed()){
             goToJoinLobby();
+        }
+        if (mainMenu.leaderBoardButtonPressed()){
+            gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
 

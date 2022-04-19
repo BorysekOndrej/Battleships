@@ -11,8 +11,11 @@ import java.util.Map;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.INetworkClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.GameStateManager;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.MenuState;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.States.TestState;
 
 public class BattleshipsGame extends ApplicationAdapter {
+	final static public int HEIGHT = 1792;
+	final static public int WIDTH = 1076;
 	private SpriteBatch batch;
 	private GameStateManager gsm;
 	private INetworkClient networkClient;
@@ -21,12 +24,13 @@ public class BattleshipsGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager(networkClient);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		gsm.push(new MenuState(gsm));
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(0, 0, 0, 1);
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render(batch);
 

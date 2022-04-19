@@ -2,9 +2,13 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public class SimpleButton {
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+
+public class SimpleButton implements IRenderable {
 
     private Texture texture;
     private final Rectangle buttonBounds;
@@ -19,7 +23,7 @@ public class SimpleButton {
     }
 
     public boolean buttonTouched() {
-        return (Gdx.input.justTouched() && buttonBounds.contains(Gdx.input.getX(), MainMenu.HEIGHT - Gdx.input.getY()));
+        return (Gdx.input.justTouched() && buttonBounds.contains(Gdx.input.getX(), BattleshipsGame.HEIGHT - Gdx.input.getY()));
     }
 
     public Texture getTexture() {
@@ -36,5 +40,25 @@ public class SimpleButton {
 
     public Rectangle getButtonBounds() {
         return buttonBounds;
+    }
+
+    @Override
+    public void handleInput() {}
+
+    @Override
+    public void update(float dt) {}
+
+    @Override
+    public void render(SpriteBatch sb) {
+        sb.draw(texture, posX, posY);
+    }
+
+    @Override
+    public void dispose() {
+        texture.dispose();
+    }
+
+    public void setNewTexture(Texture tex){
+        texture = tex;
     }
 }
