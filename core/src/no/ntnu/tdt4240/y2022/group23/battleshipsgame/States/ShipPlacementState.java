@@ -7,7 +7,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Pair;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
 
@@ -83,7 +83,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     public void update(float dt) throws CommunicationTerminated {
         Quartet<Boolean, GameBoard, GameBoard, NextTurn > gameInitialization = gameAPIClient.receiveCanGameStart();
         handleInput();
-        timerPanel.setData(timer);
+        //timerPanel.setData(timer);
 
         if (timerPanel.runOut()){ //If timer runs out go to ViewMyBoard
             if (gameInitialization.getValue0()){
@@ -108,10 +108,11 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     //Subtracts a remaining ship from the type specified
     private void subtractRemaining(IShip selectedShip){
-        for (Pair<IShip,Integer> pair: remainingShips){
-            IShip currentShip = pair.getKey();
-            if (selectedShip.getPositions().size() == currentShip.getPositions().size()){
-                pair.setValue(pair.getValue() - 1);
+        for (int i = 0; i <= remainingShips.size() ; i++){
+            Pair<IShip,Integer> currentPair = remainingShips.get(i);
+            IShip currentShip = currentPair.getValue0();
+            if (selectedShip.getPositions().size() == currentShip.getPositions().size()){ //Same type
+                remainingShips.set(i,currentPair.setAt1(currentPair.getValue1() - 1));
                 break;
             }
         }
@@ -127,7 +128,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
             remainingShipsPanel.setData(remainingShips);
 
             gameBoard.set(coords,GameBoardField.SHIP);
-            gameBoardPanel.setData(gameBoard);
+            //gameBoardPanel.setData(gameBoard);
         }
         catch (Exception IllegalArgumentException){
             //Could not position ship in gameBoard

@@ -33,9 +33,11 @@ public class MenuStateGUI implements IRenderable {
         return joinLobbyButton.buttonTouched();
     }
 
-    public boolean leaderBoardButtonPressed(){
+    public boolean randomButtonPressed(){
         return randomButton.buttonTouched();
     }
+
+    public boolean leaderBoardButtonPressed(){ return false; }
 
     @Override
     public void handleInput() {}

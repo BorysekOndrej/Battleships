@@ -123,7 +123,7 @@ public class GameBoardPanel implements IRenderable {
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
             markedFieldCoords = getFieldCoords(x, y);
-            if (markedFieldCoords != null) observer.notice(res); // System.out.println(markedFieldCoords.toString()); // debugging only
+            if (markedFieldCoords != null) observer.notice(markedFieldCoords); // System.out.println(markedFieldCoords.toString()); // debugging only
         }
     }
 

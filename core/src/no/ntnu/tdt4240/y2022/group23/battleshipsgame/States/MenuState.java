@@ -15,7 +15,7 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
-        if (mainMenu.matchmakingButtonPressed()){
+        if (mainMenu.randomButtonPressed()){
             goToMatchmaking();
         }
         if (mainMenu.createLobbyButtonPressed()){

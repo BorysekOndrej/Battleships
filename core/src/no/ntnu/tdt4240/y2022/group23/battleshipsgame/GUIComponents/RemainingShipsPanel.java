@@ -17,14 +17,12 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.IBattleshipObserver;
 
 public class RemainingShipsPanel implements IRenderable {
     private final static int BONDS_WIDTH = 150;
     private final static int BONDS_HEIGHT = 175;
     private final static int BONDS_OFFSET = 37;
 
-    private IBattleshipObserver observer;
     private Boolean collocateShip = false;
 
     private final Texture panelTex;
@@ -108,10 +106,6 @@ public class RemainingShipsPanel implements IRenderable {
 
     @Override
     public void handleInput() {
-        if (collocateShip){ //Place holder, this call should be done if the ship is collocated
-            observer.notice();
-        }
-
         if (Gdx.input.justTouched()){
             if(ship1bondsPressed()) {
                 markShip(0);
