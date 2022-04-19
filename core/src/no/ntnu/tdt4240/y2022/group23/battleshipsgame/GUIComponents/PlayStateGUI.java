@@ -122,7 +122,7 @@ public class PlayStateGUI implements IRenderable {
     //TODO: observer with getMarkedField()
 
 
-    
+
     @Override
     public void handleInput(){}
 
