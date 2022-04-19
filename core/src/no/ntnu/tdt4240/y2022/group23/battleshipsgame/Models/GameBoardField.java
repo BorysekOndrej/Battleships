@@ -5,5 +5,6 @@ public enum GameBoardField {
     WATER,
     HIT,
     SUNK,
-    SHIP
+    SHIP,
+    COLLIDE
 }
