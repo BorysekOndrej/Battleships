@@ -11,20 +11,20 @@ public class LobbyState extends AbstractState {
     private boolean opponentFound = false;
     //private RandOppLobbyStateGUI randOppLobbyGUI;
     //private CreateLobbyStateGUI createLobbyStateGUI;
-    //private JoinLobbyStateGUI joinLobbyStateGUI;
-    private FinishedGameStateGUI finishedGameState;
+    private JoinLobbyStateGUI joinLobbyStateGUI;
+    //private FinishedGameStateGUI finishedGameState;
 
     protected LobbyState(GameStateManager gsm) {
         super(gsm);
-        finishedGameState = new FinishedGameStateGUI(false);
-        //joinLobbyStateGUI = new JoinLobbyStateGUI();
+        //finishedGameState = new FinishedGameStateGUI(true);
+        joinLobbyStateGUI = new JoinLobbyStateGUI();
         //createLobbyStateGUI = new CreateLobbyStateGUI("123456");
     }
 
     @Override
     public void update(float dt){
         handleInput();
-        finishedGameState.update(dt);
+        joinLobbyStateGUI.update(dt);
         /*
         if (opponentFound){ //Wait until opponent is found, then change to ship placement
             goToShipPlacement();
@@ -39,7 +39,7 @@ public class LobbyState extends AbstractState {
         }
 
          */
-        if (finishedGameState.playAgainButtonPressed()){
+        if (joinLobbyStateGUI.backButtonPressed()){
             goToMenu();
         }
     };
@@ -62,10 +62,10 @@ public class LobbyState extends AbstractState {
 
     @Override
     public void render(SpriteBatch sb){
-        finishedGameState.render(sb);
+        joinLobbyStateGUI.render(sb);
         opponentFound = true;
     };
 
     @Override
-    public void dispose(){finishedGameState.dispose();};
+    public void dispose(){joinLobbyStateGUI.dispose();};
 }

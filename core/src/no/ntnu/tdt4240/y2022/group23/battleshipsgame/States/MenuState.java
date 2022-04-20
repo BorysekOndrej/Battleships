@@ -24,7 +24,7 @@ public class MenuState extends AbstractState {
         if (mainMenu.joinLobbyButtonPressed()){
             goToLobbyState();
         }
-        if (mainMenu.leaderBoardButtonPressed()){
+        if (mainMenu.randomButtonPressed()){
             gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
