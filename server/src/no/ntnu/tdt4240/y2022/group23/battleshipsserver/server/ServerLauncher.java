@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import io.javalin.Javalin;
@@ -249,6 +250,21 @@ public class ServerLauncher {
 		redisStorage.setELO(looserUserID, elos.getRight().toString());
 	}
 
+	public static void healthcheck(Context ctx) {
+		HealthCheck healthCheck = new HealthCheck();
+		Map<String, String> result = healthCheck.getResult();
+
+		int returnCode = 200;
+		for (String key: result.keySet()) {
+			if (key.startsWith("error_")) {
+				returnCode = 500;
+				break;
+			}
+		}
+
+		ctx.status(returnCode).json(result);
+	}
+
 
 	public static void main (String[] arg) {
 		logger.info("Server project started");
@@ -276,6 +292,8 @@ public class ServerLauncher {
 		app.post("/create_lobby", ServerLauncher::create_lobby);
 
 		app.post("/elo", ServerLauncher::elo_get);
+
+		app.get("/healthcheck", ServerLauncher::healthcheck);
 	}
 
 }
