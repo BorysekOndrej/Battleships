@@ -25,27 +25,27 @@ public class RedisStorage {
 
     // todo: set TTL
 
-    void addUserToMatchmakingQueue(String userID){
+    void addUserToMatchmakingQueue(String userID, String queue){
         if (userID.isEmpty()){
             return;
         }
         try (Jedis jedis = pool.getResource()) {
-            jedis.rpush("matchmaking", userID);
+            jedis.rpush(queue, userID);
         }
     }
 
-    ImmutablePair<String, String> getTwoUsersFromMatchmaking(){
+    ImmutablePair<String, String> getTwoUsersFromMatchmaking(String queue){
         try (Jedis jedis = pool.getResource()) {
-            if (jedis.llen("matchmaking") < 2) {
+            if (jedis.llen(queue) < 2) {
                 return null;
             }
 
-            String user1 = jedis.lpop("matchmaking");
-            String user2 = jedis.lpop("matchmaking");
+            String user1 = jedis.lpop(queue);
+            String user2 = jedis.lpop(queue);
 
             if (user1 == null || user2 == null) {
-                if (user1 == null) { addUserToMatchmakingQueue(user2); }
-                if (user2 == null) { addUserToMatchmakingQueue(user1); }
+                if (user1 == null) { addUserToMatchmakingQueue(user2, queue); }
+                if (user2 == null) { addUserToMatchmakingQueue(user1, queue); }
                 return null;
             }
 

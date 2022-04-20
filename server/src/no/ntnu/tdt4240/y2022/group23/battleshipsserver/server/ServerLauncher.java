@@ -40,13 +40,13 @@ public class ServerLauncher {
 
 		String userID = getUserID(ctx);
 
-		String privateLobby = ctx.formParam("privateLobby");
-		assert "false".equals(privateLobby);
+		String privateLobby = ctx.formParamAsClass("privateLobby", String.class).get();
+		String matchmakingQueue = "true".equals(privateLobby) ? "matchmaking_casual" : "matchmaking_ranked";
 
-		redisStorage.addUserToMatchmakingQueue(userID);
+		redisStorage.addUserToMatchmakingQueue(userID, matchmakingQueue);
 		ctx.status(200).result("Added to matchmaking set");
 
-		ImmutablePair<String, String> twoUsersFromMatchmaking = redisStorage.getTwoUsersFromMatchmaking();
+		ImmutablePair<String, String> twoUsersFromMatchmaking = redisStorage.getTwoUsersFromMatchmaking(matchmakingQueue);
 		if (twoUsersFromMatchmaking != null){
 			Lobby lobby = new Lobby(false);
 			lobby.addUser(twoUsersFromMatchmaking.left);
