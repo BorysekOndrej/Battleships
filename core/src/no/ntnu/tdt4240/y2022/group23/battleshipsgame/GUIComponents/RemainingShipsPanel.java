@@ -110,7 +110,7 @@ public class RemainingShipsPanel implements IRenderable {
         if(markedShips == null) return null;
         return this.remainingShips.get(markedShips).getValue0();
     }
-    
+
     @Override
     public void handleInput() {
         if(enabled){
