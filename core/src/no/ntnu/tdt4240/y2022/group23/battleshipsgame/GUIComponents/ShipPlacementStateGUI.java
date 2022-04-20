@@ -55,7 +55,6 @@ public class ShipPlacementStateGUI implements IRenderable {
         return timer.runOut();
     }
 
-
     ///// shipsPanel methods
 
     // if disabled interaction with the user is disabled; ships cannot be marked
@@ -63,7 +62,7 @@ public class ShipPlacementStateGUI implements IRenderable {
         shipsPanel.setEnabled(enabled);
     }
 
-    public void setData(List<Pair<IShip, Integer>> remainingShips) {
+    public void setShipsPanel(List<Pair<IShip, Integer>> remainingShips) {
         shipsPanel.setData(remainingShips);
     }
 
@@ -82,7 +81,7 @@ public class ShipPlacementStateGUI implements IRenderable {
     }
 
     ///// gameBoardPanel methods
-    public void setData(GameBoard board){
+    public void setGameBoardPanel(GameBoard board){
         gameBoardPanel.setData(board);
     }
 

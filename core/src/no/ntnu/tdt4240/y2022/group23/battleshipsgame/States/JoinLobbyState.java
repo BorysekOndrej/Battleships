@@ -17,6 +17,7 @@ public class JoinLobbyState extends AbstractLobbyState{
 
     @Override
     public void handleInput() throws CommunicationTerminated {
+        joinLobbyStateGUI.handleInput();
         if (joinLobbyStateGUI.backButtonPressed()){
             lobbyAPIClient.endCommunication();
             goToMenu();
@@ -34,6 +35,7 @@ public class JoinLobbyState extends AbstractLobbyState{
     @Override
     public void update(float dt) throws CommunicationTerminated {
         handleInput();
+        joinLobbyStateGUI.update(dt);
         if (lobbySuccessfullyJoined == null){
             lobbySuccessfullyJoined = lobbyAPIClient.wasLobbyJoinSuccessful();
         }

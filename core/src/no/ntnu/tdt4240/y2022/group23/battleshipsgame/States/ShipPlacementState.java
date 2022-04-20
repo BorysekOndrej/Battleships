@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ShipPlacementStateGUI;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
@@ -38,6 +39,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     private ShipPlacements shipPlacements;
     private List<Pair<IShip, Integer>> remainingShips;
 
+    private ShipPlacementStateGUI shipPlacementStateGUI;
     private GameBoardPanel gameBoardPanel;
     private TimerPanel timerPanel;
     private RemainingShipsPanel remainingShipsPanel;
@@ -69,6 +71,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         timerPanel = new TimerPanel(BattleshipsGame.WIDTH - 262 - 37, 125 + 37); //x and y are placeholders
         gameBoardPanel = new GameBoardPanel(200, 400); //x and y are placeholders
         remainingShipsPanel = new RemainingShipsPanel(37, 1100);
+        shipPlacementStateGUI = new ShipPlacementStateGUI();
 
         gameBoardPanel.addGameBoardObserver(gameBoardObserver);
         timerPanel.startTimer(30);//Starts timer with 30 seconds
@@ -141,6 +144,8 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     @Override
     public void gameBoardTouch(Coords coords){
         selectedShip = remainingShipsPanel.selectedShipType();
+
+        //RectangularShip placedShip = new RectangularShip(coords,selectedShip.getType(),selectedShip.getOrientation());
         //Change coords of ship to actual coords
         //selectedShip.setPositions();
 
