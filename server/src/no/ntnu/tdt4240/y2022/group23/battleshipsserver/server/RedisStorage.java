@@ -120,6 +120,20 @@ public class RedisStorage {
         return lobby.getOpponentID(userID);
     }
 
+    String getELO(String userID) {
+        try (Jedis jedis = pool.getResource()) {
+            jedis.setnx("elo_"+userID, "1500");
+            return jedis.get("elo_"+userID);
+        }
+    }
+
+    void setELO(String userID, String elo_value) {
+        try (Jedis jedis = pool.getResource()) {
+            jedis.set("elo_"+userID, elo_value);
+        }
+    }
+
+
     // --- SINGLETON STUFF ---
 
     public static RedisStorage getInstance(){

@@ -4,10 +4,12 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import io.javalin.Javalin;
@@ -132,6 +134,12 @@ public class ServerLauncher {
 
 		FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
 		FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
+
+
+		if (switchedTurn == NextTurn.GAME_OVER && !Lobby.getUsersGame(userID).isPrivate){
+			elo_update_after_game(userID, opponentID);
+		}
+
 	}
 
 	public static void timeout(Context ctx) throws FirebaseMessagingException {
@@ -196,6 +204,52 @@ public class ServerLauncher {
 		ctx.status(200).result("User added to Lobby");
 	}
 
+	public static void elo_get(Context ctx) {
+		String userID = getUserID(ctx);
+		String elo = RedisStorage.getInstance().getELO(userID);
+
+		ctx.status(200).result("ELO is "+elo+". Will send via FCM message.");
+
+		HashMap<String, String> map = new HashMap<>();
+		map.put("elo", elo);
+		FirebaseMessenger.sendMessage(userID, ServerClientMessage.ELO_UPDATE, map);
+	}
+
+	private static Pair<Integer, Integer> elo_calculate(Integer elo1, Integer elo2, int winner){
+
+		double r1 = Math.pow(10, elo1.doubleValue()/400);
+		double r2 = Math.pow(10, elo2.doubleValue()/400);
+
+		double e1 = r1 / (r1 + r2);
+		double e2 = r2 / (r1 + r2);
+
+		double k = 32;
+
+		double s1 = winner == 0 ? 1 : 0;
+		double s2 = winner == 1 ? 1 : 0;
+
+		double elo1_final = elo1 + k * (s1 - e1);
+		double elo2_final = elo2 + k * (s2 - e2);
+
+		return Pair.of(
+				(int)Math.round(elo1_final),
+				(int)Math.round(elo2_final)
+		);
+	}
+
+	private static void elo_update_after_game(String winnerUserID, String looserUserID){
+		RedisStorage redisStorage = RedisStorage.getInstance();
+
+		String winner_elo = redisStorage.getELO(winnerUserID);
+		String looser_elo = redisStorage.getELO(looserUserID);
+
+		Pair<Integer, Integer> elos = elo_calculate(Integer.valueOf(winner_elo), Integer.valueOf(looser_elo), 0);
+
+		redisStorage.setELO(winnerUserID, elos.getLeft().toString());
+		redisStorage.setELO(looserUserID, elos.getRight().toString());
+	}
+
+
 	public static void main (String[] arg) {
 		logger.info("Server project started");
 		Javalin app = Javalin.create().start(7070);
@@ -220,5 +274,8 @@ public class ServerLauncher {
 		app.post("/join_matchmaking", ServerLauncher::join_matchmaking);
 		app.post("/join_lobby", ServerLauncher::join_lobby);
 		app.post("/create_lobby", ServerLauncher::create_lobby);
+
+		app.post("/elo", ServerLauncher::elo_get);
 	}
+
 }
