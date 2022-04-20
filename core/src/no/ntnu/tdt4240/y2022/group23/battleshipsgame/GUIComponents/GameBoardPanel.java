@@ -13,7 +13,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
 public class GameBoardPanel implements IRenderable {
-    private GameBoardObserver observer;
+    //private GameBoardObserver observer;
 
     private static final int FIELD_SIZE = 86;
     private static final int GAME_BOARD_OFFSET = 2;
@@ -60,7 +60,7 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(4,0), GameBoardField.WATER);
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
-        gameBoard.set(new Coords(4,4), GameBoardField.WATER);
+        gameBoard.set(new Coords(4,4), GameBoardField.COLLIDE);
     }
 
     public void setEnabled(boolean enabled){
@@ -110,7 +110,7 @@ public class GameBoardPanel implements IRenderable {
     }
 
     //Adds observer to the observable object
-    public void addGameBoardObserver(GameBoardObserver observer) { this.observer = observer;}
+    //public void addGameBoardObserver(GameBoardObserver observer) { this.observer = observer;}
 
     private void drawMarkedField(SpriteBatch sb, Coords coords){
         if(coords != null){
@@ -126,7 +126,7 @@ public class GameBoardPanel implements IRenderable {
                 int x = Gdx.input.getX();
                 int y = Gdx.input.getY();
                 markedFieldCoords = getFieldCoords(x, y);
-                if (markedFieldCoords != null) observer.notice(markedFieldCoords);
+                //if (markedFieldCoords != null) observer.notice(markedFieldCoords);
             }
         }
 
