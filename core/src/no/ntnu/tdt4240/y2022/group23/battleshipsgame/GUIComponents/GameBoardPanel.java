@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 //import com.badlogic.gdx.math.Rectangle;
 
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
@@ -13,6 +14,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 
 public class GameBoardPanel implements IRenderable {
+<<<<<<< Updated upstream
     //private GameBoardObserver observer;
 
     private static final int FIELD_SIZE = 86;
@@ -79,6 +81,19 @@ public class GameBoardPanel implements IRenderable {
         else  {
             return null;
         }
+=======
+    private static final int FIELD_SIZE = 86;
+    private static final int GAMEBORAD_OFFSET = 2;
+    private GameBoard gameBoard;
+
+    public Coords getFieldCoords(int x, int y){
+        return new Coords((int) (x - GAMEBORAD_OFFSET) / FIELD_SIZE - 1, (int) (y - GAMEBORAD_OFFSET) / FIELD_SIZE - 1);
+    }
+
+    @Override
+    public void handleInput() {
+        throw new UnsupportedOperationException("not implemented");
+>>>>>>> Stashed changes
     }
 
     private boolean coordsValid(Coords coords){
