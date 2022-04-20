@@ -3,6 +3,8 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
@@ -13,6 +15,7 @@ import redis.clients.jedis.JedisPool;
 public class RedisStorage {
     private static RedisStorage INSTANCE;
     public JedisPool pool;
+    protected static List<String> matchmakingQueues = Arrays.asList("matchmaking_ranked", "matchmaking_casual");
 
     private RedisStorage(){
         String redisLocation = System.getenv("REDIS_LOCATION");
@@ -31,6 +34,17 @@ public class RedisStorage {
         }
         try (Jedis jedis = pool.getResource()) {
             jedis.rpush(queue, userID);
+        }
+    }
+
+    void removeUserFromMatchmakingQueues(String userID){
+        if (userID.isEmpty()){
+            return;
+        }
+        try (Jedis jedis = pool.getResource()) {
+            for (String queue: RedisStorage.matchmakingQueues) {
+                jedis.lrem(queue, 0, userID);
+            }
         }
     }
 

@@ -1,9 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import redis.clients.jedis.Jedis;
@@ -37,10 +35,8 @@ public class HealthCheck {
 
 
     private void matchmaking_queues(){
-        List<String> queues = Arrays.asList("matchmaking_ranked", "matchmaking_casual");
-
         try (Jedis jedis = pool.getResource()) {
-            for (String queue: queues) {
+            for (String queue: RedisStorage.matchmakingQueues) {
                 long queueLen = jedis.llen(queue);
                 result.put(queue+"_count", String.valueOf(queueLen));
 

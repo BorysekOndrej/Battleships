@@ -169,6 +169,8 @@ public class ServerLauncher {
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
 		String userID = getUserID(ctx);
 
+		RedisStorage.getInstance().removeUserFromMatchmakingQueues(userID);
+
 		Lobby lobby = Lobby.getUsersGame(userID);
 		if (lobby == null){
 			return; // todo:
