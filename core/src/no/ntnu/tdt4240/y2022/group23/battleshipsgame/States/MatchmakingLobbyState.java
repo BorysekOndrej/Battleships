@@ -16,6 +16,7 @@ public class MatchmakingLobbyState extends AbstractLobbyState{
 
     @Override
     public void handleInput() throws CommunicationTerminated {
+        randOppLobbyStateGUI.handleInput();
         if (randOppLobbyStateGUI.backButtonPressed()){
             lobbyAPIClient.endCommunication();
             goToMenu();
@@ -25,6 +26,7 @@ public class MatchmakingLobbyState extends AbstractLobbyState{
     @Override
     public void update(float dt) throws CommunicationTerminated {
         handleInput();
+        randOppLobbyStateGUI.update(dt);
         if (lobbyAPIClient.receiveCanPlacementStart()){
             goToShipPlacement();
         }

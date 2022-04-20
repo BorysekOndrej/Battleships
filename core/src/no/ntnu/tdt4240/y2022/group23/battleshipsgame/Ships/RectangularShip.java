@@ -50,4 +50,16 @@ public class RectangularShip extends AbstractShip {
         }
         this.setPositions(newPositions);
     }
+
+    @Override
+    public void placeShip(Coords start){
+        List<Coords> positions = new ArrayList<Coords>();
+        for(int i=0;i<this.getType();i++){
+            positions.add(new Coords(
+                    this.getOrientation() ? start.x+i : start.x,
+                    this.getOrientation() ? start.y : start.y+i
+            ));
+        }
+        this.setPositions(positions);
+    }
 }

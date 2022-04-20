@@ -17,6 +17,7 @@ public class CreateLobbyState extends AbstractLobbyState{
 
     @Override
     public void handleInput() throws CommunicationTerminated {
+        createLobbyStateGUI.handleInput();
         if (createLobbyStateGUI.backButtonPressed()){
             lobbyAPIClient.endCommunication();
             goToMenu();
@@ -26,6 +27,7 @@ public class CreateLobbyState extends AbstractLobbyState{
     @Override
     public void update(float dt) throws CommunicationTerminated {
         handleInput();
+        createLobbyStateGUI.update(dt);
         if (gameId == null){
             gameId = lobbyAPIClient.receiveGameId();
         }

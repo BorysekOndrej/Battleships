@@ -12,6 +12,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
 public class ShipPlacementStateGUI implements IRenderable {
     final static public int BIG_GAP = 63;
@@ -62,7 +63,7 @@ public class ShipPlacementStateGUI implements IRenderable {
         shipsPanel.setEnabled(enabled);
     }
 
-    public void setShipsPanel(List<Pair<IShip, Integer>> remainingShips) {
+    public void setShips(List<Pair<IShip, Integer>> remainingShips) {
         shipsPanel.setData(remainingShips);
     }
 
@@ -81,7 +82,7 @@ public class ShipPlacementStateGUI implements IRenderable {
     }
 
     ///// gameBoardPanel methods
-    public void setGameBoardPanel(GameBoard board){
+    public void setGameBoard(GameBoard board){
         gameBoardPanel.setData(board);
     }
 
@@ -89,9 +90,15 @@ public class ShipPlacementStateGUI implements IRenderable {
         gameBoardPanel.setEnabled(enabled);
     }
 
-
+    public void addGameBoardObserver(GameBoardObserver gameBoardObserver){
+        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
+    }
     @Override
-    public void handleInput(){}
+    public void handleInput(){
+        gameBoardPanel.handleInput();
+        shipsPanel.handleInput();
+        timer.handleInput();
+    }
 
     @Override
     public void update(float dt) {

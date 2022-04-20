@@ -40,9 +40,6 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     private List<Pair<IShip, Integer>> remainingShips;
 
     private ShipPlacementStateGUI shipPlacementStateGUI;
-    private GameBoardPanel gameBoardPanel;
-    private TimerPanel timerPanel;
-    private RemainingShipsPanel remainingShipsPanel;
 
     private IShip selectedShip = null;
     private GameBoard gameBoardWithNewShip = null;
@@ -68,36 +65,32 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,true),1));
 
         //GUI Components
-        timerPanel = new TimerPanel(BattleshipsGame.WIDTH - 262 - 37, 125 + 37); //x and y are placeholders
-        gameBoardPanel = new GameBoardPanel(200, 400); //x and y are placeholders
-        remainingShipsPanel = new RemainingShipsPanel(37, 1100);
         shipPlacementStateGUI = new ShipPlacementStateGUI();
 
-        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
-        timerPanel.startTimer(30);//Starts timer with 30 seconds
-        //Should be the timer
+        shipPlacementStateGUI.addGameBoardObserver(gameBoardObserver);
+        shipPlacementStateGUI.startTimer(30);//Starts timer with 30 seconds
     }
 
     @Override
     public void handleInput(){
-        //Button confirmation -> collocateShip();
-
-        if (!timerPanel.runOut()){ //If the user has time still
-            if (Gdx.input.justTouched() && selectedShip != null){
+        if (!shipPlacementStateGUI.runOut()){ //If the user has time still
+            shipPlacementStateGUI.handleInput();
+            if (shipPlacementStateGUI.confirmButtonPressed()){
+                collocateShip();
+            }
+            else if (Gdx.input.justTouched() && selectedShip != null){
                 rotateShip();
             }
-            remainingShipsPanel.handleInput();
-            gameBoardPanel.handleInput();
-            timerPanel.handleInput();
         }
     };
 
     @Override
     public void update(float dt) throws CommunicationTerminated {
+        shipPlacementStateGUI.update(dt);
         Quartet<Boolean, GameBoard, GameBoard, NextTurn > gameInitialization = gameAPIClient.receiveCanGameStart();
         handleInput();
 
-        if (timerPanel.runOut()){ //If timer runs out go to ViewMyBoard
+        if (shipPlacementStateGUI.runOut()){ //If timer runs out go to ViewMyBoard
             if (hasShipRemainings()){
                 goToFinishedGame();
                 gameAPIClient.endCommunication(); //Catch from the other user (?)
@@ -111,7 +104,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     //Changes state to view my board state
     private void goToViewMyBoard(){
-        gsm.set(new ViewMineBoardState(gsm));
+        gsm.set(new ViewBoardState(gsm));
     };
 
     //Changes state to finished game state
@@ -143,15 +136,12 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     @Override
     public void gameBoardTouch(Coords coords){
-        selectedShip = remainingShipsPanel.selectedShipType();
-
-        //RectangularShip placedShip = new RectangularShip(coords,selectedShip.getType(),selectedShip.getOrientation());
-        //Change coords of ship to actual coords
-        //selectedShip.setPositions();
+        selectedShip = shipPlacementStateGUI.selectedShipType();
+        selectedShip.placeShip(coords);
 
         if (selectedShip != null){
             gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
-            gameBoardPanel.setData(gameBoardWithNewShip);
+            shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
         }
     }
 
@@ -162,18 +152,18 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
                 shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),selectedShip);
 
                 subtractRemaining(selectedShip);
-                remainingShipsPanel.setData(remainingShips);
+                shipPlacementStateGUI.setShips(remainingShips);
 
                 gameBoard = new GameBoard(gameBoardWithNewShip);
                 selectedShip = null;
                 gameBoardWithNewShip = null;
-                gameBoardPanel.setData(gameBoard);
+                shipPlacementStateGUI.setGameBoard(gameBoard);
             }
             catch (Exception IllegalArgumentException){
                 //Could not position ship in ship placement
                 selectedShip = null;
                 gameBoardWithNewShip = null;
-                gameBoardPanel.setData(gameBoard); //Eliminates the showing of red
+                shipPlacementStateGUI.setGameBoard(gameBoard); //Eliminates the showing of red
             }
         }
     }
@@ -182,20 +172,16 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     private void rotateShip(){
         selectedShip.rotateClockwise();
         gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
-        gameBoardPanel.setData(gameBoardWithNewShip);
+        shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
     }
 
     @Override
     public void render(SpriteBatch sb){
-        gameBoardPanel.render(sb);
-        remainingShipsPanel.render(sb);
-        timerPanel.render(sb);
-    };
+        shipPlacementStateGUI.render(sb);
+    }
 
     @Override
     public void dispose(){
-        gameBoardPanel.dispose();
-        remainingShipsPanel.dispose();
-        timerPanel.dispose();
-    };
+        shipPlacementStateGUI.dispose();
+    }
 }
