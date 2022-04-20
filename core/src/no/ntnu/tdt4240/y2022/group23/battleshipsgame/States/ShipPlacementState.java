@@ -1,16 +1,10 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPanel;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ShipPlacementStateGUI;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Timer;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.GameAPIClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
@@ -87,7 +81,6 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     @Override
     public void update(float dt) throws CommunicationTerminated {
         shipPlacementStateGUI.update(dt);
-        Quartet<Boolean, GameBoard, GameBoard, NextTurn > gameInitialization = gameAPIClient.receiveCanGameStart();
         handleInput();
 
         if (shipPlacementStateGUI.runOut()){ //If timer runs out go to ViewMyBoard
@@ -95,7 +88,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
                 goToFinishedGame();
                 gameAPIClient.endCommunication(); //Catch from the other user (?)
             }
-            else if (gameInitialization.getValue0()){
+            else {
                 gameAPIClient.sendShipPlacement(shipPlacements);
                 goToViewMyBoard();
             }
@@ -104,7 +97,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     //Changes state to view my board state
     private void goToViewMyBoard(){
-        gsm.set(new ViewBoardState(gsm));
+        gsm.set(new PlayState(gsm));
     };
 
     //Changes state to finished game state

@@ -11,7 +11,9 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
 public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     private final TurnIndicator turnIndicator;
@@ -20,14 +22,22 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
 
     public PlayStateGUI() {
         super();
-        turnIndicator = new TurnIndicator(BIG_GAP, BattleshipsGame.HEIGHT - ACTION_PANEL_HEIGHT - BIG_GAP, false);
+        turnIndicator = new TurnIndicator(BIG_GAP, BattleshipsGame.HEIGHT - ACTION_PANEL_HEIGHT - BIG_GAP, NextTurn.MY_TURN);
         actionPanel = new ActionPanel(BIG_GAP, BIG_GAP * 2 + SMALL_GAP + GAME_BOARD_SIZE + SHIPS_PANEL_HEIGHT);
         switchButton = new SimpleButton(BIG_GAP + SMALL_GAP + ACTION_PANEL_WIDTH , BIG_GAP * 2 + GAME_BOARD_SIZE, new Texture("play_state/switch.png"));
     }
 
+    //Changes all enable values for input fields
+    public void setEnabled(boolean enabled){
+        setShipPanelEnabled(enabled);
+        setConfirmButtonEnabled(enabled);
+        setGameBoardPanelEnabled(enabled);
+        setSwitchButtonEnabled(enabled);
+    }
+
     ///// turnIndicator methods
-    public void setTurnIndicator(boolean yourTurn){
-        turnIndicator.setYourTurn(yourTurn);
+    public void setTurnIndicator(NextTurn turnHolder){
+        turnIndicator.setTurnHolder(turnHolder);
     }
 
     ///// actionPanel methods
@@ -36,7 +46,7 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     }
 
     //Below Boolean in argument stands for if action is active
-    public void setActionsData(List<Pair<AbstractAction, Boolean>> actions) {
+    public void setActions(List<Pair<AbstractAction, Boolean>> actions) {
         actionPanel.setData(actions);
     }
 
@@ -52,11 +62,11 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     ///// shipsPanel methods
 
     // if disabled interaction with the user is disabled; ships cannot be marked
-    public void setEnabled(boolean enabled){
+    public void setShipPanelEnabled(boolean enabled){
         super.shipsPanel.setEnabled(enabled);
     }
 
-    public void setData(List<Pair<IShip, Integer>> remainingShips) {
+    public void setShips(List<Pair<IShip, Integer>> remainingShips) {
         super.shipsPanel.setData(remainingShips);
     }
 
@@ -83,12 +93,16 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     }
 
     ///// gameBoardPanel methods
-    public void setData(GameBoard board){
+    public void setGameBoard(GameBoard board){
         super.gameBoardPanel.setData(board);
     }
 
     public void setGameBoardPanelEnabled(boolean enabled){
         super.gameBoardPanel.setEnabled(enabled);
+    }
+
+    public void addGameBoardObserver(GameBoardObserver gameBoardObserver){
+        gameBoardPanel.addGameBoardObserver(gameBoardObserver);
     }
 
     @Override
