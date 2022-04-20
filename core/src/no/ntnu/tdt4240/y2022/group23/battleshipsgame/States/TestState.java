@@ -5,6 +5,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.GameBoardPane
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.PlayStateGUI;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.RemainingShipsPanel;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ShipPlacementStateGUI;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.SimpleButton;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TimerPanel;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.TurnIndicator;
@@ -17,10 +18,13 @@ import org.javatuples.Pair;
 
 public class TestState extends AbstractState {
     private PlayStateGUI playState;
+    //private ShipPlacementStateGUI shipPlacementStateGUI;
 
     public TestState(GameStateManager gsm) {
         super(gsm);
         playState = new PlayStateGUI();
+        //shipPlacementStateGUI = new ShipPlacementStateGUI();
+        playState.setGameBoardPanelEnabled(false);
     }
 
     @Override

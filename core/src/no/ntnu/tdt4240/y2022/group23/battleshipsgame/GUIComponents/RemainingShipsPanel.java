@@ -23,8 +23,6 @@ public class RemainingShipsPanel implements IRenderable {
     private final static int BONDS_HEIGHT = 175;
     private final static int BONDS_OFFSET = 37;
 
-    private Boolean collocateShip = false;
-
     private final Texture panelTex;
     private final Texture ship1markedTex;
     private final Texture ship2markedTex;
@@ -111,7 +109,7 @@ public class RemainingShipsPanel implements IRenderable {
         if(markedShips == null) return null;
         return this.remainingShips.get(markedShips).getValue0();
     }
-
+    
     @Override
     public void handleInput() {
         if(enabled){

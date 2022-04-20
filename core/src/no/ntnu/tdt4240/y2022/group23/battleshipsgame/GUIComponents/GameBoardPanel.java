@@ -36,6 +36,8 @@ public class GameBoardPanel implements IRenderable {
     private final int xPos;
     private final int yPos;
 
+    private boolean enabled;
+
     public GameBoardPanel(int x, int y){
         xPos = x;
         yPos = y;
@@ -46,6 +48,7 @@ public class GameBoardPanel implements IRenderable {
         sunkField = new Texture("game_board/sunk.png");
         shipField = new Texture("game_board/ship.png");
         markedField = new Texture("game_board/marked_field.png");
+        enabled = true;
 
         //DEBUGGING ONLY
         gameBoard = new GameBoard(GAME_BOARD_ROWS, GAME_BOARD_ROWS);
@@ -57,6 +60,10 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
         gameBoard.set(new Coords(4,4), GameBoardField.WATER);
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
     }
 
     public void setData(GameBoard board){
@@ -112,12 +119,15 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void handleInput(){
-        if(Gdx.input.justTouched()){
-            int x = Gdx.input.getX();
-            int y = Gdx.input.getY();
-            markedFieldCoords = getFieldCoords(x, y);
-            if (markedFieldCoords != null) observer.notice(markedFieldCoords);
+        if(enabled){
+            if(Gdx.input.justTouched()){
+                int x = Gdx.input.getX();
+                int y = Gdx.input.getY();
+                markedFieldCoords = getFieldCoords(x, y);
+                if (markedFieldCoords != null) observer.notice(markedFieldCoords);
+            }
         }
+
     }
 
     public void update(float dt){
