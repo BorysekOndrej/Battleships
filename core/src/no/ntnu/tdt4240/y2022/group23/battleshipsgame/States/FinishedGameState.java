@@ -2,14 +2,14 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.FinishedGame;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.FinishedGameStateGUI;
 
 public class FinishedGameState extends AbstractState {
-    private FinishedGame finishedGame;
+    private FinishedGameStateGUI finishedGameStateGUI;
 
     protected FinishedGameState(GameStateManager gsm, boolean isPlayerWinner) {
         super(gsm);
-        finishedGame = new FinishedGame();
+        finishedGameStateGUI = new FinishedGameStateGUI(isPlayerWinner);
     }
 
     //Changes state to menu state
@@ -19,23 +19,23 @@ public class FinishedGameState extends AbstractState {
 
     @Override
     public void handleInput() {
-        if (finishedGame.goToMenuButtonPressed()){
+        if (finishedGameStateGUI.playAgainButtonPressed()){
             goToMenu();
         }
     }
 
     @Override
     public void update(float dt) {
-        finishedGame.update(dt);
+        finishedGameStateGUI.update(dt);
     }
 
     @Override
     public void render(SpriteBatch sb) {
-        finishedGame.render(sb);
+        finishedGameStateGUI.render(sb);
     }
 
     @Override
     public void dispose() {
-        finishedGame.dispose();
+        finishedGameStateGUI.dispose();
     }
 }

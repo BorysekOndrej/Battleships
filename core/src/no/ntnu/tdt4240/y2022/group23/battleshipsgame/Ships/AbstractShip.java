@@ -37,7 +37,10 @@ public abstract class AbstractShip implements IShip {
             }
         }
         return true;
+    }
 
+    public int getType(){
+        return this.parts;
     }
 
     public void setType(int parts){

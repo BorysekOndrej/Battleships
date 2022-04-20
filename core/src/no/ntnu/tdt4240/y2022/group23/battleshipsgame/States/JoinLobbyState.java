@@ -1,21 +1,29 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.JoinLobbyStateGUI;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
 
 public class JoinLobbyState extends AbstractLobbyState{
     private String gameId;
     private Boolean lobbySuccessfullyJoined;
+    private JoinLobbyStateGUI joinLobbyStateGUI;
 
     protected JoinLobbyState(GameStateManager gsm) {
         super(gsm);
+        joinLobbyStateGUI = new JoinLobbyStateGUI();
     }
 
     @Override
     public void handleInput() throws CommunicationTerminated {
-        super.handleInput();
+        if (joinLobbyStateGUI.backButtonPressed()){
+            lobbyAPIClient.endCommunication();
+            goToMenu();
+        }
 
         //Read code
-        if (true){ //PLACEHOLDER FOR USER CLICKING BUTTON TO JOIN LOBBY
+        if (joinLobbyStateGUI.getCode() != null){
             if (gameId == null){
                 gameId = lobbyAPIClient.receiveGameId();
                 lobbyAPIClient.sendJoinLobbyRequest(gameId); //Check this
@@ -35,7 +43,18 @@ public class JoinLobbyState extends AbstractLobbyState{
         else{
             lobbySuccessfullyJoined = null;
             gameId = null;
-            //Show message that the connection was unsuccessful
+            lobbyAPIClient.endCommunication();
+            goToMenu();
         }
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        joinLobbyStateGUI.render(sb);
+    }
+
+    @Override
+    public void dispose() {
+        joinLobbyStateGUI.dispose();
     }
 }
