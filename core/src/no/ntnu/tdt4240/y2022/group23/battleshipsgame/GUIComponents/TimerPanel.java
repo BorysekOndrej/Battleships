@@ -11,14 +11,14 @@ public class TimerPanel implements IRenderable {
     private int timeLeft;
     private final Texture panel;
     private final BitmapFont font;
-    private final int xCord;
-    private final int yCord;
+    private final int xPos;
+    private final int yPos;
     private boolean run;
     private float currentPeriod;
 
     public TimerPanel(int x, int y){
-        xCord = x;
-        yCord = y;
+        xPos = x;
+        yPos = y;
         timeLeft = 0;
         run = false;
         font = new BitmapFont();
@@ -57,8 +57,8 @@ public class TimerPanel implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.draw(panel, xCord, yCord);
-        font.draw(sb, String.format("%02d:%02d\n", timeLeft/60, timeLeft%60), xCord + 20, yCord + 115);
+        sb.draw(panel, xPos, yPos);
+        font.draw(sb, String.format("%02d:%02d\n", timeLeft/60, timeLeft%60), xPos + 20, yPos + 115);
     }
 
     @Override

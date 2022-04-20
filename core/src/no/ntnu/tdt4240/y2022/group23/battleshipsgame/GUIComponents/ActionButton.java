@@ -1,11 +1,8 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class ActionButton implements IRenderable {
@@ -22,11 +19,11 @@ public class ActionButton implements IRenderable {
     }
 
     public int getXPos(){
-        return button.getPosX();
+        return button.getXPos();
     }
 
     public int getYPos(){
-        return button.getPosY();
+        return button.getYPos();
     }
 
     public boolean buttonTouched(){
@@ -53,7 +50,7 @@ public class ActionButton implements IRenderable {
     @Override
     public void render(SpriteBatch sb) {
         button.render(sb);
-        if(!active) sb.draw(inactiveTex, button.getPosX(), button.getPosY());
+        if(!active) sb.draw(inactiveTex, button.getXPos(), button.getYPos());
     }
 
     @Override

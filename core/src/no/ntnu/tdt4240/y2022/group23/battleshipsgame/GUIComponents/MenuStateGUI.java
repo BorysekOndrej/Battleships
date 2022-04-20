@@ -23,8 +23,8 @@ public class MenuStateGUI implements IRenderable {
         joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("main_menu/join_lobby.png"));
 
         randomButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/random.png"));
-
     }
+
     public boolean createLobbyButtonPressed(){
         return createLobbyButton.buttonTouched();
     }
