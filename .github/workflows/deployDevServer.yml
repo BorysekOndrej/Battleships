@@ -20,8 +20,7 @@ jobs:
           curl -m 10 --retry 5 ${{secrets.REPORT_URL}}/start
           cd Battleships
           git fetch
-          git checkout ${{ github.ref_name }}
-          git pull --force
+          git reset --hard origin/${{ github.ref_name }}
           ls -la
           docker-compose up --build -d
           curl -m 10 --retry 5 ${{secrets.REPORT_URL}}
