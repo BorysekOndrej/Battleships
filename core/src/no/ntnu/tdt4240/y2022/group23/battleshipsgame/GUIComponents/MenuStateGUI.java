@@ -24,17 +24,17 @@ public class MenuStateGUI implements IRenderable {
     public MenuStateGUI(){
         background = new Texture("main_menu/main_menu_background.png");
 
-        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));
+        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 + BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));
 
-        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("main_menu/join_lobby.png"));
+        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT, new Texture("main_menu/join_lobby.png"));
 
-        practiseButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/practise.png"));
+        practiseButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*5/2, new Texture("main_menu/practise.png"));
 
-        rankedButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*5, new Texture("main_menu/ranked.png"));
+        rankedButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*4, new Texture("main_menu/ranked.png"));
 
         font = new BitmapFont();
         font.setColor(Color.BLACK);
-        font.getData().setScale(4);
+        font.getData().setScale(3);
     }
 
     public void setRankingScore(String rankingScore) {
