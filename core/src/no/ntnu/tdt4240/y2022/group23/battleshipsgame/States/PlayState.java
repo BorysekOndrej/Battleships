@@ -35,7 +35,6 @@ public class PlayState extends AbstractState implements IGameBoardState {
     private GameBoardObserver gameBoardObserver;
 
     private List<IShip> ships;
-    private ShipPlacements shipPlacements;
 
     //Action manager
     private List<Pair<AbstractAction, Boolean>> actions;
@@ -132,12 +131,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
                     //What about changed coords?
                     //playStateGUI.setShips(newGameState.getUnsunkShips());
 
-                    if (newGameState.thisPlayerWon()){
+                    if (newGameState.thisPlayerWon()){ //Could be undefined, how to catch?
                         goToWonGame();
-                        gameAPIClient.endCommunication();
-                    }
-                    else if (!newGameState.thisPlayerWon()){ //Could be undefined, how to catch?
-                        goToLostGame();
                         gameAPIClient.endCommunication();
                     }
                 }
@@ -153,13 +148,11 @@ public class PlayState extends AbstractState implements IGameBoardState {
                     //What about changed coords?
                     //playStateGUI.setShips(newGameState.getUnsunkShips());
 
-                    if (newGameState.thisPlayerWon()){
-                        goToWonGame();
-                        gameAPIClient.endCommunication();
-                    }
-                    else if (!newGameState.thisPlayerWon()){ //Could be undefined, how to catch?
-                        goToLostGame();
-                        gameAPIClient.endCommunication();
+                    if (turnHolder == NextTurn.GAME_OVER){ //Is this the way of catching the possible undefine?
+                        if (!newGameState.thisPlayerWon()){
+                            goToLostGame();
+                            gameAPIClient.endCommunication();
+                        }   
                     }
 
                     if (turnsLeftForRadar == 0){ //Radar is ready
@@ -174,16 +167,6 @@ public class PlayState extends AbstractState implements IGameBoardState {
                     timeOutSent = false;
                     actionSent = false;
                 }
-            }
-
-            if (shipPlacements.allSunk(opponentGameBoard)){
-                goToWonGame();
-                gameAPIClient.endCommunication();
-            }
-
-            else if (shipPlacements.allSunk(myGameBoard)){
-                goToLostGame();
-                gameAPIClient.endCommunication();
             }
         }
     }
