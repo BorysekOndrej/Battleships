@@ -11,7 +11,7 @@ public class MatchmakingLobbyState extends AbstractLobbyState{
     protected MatchmakingLobbyState(GameStateManager gsm) {
         super(gsm);
         randOppLobbyStateGUI = new RandOppLobbyStateGUI();
-        lobbyAPIClient.sendJoinMatchmakingRequest();
+        lobbyAPIClient.sendJoinCasualMatchmakingRequest();
     }
 
     @Override
