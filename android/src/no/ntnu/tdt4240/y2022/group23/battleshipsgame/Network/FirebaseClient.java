@@ -6,13 +6,13 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class FirebaseClient extends FirebaseMessagingService implements INetworkClient {
     private static final String TAG = "Firebase client";
-    private Queue<Map<String, String>> notificationQueue = new PriorityQueue<>();
+    private Queue<Map<String, String>> notificationQueue = new LinkedList<>();
     private String firebaseToken;
     private IFirebaseTokenUpdate firebaseUpdateCallback = null;
 
