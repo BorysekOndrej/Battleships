@@ -52,7 +52,14 @@ public class GameBoard implements Serializable {
 
     public GameBoardField get(Coords coords) { return board.get(coords.x).get(coords.y); }
 
-    public void set(Coords coords, GameBoardField field) { board.get(coords.x).set(coords.y, field); }
+    public void set(Coords coords, GameBoardField field) {
+        GameBoardField original = get(coords);
+        if (field != GameBoardField.UNKNOWN
+                && (original != GameBoardField.HIT || field != GameBoardField.SHIP)
+                && (original != GameBoardField.SUNK || field != GameBoardField.HIT)
+        )
+            board.get(coords.x).set(coords.y, field);
+    }
 
     public void apply(List<GameBoardChange> changes) {
         for (GameBoardChange change : changes) {
