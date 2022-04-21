@@ -27,14 +27,6 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
         switchButton = new SimpleButton(BIG_GAP + SMALL_GAP + ACTION_PANEL_WIDTH , BIG_GAP * 2 + GAME_BOARD_SIZE, new Texture("play_state/switch.png"));
     }
 
-    //Changes all enable values for input fields
-    public void setEnabled(boolean enabled){
-        setShipPanelEnabled(enabled);
-        setConfirmButtonEnabled(enabled);
-        setGameBoardPanelEnabled(enabled);
-        setSwitchButtonEnabled(enabled);
-    }
-
     ///// turnIndicator methods
     public void setTurnIndicator(NextTurn turnHolder){
         turnIndicator.setTurnHolder(turnHolder);

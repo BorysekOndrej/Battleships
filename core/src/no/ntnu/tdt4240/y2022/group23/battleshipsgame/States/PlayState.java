@@ -14,7 +14,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameState;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.GameAPIClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
@@ -34,7 +33,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
     //Event listener
     private GameBoardObserver gameBoardObserver;
 
-    private List<IShip> ships;
+    private List<Pair<IShip, Integer>> myUnsunkShips;
+    private List<Pair<IShip, Integer>> opponentUnsunkShips;
 
     //Action manager
     private List<Pair<AbstractAction, Boolean>> actions;
@@ -58,6 +58,7 @@ public class PlayState extends AbstractState implements IGameBoardState {
         //serverInfo = new Quartet<>(false,null,null,null); //MAYBE needed
 
         playStateGUI = new PlayStateGUI();
+        playStateGUI.setSwitchButtonEnabled(true); //Switch button always enabled
 
         gameBoardObserver = new GameBoardObserver(this);
         playStateGUI.addGameBoardObserver(gameBoardObserver);
@@ -84,6 +85,7 @@ public class PlayState extends AbstractState implements IGameBoardState {
             if (serverInfo.getValue0()){
                 canGameStart = true;
             }
+            playStateGUI.startTimer(30);
         }
 
         else { //Game has started
@@ -94,15 +96,17 @@ public class PlayState extends AbstractState implements IGameBoardState {
             playStateGUI.setTurnIndicator(turnHolder);
 
             if (turnHolder == NextTurn.MY_TURN){
-                playStateGUI.setEnabled(true);
-                if (isMyBoardShowing){ //You can not touch your game board
-                    playStateGUI.setGameBoardPanelEnabled(false);
-                }
+                playStateGUI.setConfirmButtonEnabled(true);
+                playStateGUI.setShipPanelEnabled(true);
+                //If my board is showing, game board is untouchable
+                //If opponent is showing, game board is touchable
+                playStateGUI.setGameBoardPanelEnabled(!isMyBoardShowing);
             }
             else if (turnHolder == NextTurn.OTHERS_TURN){
-                playStateGUI.setEnabled(false);
+                playStateGUI.setGameBoardPanelEnabled(false);
+                playStateGUI.setShipPanelEnabled(false);
+                playStateGUI.setConfirmButtonEnabled(false);
             }
-            else{} //What to do if game over?
 
             if (playStateGUI.switchButtonPressed()){
                 if (isMyBoardShowing){
@@ -127,13 +131,16 @@ public class PlayState extends AbstractState implements IGameBoardState {
 
                     opponentGameBoard = newGameState.getBoard();
                     turnHolder = newGameState.getNextTurn();
-                    ships = newGameState.getUnsunkShips(); //And then what?
-                    //What about changed coords?
-                    //playStateGUI.setShips(newGameState.getUnsunkShips());
+                    opponentUnsunkShips = newGameState.getUnsunkShips();
 
-                    if (newGameState.thisPlayerWon()){ //Could be undefined, how to catch?
-                        goToWonGame();
-                        gameAPIClient.endCommunication();
+                    showEnemyBoard(); //Show board that has changed
+                    playStateGUI.startTimer(30); //Restart timer
+
+                    if (turnHolder == NextTurn.GAME_OVER){
+                        if (!newGameState.thisPlayerWon()){ //Is this if necessary? I know that the game is over after my action, I won
+                            goToWonGame();
+                            gameAPIClient.endCommunication();
+                        }
                     }
                 }
             }
@@ -144,12 +151,13 @@ public class PlayState extends AbstractState implements IGameBoardState {
                 if (newGameState != null){
                     myGameBoard = newGameState.getBoard();
                     turnHolder = newGameState.getNextTurn();
-                    ships = newGameState.getUnsunkShips(); //And then what?
-                    //What about changed coords?
-                    //playStateGUI.setShips(newGameState.getUnsunkShips());
+                    myUnsunkShips = newGameState.getUnsunkShips();
 
-                    if (turnHolder == NextTurn.GAME_OVER){ //Is this the way of catching the possible undefine?
-                        if (!newGameState.thisPlayerWon()){
+                    showMyBoard(); //Show board that has changed
+                    playStateGUI.startTimer(30); //Restart timer
+
+                    if (turnHolder == NextTurn.GAME_OVER){
+                        if (!newGameState.thisPlayerWon()){ //Same as before
                             goToLostGame();
                             gameAPIClient.endCommunication();
                         }   
@@ -174,11 +182,12 @@ public class PlayState extends AbstractState implements IGameBoardState {
     @Override
     public void gameBoardTouch(Coords coords) {
         IAction action = playStateGUI.selectedAction();
-        if ((!actionSent && !timeOutSent) && action != null){
+        //If neither an action or timeout has been sent, and an action is selected
+        if (!(actionSent || timeOutSent) && action != null){
             action.setCoords(coords);
             gameAPIClient.sendAction(action);
             actionSent = true;
-            if (action.equals(new Radar(coords))){ //Action is a radar todo: check equals
+            if (action.equals(new Radar(coords))){ //Action is a radar
                 actions.set(1,new Pair<>(new Radar(new Coords(0,0)),false));
                 turnsLeftForRadar = 5;
             }
@@ -187,11 +196,13 @@ public class PlayState extends AbstractState implements IGameBoardState {
 
     private void showEnemyBoard(){
         playStateGUI.setGameBoard(opponentGameBoard);
+        playStateGUI.setShips(opponentUnsunkShips);
         isMyBoardShowing = false;
     }
 
     private void showMyBoard(){
         playStateGUI.setGameBoard(myGameBoard);
+        playStateGUI.setShips(myUnsunkShips);
         isMyBoardShowing = true;
     }
 

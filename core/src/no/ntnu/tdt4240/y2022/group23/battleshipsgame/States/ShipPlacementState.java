@@ -60,6 +60,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
         //GUI Components
         shipPlacementStateGUI = new ShipPlacementStateGUI();
+        shipPlacementStateGUI.setShips(remainingShips);
 
         shipPlacementStateGUI.addGameBoardObserver(gameBoardObserver);
         shipPlacementStateGUI.startTimer(30);//Starts timer with 30 seconds
