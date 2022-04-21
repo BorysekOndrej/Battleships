@@ -151,19 +151,28 @@ public class ServerLauncher {
 		String opponentID = redisStorage.getOpponentId(userID);
 		GameBoard opponentBoard = redisStorage.getUserGameBoard(opponentID);
 		ShipPlacements shipPlacements = redisStorage.getUserShipPlacements(opponentID);
+		GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(shipPlacements);
 
 		ServerClientMessage type = ServerClientMessage.ACTION_PERFORMED;
 		ArrayList<GameBoardChange> changedCoords = new ArrayList<>();
 		ArrayList<IShip> unsunkShips = new ArrayList<>(shipPlacements.getUnsunkShipsDisplaced(opponentBoard));
 
-		Message.Builder messageBuilder = Message.builder()
+		Message.Builder userMessageBuilder = Message.builder()
 				.putData("type", type.name())
 				.putData("board", StringSerializer.toString(opponentBoard))
 				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips));
+				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
+				.putData("nextTurn", NextTurn.OTHERS_TURN.name());
 
-		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, userID);
-		FirebaseMessenger.sendMessageUsingMsgBuilder(messageBuilder, opponentID);
+		Message.Builder opponentMessageBuilder = Message.builder()
+				.putData("type", type.name())
+				.putData("board", StringSerializer.toString(opponentBoardRevealed))
+				.putData("changedCoords", StringSerializer.toString(changedCoords))
+				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
+				.putData("nextTurn", NextTurn.MY_TURN.name());
+
+		FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
+		FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
 	}
 
 	public static void terminate(Context ctx) throws FirebaseMessagingException {

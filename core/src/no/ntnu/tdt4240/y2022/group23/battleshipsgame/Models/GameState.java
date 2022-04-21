@@ -1,8 +1,13 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
+import org.javatuples.Pair;
+
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 
 public class GameState {
     private final GameBoard board;
@@ -33,8 +38,20 @@ public class GameState {
         return changedCoords;
     }
 
-    public List<IShip> getUnsunkShips() {
-        return unsunkShips;
+    private static List<Pair<IShip, Integer>> convert(List<IShip> ships) {
+        List<Pair<IShip, Integer>> base = IntStream.of(4, 3, 2, 1)
+                .mapToObj(i -> new Pair<>((IShip) new RectangularShip(new Coords(0, 0), i, false), 0))
+                .collect(Collectors.toList());
+        for (IShip ship : ships) {
+            int size = ship.getPositions().size();
+            Pair<IShip, Integer> pair = base.get(base.size() - size);
+            base.set(base.size() - size, pair.setAt1(pair.getValue1() + 1));
+        }
+        return base;
+    }
+
+    public List<Pair<IShip, Integer>> getUnsunkShips() {
+        return convert(unsunkShips);
     }
 
     public NextTurn getNextTurn() {
