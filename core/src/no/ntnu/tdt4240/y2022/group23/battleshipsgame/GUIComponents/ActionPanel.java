@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.Radar;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.SingleShot;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
@@ -82,6 +83,8 @@ public class ActionPanel implements IRenderable {
             markAction(3);
         }
     }
+
+    public IAction selectedActionType(){throw new UnsupportedOperationException("not implemented"); };
 
     @Override
     public void update(float dt) {

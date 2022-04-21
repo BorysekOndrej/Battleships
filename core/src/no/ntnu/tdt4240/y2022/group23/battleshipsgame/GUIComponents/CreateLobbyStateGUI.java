@@ -10,13 +10,12 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 
 public class CreateLobbyStateGUI extends RandOppLobbyStateGUI implements IRenderable {
 
-    private String code;
+    private String code = ""; //Empty string could be weird (?)
     private final BitmapFont font;
     private final Texture codeTex;
 
-    public CreateLobbyStateGUI(String code){
+    public CreateLobbyStateGUI(){
         super();
-        this.code = code;
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(8);

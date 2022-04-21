@@ -4,30 +4,31 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 
 public class TurnIndicator implements IRenderable {
 
     private final Texture yourTurnTex;
     private final Texture enemyTurnTex;
-    private boolean yourTurn;
+    private NextTurn turnHolder;
 
     int xPos;
     int yPos;
 
-    public TurnIndicator(int x, int y, boolean yourTurn){
+    public TurnIndicator(int x, int y, NextTurn turnHolder){
         xPos = x;
         yPos = y;
         yourTurnTex = new Texture("play_state/yourTurn.png");
         enemyTurnTex = new Texture("play_state/enemyTurn.png");
-        this.yourTurn = yourTurn;
+        this.turnHolder = this.turnHolder;
     }
 
-    public boolean isYourTurn(){
-        return yourTurn;
+    public NextTurn getTurnHolder(){
+        return turnHolder;
     }
 
-    public void setYourTurn(boolean isYourTurn){
-        yourTurn = isYourTurn;
+    public void setTurnHolder(NextTurn isYourTurn){
+        turnHolder = isYourTurn;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class TurnIndicator implements IRenderable {
 
     @Override
     public void render(SpriteBatch sb) {
-        if (yourTurn) sb.draw(yourTurnTex, xPos, yPos);
+        if (turnHolder == NextTurn.MY_TURN) sb.draw(yourTurnTex, xPos, yPos);
         else sb.draw(enemyTurnTex, xPos, yPos);
     }
 

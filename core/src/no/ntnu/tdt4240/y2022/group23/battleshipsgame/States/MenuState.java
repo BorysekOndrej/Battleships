@@ -15,16 +15,16 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
-        if(Gdx.input.justTouched()){
-            System.out.print(Gdx.input.getX()+ ", " + Gdx.input.getY() + "\n");
+        if (mainMenu.randomButtonPressed()){
+            goToMatchmaking();
         }
         if (mainMenu.createLobbyButtonPressed()){
-            goToLobbyState();
+            goToCreateLobby();
         }
         if (mainMenu.joinLobbyButtonPressed()){
-            goToLobbyState();
+            goToJoinLobby();
         }
-        if (mainMenu.leaderBoardButtonPressed()){
+        if (mainMenu.randomButtonPressed()){
             gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
@@ -35,13 +35,17 @@ public class MenuState extends AbstractState {
         mainMenu.render(sb);
     }
 
-    //Changes state to lobby state
-    private void goToLobbyState(){
-        gsm.set(new LobbyState(gsm));
-    }
+    //Changes state to create lobby state
+    private void goToMatchmaking(){ gsm.set(new MatchmakingLobbyState(gsm));}
+
+    //Changes state to create lobby state
+    private void goToCreateLobby(){ gsm.set(new CreateLobbyState(gsm));}
+
+    //Changes state to create lobby state
+    private void goToJoinLobby(){ gsm.set(new JoinLobbyState(gsm));}
 
     @Override
     public void dispose(){
-        //mainMenu.dispose();
+        mainMenu.dispose();
     }
 }

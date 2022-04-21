@@ -23,4 +23,6 @@ public interface IShip extends Serializable {
     void rotateClockwise();
 
     IShip copy();
+
+    void placeShip(Coords coords);
 }
