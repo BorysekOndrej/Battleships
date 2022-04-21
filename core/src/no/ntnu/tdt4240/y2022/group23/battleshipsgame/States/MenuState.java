@@ -15,7 +15,7 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
-        if (mainMenu.randomButtonPressed()){
+        if (mainMenu.practiseButtonPressed()){
             goToMatchmaking();
         }
         if (mainMenu.createLobbyButtonPressed()){
@@ -24,7 +24,7 @@ public class MenuState extends AbstractState {
         if (mainMenu.joinLobbyButtonPressed()){
             goToJoinLobby();
         }
-        if (mainMenu.randomButtonPressed()){
+        if (mainMenu.practiseButtonPressed()){
             gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
