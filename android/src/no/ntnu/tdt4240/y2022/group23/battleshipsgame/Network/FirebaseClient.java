@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-class FirebaseClient extends FirebaseMessagingService implements INetworkClient {
+public class FirebaseClient extends FirebaseMessagingService implements INetworkClient {
     private static final String TAG = "Firebase client";
     private Queue<Map<String, String>> notificationQueue = new PriorityQueue<>();
     private String firebaseToken;
