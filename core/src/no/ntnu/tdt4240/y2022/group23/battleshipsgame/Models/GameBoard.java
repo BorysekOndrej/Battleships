@@ -11,6 +11,8 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
  * Stores the information about the state of the game available to the player at given moment.
  */
 public class GameBoard implements Serializable {
+    private static final long serialVersionUID = 42069;
+
     private List<List<GameBoardField>> board;
 
     public GameBoard(int width, int height) {

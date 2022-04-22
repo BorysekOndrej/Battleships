@@ -5,10 +5,28 @@ and install the required version.
 
 ### Docker
 
+Server dev:
+
 ```sh
 docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
+Server prod:
+
+```sh
+docker-compose --compatibility up --build -d
+```
+
+App build (slow, but fully in docker):
+
+```sh
+./docker_build_apk.sh
+```
+
+App build (cachable, but requires local tooling):
+```
+./gradlew assembleDebug
+```
 
 ### Security
 
