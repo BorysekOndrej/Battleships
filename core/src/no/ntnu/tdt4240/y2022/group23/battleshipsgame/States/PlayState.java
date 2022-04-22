@@ -46,6 +46,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
     //game state
     private WaitingFor waitingFor;
 
+    private IAction selectedAction;
+
     protected PlayState(GameStateManager gsm, GameBoard myGameBoard) {
         super(gsm);
         gameAPIClient = new GameAPIClient(gsm.getNetworkClient());
@@ -96,6 +98,17 @@ public class PlayState extends AbstractState implements IGameBoardState {
                 showMyBoard();
             } else {
                 showOpponentBoard();
+            }
+        }
+
+        if (waitingFor == WaitingFor.MY_ACTION && selectedAction != null && playStateGUI.confirmButtonPressed()) {
+            gameAPIClient.sendAction(selectedAction);
+            waitingFor = WaitingFor.MY_ACTION_RESULT;
+
+            if (selectedAction instanceof Radar) {
+                actions.set(1, actions.get(1).setAt1(false));
+                playStateGUI.setActions(actions);
+                turnsLeftForRadar = Config.RADAR_COOLDOWN;
             }
         }
     }
@@ -174,18 +187,10 @@ public class PlayState extends AbstractState implements IGameBoardState {
 
     @Override
     public void gameBoardTouch(Coords coords) {
-        IAction action = playStateGUI.selectedAction();
+        selectedAction = playStateGUI.selectedAction();
 
-        if (waitingFor == WaitingFor.MY_ACTION && action != null) {
-            action.setCoords(coords);
-            gameAPIClient.sendAction(action);
-            waitingFor = WaitingFor.MY_ACTION_RESULT;
-
-            if (action instanceof Radar) {
-                actions.set(1, actions.get(1).setAt1(false));
-                playStateGUI.setActions(actions);
-                turnsLeftForRadar = Config.RADAR_COOLDOWN;
-            }
+        if (waitingFor == WaitingFor.MY_ACTION && selectedAction != null) {
+            selectedAction.setCoords(coords);
         }
     }
 
