@@ -22,5 +22,5 @@ jobs:
           git fetch
           git reset --hard origin/${{ github.ref_name }}
           ls -la
-          docker-compose up --build -d
+          docker-compose --compatibility up --build -d
           curl -m 10 --retry 5 ${{secrets.REPORT_URL}}
