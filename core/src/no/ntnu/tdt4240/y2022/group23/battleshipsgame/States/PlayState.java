@@ -20,10 +20,10 @@ import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserve
 
 import java.util.List;
 
-enum View { MY_BOARD, OPPONENT_BOARD }
-enum WaitingFor {  GAME_START, MY_ACTION, MY_ACTION_RESULT, OPPONENT_ACTION_RESULT }
-
 public class PlayState extends AbstractState implements IGameBoardState {
+    enum View { MY_BOARD, OPPONENT_BOARD }
+    enum WaitingFor {  GAME_START, MY_ACTION, MY_ACTION_RESULT, OPPONENT_ACTION_RESULT }
+
     //Game API
     private final GameAPIClient gameAPIClient;
 
