@@ -4,12 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 class HttpsClient extends Application implements INetworkClient {
     private static final String TAG = "HttpsClient";
@@ -31,10 +33,10 @@ class HttpsClient extends Application implements INetworkClient {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Log.d(TAG, "Response is: " + response);
+                    Log.d(TAG, "HTTPS (DEBUG) response is: " + response);
                 },
                 error -> {
-                    Log.w(TAG, "That didn't work!");
+                    Log.w(TAG, "HTTPS request failed " + error);
                 }
         ){
             @Override
@@ -42,6 +44,21 @@ class HttpsClient extends Application implements INetworkClient {
                 return data;
             }
         };
+
+        if ("/token".equals(url)){
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                    5,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            );
+        }else{
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    (int) TimeUnit.SECONDS.toMillis(10),
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            );
+        }
+
         queue.add(stringRequest);
 
         return true;
