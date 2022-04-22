@@ -7,7 +7,6 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTermin
 
 public class JoinLobbyState extends AbstractLobbyState{
     private String gameId;
-    private Boolean lobbySuccessfullyJoined;
     private JoinLobbyStateGUI joinLobbyStateGUI;
 
     protected JoinLobbyState(GameStateManager gsm) {
@@ -25,20 +24,8 @@ public class JoinLobbyState extends AbstractLobbyState{
 
         //Read code
         if (joinLobbyStateGUI.getCode() != null && gameId == null){
-                gameId = joinLobbyStateGUI.getCode();
-                lobbyAPIClient.sendJoinLobbyRequest(gameId);
-        }
-
-        if (gameId != null) {
-            Boolean joinSuccessful = lobbyAPIClient.wasLobbyJoinSuccessful();
-            if (joinSuccessful != null) {
-                if (joinSuccessful) {
-                    goToShipPlacement();
-                } else {
-                    joinLobbyStateGUI.resetState();
-                    gameId = null;
-                }
-            }
+            gameId = joinLobbyStateGUI.getCode();
+            lobbyAPIClient.sendJoinLobbyRequest(gameId);
         }
     }
 
@@ -46,17 +33,15 @@ public class JoinLobbyState extends AbstractLobbyState{
     public void update(float dt) throws CommunicationTerminated {
         handleInput();
         joinLobbyStateGUI.update(dt);
-        if (lobbySuccessfullyJoined == null){
-            lobbySuccessfullyJoined = lobbyAPIClient.wasLobbyJoinSuccessful();
-        }
-        else if (lobbySuccessfullyJoined){
-            goToShipPlacement();
-        }
-        else{
-            lobbySuccessfullyJoined = null;
-            gameId = null;
-            lobbyAPIClient.endCommunication();
-            goToMenu();
+
+        if (gameId != null) {
+            Boolean lobbySuccessfullyJoined = lobbyAPIClient.wasLobbyJoinSuccessful();
+            if (Boolean.TRUE.equals(lobbySuccessfullyJoined)) {
+                goToShipPlacement();
+            } else if (Boolean.FALSE.equals(lobbySuccessfullyJoined)) {
+                gameId = null;
+                joinLobbyStateGUI.resetState();
+            }
         }
     }
 
