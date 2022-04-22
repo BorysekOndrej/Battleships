@@ -1,0 +1,20 @@
+# STAGE 1: Build JAR file(s)
+
+FROM cangol/android-gradle AS build
+RUN apt update && apt install dos2unix
+RUN keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -noprompt -dname "CN=borysek.eu, OU=None, O=None, L=None, S=None, C=CZ"
+RUN keytool -importkeystore -srckeystore ~/.android/debug.keystore -destkeystore ~/.android/debug.keystore -deststoretype pkcs12
+
+COPY --chown=gradle:gradle . /opt/workspace
+WORKDIR /opt/workspace
+RUN dos2unix gradlew
+RUN ./gradlew assembleDebug
+
+# Stage 2: Copy JAR file to server Java runtime container
+
+FROM alpine
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY --from=build /opt/workspace/android/build/outputs/apk/debug/*.apk /app/Battleships_debug.apk
