@@ -119,11 +119,13 @@ public class RedisStorage {
     }
 
     ShipPlacements getUserShipPlacements(String userID) {
-        return get("ship_placements_" + userID);
+        String lobbyID = Lobby.findGameID(userID);
+        return get("ship_placements_" + lobbyID + "_" + userID);
     }
 
     void setShipPlacements(String userID, ShipPlacements placements) {
-        set("ship_placements_" + userID, placements);
+        String lobbyID = Lobby.findGameID(userID);
+        set("ship_placements_" + lobbyID + "_" + userID, placements);
     }
 
     String getOpponentId(String userID) {

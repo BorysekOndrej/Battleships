@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.StringSerializer;
@@ -17,6 +18,9 @@ public class Lobby implements Serializable {
     protected List<String> users = new ArrayList<>();
     protected boolean isPrivate;
     protected String inviteID = null;
+
+    private final int INVITE_DURATION = (int) TimeUnit.MINUTES.toSeconds(60);
+    private final int MAX_GAME_DURATION = (int) TimeUnit.MINUTES.toSeconds(60);
 
     private static final JedisPool pool = RedisStorage.getInstance().pool;
 
@@ -37,7 +41,7 @@ public class Lobby implements Serializable {
                     this.inviteID = RandomStringUtils.randomNumeric(6);
                 }while(jedis.get("invite_" + this.inviteID) != null);
 
-                jedis.setex("invite_" + this.inviteID, 60*60, this.gameID); // invite code has 60 minute timeout
+                jedis.setex("invite_" + this.inviteID, INVITE_DURATION, this.gameID);
             }
         }
 
@@ -109,7 +113,7 @@ public class Lobby implements Serializable {
             jedis.set("lobby_"+gameID, StringSerializer.toString(this));
 
             for (String userID: users) {
-                jedis.set("active_lobby_of_user_"+userID, gameID);
+                jedis.setex("active_lobby_of_user_"+userID, MAX_GAME_DURATION, gameID);
             }
         }
     }
