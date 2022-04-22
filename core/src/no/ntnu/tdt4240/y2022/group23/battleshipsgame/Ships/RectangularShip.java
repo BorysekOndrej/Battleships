@@ -22,15 +22,12 @@ public class RectangularShip extends AbstractShip {
     public RectangularShip(RectangularShip shipToCopy){
         this.setType(shipToCopy.getType());
         this.setOrientation(shipToCopy.getOrientation());
-        Coords start = shipToCopy.getPositions().get(0);
-        List<Coords> positions = new ArrayList<Coords>();
-        for(int i=0;i<shipToCopy.getPositions().size();i++){
-            positions.add(new Coords(
-                    shipToCopy.getOrientation() ? start.x+i : start.x,
-                    shipToCopy.getOrientation() ? start.y : start.y+i
-            ));
+
+        List<Coords> positions = new ArrayList<>();
+        for (Coords pos : shipToCopy.getPositions()) {
+            positions.add(new Coords(pos.x, pos.y));
         }
-        this.setPositions(positions);
+        setPositions(positions);
     }
 
     @Override
