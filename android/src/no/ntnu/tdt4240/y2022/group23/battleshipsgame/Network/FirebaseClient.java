@@ -1,6 +1,9 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
+import android.content.Intent;
 import android.util.Log;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -12,7 +15,6 @@ import java.util.Queue;
 
 public class FirebaseClient extends FirebaseMessagingService implements INetworkClient {
     private static final String TAG = "Firebase client";
-    private Queue<Map<String, String>> notificationQueue = new LinkedList<>();
     private String firebaseToken;
     private IFirebaseTokenUpdate firebaseUpdateCallback = null;
 
@@ -44,12 +46,16 @@ public class FirebaseClient extends FirebaseMessagingService implements INetwork
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             data.put("notificationsMsg", remoteMessage.getNotification().getBody());
         }
-        notificationQueue.add(data);
+
+        Intent intent = new Intent("firebaseNewNotification");
+        intent.putExtra("notification", data);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
     }
 
     @Override
     public Map<String, String> receive() {
-        return notificationQueue.poll();
+        throw new UnsupportedOperationException();
     }
 
     @Override
