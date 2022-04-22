@@ -56,10 +56,10 @@ public class RemainingShipsPanel implements IRenderable {
 
         //debugging default list
         remainingShips = new ArrayList<>();
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),8, false), 8));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 2));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(3, 1),2, false), 3));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(4, 1),1, false), 4));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),4, false), 4));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 3));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(3, 1),2, false), 2));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(4, 1),1, false), 1));
 
         panelTex = new Texture("ships_panel/ships_panel.png");
         ship1markedTex = new Texture("ships_panel/panel_1_marked.png");
@@ -107,7 +107,7 @@ public class RemainingShipsPanel implements IRenderable {
 
     public IShip selectedShipType(){
         if(markedShips == null) return null;
-        return this.remainingShips.get(markedShips).getValue0();
+        return this.remainingShips.get(3-markedShips).getValue0();
     }
     
     @Override

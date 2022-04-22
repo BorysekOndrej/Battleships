@@ -45,19 +45,19 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         gameBoardObserver = new GameBoardObserver(this);
 
         //Model components
-        gameBoard = new GameBoard(200,400); //Width and height placeholders
         shipPlacements = new ShipPlacements();
         remainingShips = new ArrayList<>();
+        gameBoard = new GameBoard(10,10);
 
         //Create remaining ships list
         //4 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),4,true),4));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),4,false),4));
         //3 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),3,true),3));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),3,false),3));
         //2 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),2,true),2));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),2,false),2));
         //1 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,true),1));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,false),1));
 
         //GUI Components
         shipPlacementStateGUI = new ShipPlacementStateGUI();
@@ -75,7 +75,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
                 collocateShip();
             }
             else if (Gdx.input.justTouched() && shipPlaced){
-                rotateShip();
+                //rotateShip();
             }
         }
     };
@@ -129,24 +129,39 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         }
     }
 
+    //Checks if the user has any ship of that type remaining
+    private boolean haveShipLeft(IShip selectedShip){
+        for (int i = 0; i <= remainingShips.size() ; i++){
+            Pair<IShip,Integer> currentPair = remainingShips.get(i);
+            IShip currentShip = currentPair.getValue0();
+            if (selectedShip.getPositions().size() == currentShip.getPositions().size()){ //Same type
+                return (currentPair.getValue1() != 0);
+            }
+        }
+        return false;
+    }
+
     @Override
     public void gameBoardTouch(Coords coords){
         selectedShip = shipPlacementStateGUI.selectedShipType();
-        //selectedShip.placeShip(coords);
 
         if (selectedShip != null){
-            subtractRemaining(selectedShip);
-            shipPlaced = true;
-            //gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
-            //shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
+            if (haveShipLeft(selectedShip)){ //If there are remaining ships of that type
+                selectedShip.placeShip(coords);
+                shipPlaced = true;
+
+                gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
+                shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
+            }
         }
     }
 
     //Adds ship to ship placement
     private void collocateShip(){
-        if (selectedShip != null){
+        if (shipPlaced){
             try {
-                shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),selectedShip);
+                IShip placedShip = selectedShip.copy();
+                shipPlacements.addShip(gameBoard.getWidth(),gameBoard.getHeight(),placedShip);
 
                 subtractRemaining(selectedShip);
                 shipPlacementStateGUI.setShips(remainingShips);
