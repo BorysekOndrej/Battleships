@@ -59,6 +59,7 @@ public class PlayState extends AbstractState implements IGameBoardState {
 
         playStateGUI = new PlayStateGUI();
         playStateGUI.setSwitchButtonEnabled(true); //Switch button always enabled
+        playStateGUI.setShipPanelEnabled(false); //Ship panel is always disabled
 
         gameBoardObserver = new GameBoardObserver(this);
         playStateGUI.addGameBoardObserver(gameBoardObserver);

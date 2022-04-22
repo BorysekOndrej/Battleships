@@ -128,7 +128,6 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void update(float dt){
-        handleInput();
     }
 
     public void render(SpriteBatch sb){

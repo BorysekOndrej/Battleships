@@ -56,10 +56,10 @@ public class RemainingShipsPanel implements IRenderable {
 
         //debugging default list
         remainingShips = new ArrayList<>();
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),4, false), 4));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 3));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(3, 1),2, false), 2));
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(4, 1),1, false), 1));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(1, 1),4, false), 1));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(2, 1),3, false), 2));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(3, 1),2, false), 3));
+        remainingShips.add(new Pair<>(new RectangularShip(new Coords(4, 1),1, false), 4));
 
         panelTex = new Texture("ships_panel/ships_panel.png");
         ship1markedTex = new Texture("ships_panel/panel_1_marked.png");
