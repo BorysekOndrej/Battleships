@@ -25,11 +25,8 @@ public class JoinLobbyState extends AbstractLobbyState{
 
         //Read code
         if (joinLobbyStateGUI.getCode() != null && gameId == null){
-//            if (gameId == null){
-//                gameId = lobbyAPIClient.receiveGameId();
                 gameId = joinLobbyStateGUI.getCode();
-                lobbyAPIClient.sendJoinLobbyRequest(gameId); //Check this
-//            }
+                lobbyAPIClient.sendJoinLobbyRequest(gameId);
         }
 
         if (gameId != null) {
