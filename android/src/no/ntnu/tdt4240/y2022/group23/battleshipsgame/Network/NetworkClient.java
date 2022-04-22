@@ -1,9 +1,14 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -11,7 +16,9 @@ import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 interface IFirebaseTokenUpdate {
     void sendFirebaseToken(String newToken);
@@ -25,11 +32,16 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
             System.getenv("BASE_URL") :
             "https://battleships.borysek.eu";
     private String userID;
+    Queue<Map<String, String>> notificationQueue = new LinkedList<>();
 
     private NetworkClient(Context ctx){
         httpsClient = new HttpsClient(ctx);
         firebase = new FirebaseClient();
         firebase.injectFirebaseUpdateCallback(this);
+
+        LocalBroadcastManager.getInstance(ctx).registerReceiver(firebaseNotificationListener,
+                new IntentFilter("firebaseNewNotification"));
+
 
         // todo: This is one giant race condition waiting to happen
         FirebaseInstallations.getInstance().getId()
@@ -54,7 +66,7 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     @Override
     public Map<String, String> receive() {
-        return firebase.receive();
+        return notificationQueue.poll();
     }
 
     @Override
@@ -92,5 +104,13 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
         tokenMsg.put("token", newToken);
         send("/token", tokenMsg);
     }
+
+    private BroadcastReceiver firebaseNotificationListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            notificationQueue.add((Map<String, String>) extras.get("notification"));
+        }
+    };
 
 }

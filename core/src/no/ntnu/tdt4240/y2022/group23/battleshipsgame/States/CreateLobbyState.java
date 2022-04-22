@@ -28,11 +28,14 @@ public class CreateLobbyState extends AbstractLobbyState{
     public void update(float dt) throws CommunicationTerminated {
         handleInput();
         createLobbyStateGUI.update(dt);
+
         if (gameId == null){
             gameId = lobbyAPIClient.receiveGameId();
-            createLobbyStateGUI.setCode(gameId);
+            if (gameId != null){
+                createLobbyStateGUI.setCode(gameId);
+            }
         }
-        else if (lobbyAPIClient.receiveCanPlacementStart()){
+        else if (lobbyAPIClient.receiveCanPlacementStart()) {
             goToShipPlacement();
         }
     }

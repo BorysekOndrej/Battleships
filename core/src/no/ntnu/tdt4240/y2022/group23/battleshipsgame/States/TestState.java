@@ -24,6 +24,7 @@ public class TestState extends AbstractState {
         super(gsm);
         playState = new PlayStateGUI();
         playState.setGameBoardPanelEnabled(false);
+
     }
 
     @Override
