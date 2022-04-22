@@ -54,10 +54,10 @@ public class FirebaseMessenger {
             messageBuilder = messageBuilder.putAllData(args);
         }
 
-        logger.debug("Attempt to send message to user " + userID.substring(0, 10) + "... with type " + msgType.name());
+        logger.info("Attempt to send message to user " + userID.substring(0, 10) + "... with type " + msgType.name());
 
         if (firebaseToken.startsWith("TEST_")){
-            logger.debug("FCM messages to devices with token prefix TEST_ are not actually sent.");
+            logger.info("FCM messages to devices with token prefix TEST_ are not actually sent.");
             return;
         }
         Message message = messageBuilder
