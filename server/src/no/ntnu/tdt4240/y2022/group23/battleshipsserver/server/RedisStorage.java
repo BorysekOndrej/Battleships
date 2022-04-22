@@ -3,6 +3,8 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
@@ -13,6 +15,7 @@ import redis.clients.jedis.JedisPool;
 public class RedisStorage {
     private static RedisStorage INSTANCE;
     public JedisPool pool;
+    protected static List<String> matchmakingQueues = Arrays.asList("matchmaking_ranked", "matchmaking_casual");
 
     private RedisStorage(){
         String redisLocation = System.getenv("REDIS_LOCATION");
@@ -25,27 +28,38 @@ public class RedisStorage {
 
     // todo: set TTL
 
-    void addUserToMatchmakingQueue(String userID){
+    void addUserToMatchmakingQueue(String userID, String queue){
         if (userID.isEmpty()){
             return;
         }
         try (Jedis jedis = pool.getResource()) {
-            jedis.rpush("matchmaking", userID);
+            jedis.rpush(queue, userID);
         }
     }
 
-    ImmutablePair<String, String> getTwoUsersFromMatchmaking(){
+    void removeUserFromMatchmakingQueues(String userID){
+        if (userID.isEmpty()){
+            return;
+        }
         try (Jedis jedis = pool.getResource()) {
-            if (jedis.llen("matchmaking") < 2) {
+            for (String queue: RedisStorage.matchmakingQueues) {
+                jedis.lrem(queue, 0, userID);
+            }
+        }
+    }
+
+    ImmutablePair<String, String> getTwoUsersFromMatchmaking(String queue){
+        try (Jedis jedis = pool.getResource()) {
+            if (jedis.llen(queue) < 2) {
                 return null;
             }
 
-            String user1 = jedis.lpop("matchmaking");
-            String user2 = jedis.lpop("matchmaking");
+            String user1 = jedis.lpop(queue);
+            String user2 = jedis.lpop(queue);
 
             if (user1 == null || user2 == null) {
-                if (user1 == null) { addUserToMatchmakingQueue(user2); }
-                if (user2 == null) { addUserToMatchmakingQueue(user1); }
+                if (user1 == null) { addUserToMatchmakingQueue(user2, queue); }
+                if (user2 == null) { addUserToMatchmakingQueue(user1, queue); }
                 return null;
             }
 
@@ -119,6 +133,20 @@ public class RedisStorage {
         }
         return lobby.getOpponentID(userID);
     }
+
+    String getELO(String userID) {
+        try (Jedis jedis = pool.getResource()) {
+            jedis.setnx("elo_"+userID, "1500");
+            return jedis.get("elo_"+userID);
+        }
+    }
+
+    void setELO(String userID, String elo_value) {
+        try (Jedis jedis = pool.getResource()) {
+            jedis.set("elo_"+userID, elo_value);
+        }
+    }
+
 
     // --- SINGLETON STUFF ---
 

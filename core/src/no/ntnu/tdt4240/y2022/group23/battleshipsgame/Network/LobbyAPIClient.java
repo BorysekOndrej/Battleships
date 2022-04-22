@@ -13,12 +13,23 @@ public class LobbyAPIClient {
     }
 
     /**
-     * Sends a request to find a random opponent.
+     * Sends a request to find a random opponent. (Casual mode)
      */
-    public void sendJoinMatchmakingRequest() {
+    public void sendJoinCasualMatchmakingRequest() {
+        sendGenericJoinMatchmakingRequest(true);
+    }
+
+    /**
+     * Sends a request to find a random opponent. (Ranked mode)
+     */
+    public void sendJoinRankedMatchmakingRequest() {
+        sendGenericJoinMatchmakingRequest(false);
+    }
+
+    private void sendGenericJoinMatchmakingRequest(boolean casual) {
         Map<String, String> request = new HashMap<>();
-        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name()); // todo: rename this enum
-        request.put("privateLobby", Boolean.toString(false));
+        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());
+        request.put("privateLobby", Boolean.toString(casual));
         network.send("/join_matchmaking", request);
     }
 
@@ -29,7 +40,7 @@ public class LobbyAPIClient {
      */
     public void sendCreateLobbyRequest() {
         Map<String, String> request = new HashMap<>();
-        request.put("type", ClientServerMessage.JOIN_MATCHMAKING.name());  // todo: rename this enum
+        request.put("type", ClientServerMessage.CREATE_LOBBY.name());
         request.put("privateLobby", Boolean.toString(true));
         network.send("/create_lobby", request);
     }
@@ -120,5 +131,26 @@ public class LobbyAPIClient {
 
         network.send("/terminate", request);
         throw new CommunicationTerminated("this user terminated communication");
+    }
+
+    public void sendRequestCurrentELO() {
+        Map<String, String> request = new HashMap<>();
+        request.put("type", ClientServerMessage.REQUEST_ELO_UPDATE.name());
+        network.send("/elo", request);
+    }
+
+    public String receiveELO() throws CommunicationTerminated {
+        Map<String, String> response = network.receive();
+        if (response == null) {
+            return null;
+        }
+
+        ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        ResponseCheckers.checkUnexpectedType(
+                Collections.singletonList(ServerClientMessage.ELO_UPDATE),
+                responseType
+        );
+
+        return response.get("elo");
     }
 }

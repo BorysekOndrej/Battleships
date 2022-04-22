@@ -15,7 +15,7 @@ public class MenuState extends AbstractState {
 
     //Handles the input of clicking the button
     public void handleInput(){
-        if (mainMenu.randomButtonPressed()){
+        if (mainMenu.practiseButtonPressed()){
             goToMatchmaking();
         }
         if (mainMenu.createLobbyButtonPressed()){
@@ -24,8 +24,7 @@ public class MenuState extends AbstractState {
         if (mainMenu.joinLobbyButtonPressed()){
             goToJoinLobby();
         }
-        if (mainMenu.rankedButtonPressed()){
-            //gsm.set(new ShipPlacementState(gsm));
+        if (mainMenu.practiseButtonPressed()){
             gsm.set(new TestState(gsm));//temporarily added for debuging
         }
     }
@@ -38,9 +37,6 @@ public class MenuState extends AbstractState {
 
     //Changes state to create lobby state
     private void goToMatchmaking(){ gsm.set(new MatchmakingLobbyState(gsm));}
-
-    //Changes state to create lobby state
-    private void goToRanked(){ gsm.set(new MatchmakingLobbyState(gsm));}
 
     //Changes state to create lobby state
     private void goToCreateLobby(){ gsm.set(new CreateLobbyState(gsm));}

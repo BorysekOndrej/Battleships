@@ -1,8 +1,9 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coords {
+public class Coords implements Serializable {
     public final int x;
     public final int y;
 

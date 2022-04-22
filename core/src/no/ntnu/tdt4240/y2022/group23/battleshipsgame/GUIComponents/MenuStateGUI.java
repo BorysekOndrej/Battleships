@@ -1,5 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -13,16 +15,30 @@ public class MenuStateGUI implements IRenderable {
     private final Texture background;
     private final SimpleButton createLobbyButton;
     private final SimpleButton joinLobbyButton;
-    private final SimpleButton randomButton;
+    private final SimpleButton practiseButton;
+    private final SimpleButton rankedButton;
+
+    private final BitmapFont font;
+    private String rankingScore = "";
 
     public MenuStateGUI(){
         background = new Texture("main_menu/main_menu_background.png");
 
-        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));
+        createLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 + BUTTON_HEIGHT/2, new Texture("main_menu/create_lobby.png"));
 
-        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*2, new Texture("main_menu/join_lobby.png"));
+        joinLobbyButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT, new Texture("main_menu/join_lobby.png"));
 
-        randomButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*7/2, new Texture("main_menu/random.png"));
+        practiseButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*5/2, new Texture("main_menu/practise.png"));
+
+        rankedButton = new SimpleButton(BattleshipsGame.WIDTH/2 - BUTTON_WIDTH/2, BattleshipsGame.HEIGHT/2 - BUTTON_HEIGHT*4, new Texture("main_menu/ranked.png"));
+
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
+        font.getData().setScale(3);
+    }
+
+    public void setRankingScore(String rankingScore) {
+        this.rankingScore = rankingScore;
     }
 
     public boolean createLobbyButtonPressed(){
@@ -33,11 +49,14 @@ public class MenuStateGUI implements IRenderable {
         return joinLobbyButton.buttonTouched();
     }
 
-    public boolean randomButtonPressed(){
-        return randomButton.buttonTouched();
+    public boolean practiseButtonPressed(){
+        return practiseButton.buttonTouched();
     }
 
-    public boolean leaderBoardButtonPressed(){ return false; }
+    public boolean rankedButtonPressed(){
+        return rankedButton.buttonTouched();
+    }
+
 
     @Override
     public void handleInput() {}
@@ -53,7 +72,9 @@ public class MenuStateGUI implements IRenderable {
         sb.draw(background, 0,0, BattleshipsGame.WIDTH, BattleshipsGame.HEIGHT);
         createLobbyButton.render(sb);
         joinLobbyButton.render(sb);
-        randomButton.render(sb);
+        practiseButton.render(sb);
+        rankedButton.render(sb);
+        font.draw(sb, String.format("Your current ranking score: %s", rankingScore), 63, BattleshipsGame.HEIGHT - 63);
         sb.end();
     }
 
@@ -62,7 +83,9 @@ public class MenuStateGUI implements IRenderable {
         background.dispose();
         joinLobbyButton.dispose();
         createLobbyButton.dispose();
-        randomButton.dispose();
+        practiseButton.dispose();
+        rankedButton.dispose();
+        font.dispose();
     }
 }
 

@@ -89,7 +89,7 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
 
     public void sendFirebaseToken(String newToken){
         Map<String, String> tokenMsg = new HashMap<>();
-        tokenMsg.put("newToken", newToken);
+        tokenMsg.put("token", newToken);
         send("/token", tokenMsg);
     }
 

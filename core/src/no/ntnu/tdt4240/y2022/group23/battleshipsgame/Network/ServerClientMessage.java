@@ -9,5 +9,7 @@ public enum ServerClientMessage {
     ACTION_PERFORMED,
     GAME_OVER,
 
-    OTHER_ENDED_COMMUNICATION
+    OTHER_ENDED_COMMUNICATION,
+
+    ELO_UPDATE,
 }

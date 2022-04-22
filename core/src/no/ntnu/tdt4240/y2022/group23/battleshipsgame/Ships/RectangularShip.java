@@ -33,11 +33,9 @@ public class RectangularShip extends AbstractShip {
         this.setPositions(positions);
     }
 
-    private RectangularShip(List<Coords> coords) { super(coords); }
-
     @Override
     public IShip copy() {
-        return new RectangularShip(this.getPositions());
+        return new RectangularShip(this);
     }
 
     @Override
