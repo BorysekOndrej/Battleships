@@ -89,7 +89,21 @@ def single_shot(user_id: int, shot_id: int):
      assert response.status_code == 200
 
 
+def test_automated_game():
+     user1 = create_user()
+     user2 = create_user()
 
+     invite_code = create_lobby(user1)
+     join_lobby(user2, invite_code)
+
+     ship_placement(user1)
+     ship_placement(user2)
+
+     for i in range(6):
+          single_shot(user1, i)
+          single_shot(user2, i)
+
+     pass # todo: the rest
 
 if __name__ == "__main__":
      print(BASE_URL)
@@ -102,5 +116,6 @@ if __name__ == "__main__":
      assert response.status_code == 200
 
      play_game_as_a_player()
+     # test_automated_game()
 
 
