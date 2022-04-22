@@ -29,7 +29,7 @@ public class ActionPanel implements IRenderable {
     private final Texture buttonMarked;
 
     private Integer markedActions = null;
-    private List<Pair<AbstractAction, Boolean>> actions;
+    private List<Pair<IAction, Boolean>> actions;
 
     int xPos;
     int yPos;
@@ -59,12 +59,12 @@ public class ActionPanel implements IRenderable {
         markedActions = nr;
     }
 
-    public AbstractAction selectedAction(){
+    public IAction selectedAction(){
         if(markedActions == null) return null;
         return this.actions.get(markedActions).getValue0();
     }
 
-    public void setData(List<Pair<AbstractAction, Boolean>> actions) {
+    public void setData(List<Pair<IAction, Boolean>> actions) {
         this.actions = actions;
     }
 

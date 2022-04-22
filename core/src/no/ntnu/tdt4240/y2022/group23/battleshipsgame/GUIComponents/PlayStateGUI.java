@@ -7,7 +7,7 @@ import org.javatuples.Pair;
 
 import java.util.List;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.BattleshipsGame;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.IRenderable;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
@@ -33,12 +33,12 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     }
 
     ///// actionPanel methods
-    public AbstractAction selectedAction(){
+    public IAction selectedAction(){
         return actionPanel.selectedAction();
     }
 
     //Below Boolean in argument stands for if action is active
-    public void setActions(List<Pair<AbstractAction, Boolean>> actions) {
+    public void setActions(List<Pair<IAction, Boolean>> actions) {
         actionPanel.setData(actions);
     }
 
