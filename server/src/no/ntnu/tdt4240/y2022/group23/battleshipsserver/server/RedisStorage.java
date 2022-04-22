@@ -120,12 +120,12 @@ public class RedisStorage {
 
     ShipPlacements getUserShipPlacements(String userID) {
         String lobbyID = Lobby.findGameID(userID);
-        return get("ship_placements_" + userID + "_" + lobbyID); // todo: security: this concat is not secure
+        return get("ship_placements_" + lobbyID + "_" + userID);
     }
 
     void setShipPlacements(String userID, ShipPlacements placements) {
         String lobbyID = Lobby.findGameID(userID);
-        set("ship_placements_" + userID + "_" + lobbyID, placements); // todo: security: this concat is not secure
+        set("ship_placements_" + lobbyID + "_" + userID, placements);
     }
 
     String getOpponentId(String userID) {
