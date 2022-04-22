@@ -15,6 +15,7 @@ import java.util.Random;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Config;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardChange;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
@@ -66,8 +67,8 @@ public class ServerLauncher {
 		ShipPlacements opponentPlacements = redisStorage.getUserShipPlacements(opponentID);
 
 		if (opponentPlacements != null) {
-			GameBoard userBoard = new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT);
-			GameBoard opponentBoard = new GameBoard(GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT);
+			GameBoard userBoard = new GameBoard(Config.GAME_BOARD_WIDTH, Config.GAME_BOARD_HEIGHT);
+			GameBoard opponentBoard = new GameBoard(Config.GAME_BOARD_WIDTH, Config.GAME_BOARD_HEIGHT);
 
 			GameBoard userBoardRevealed = new GameBoard(userBoard).reveal(userPlacements);
 			GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(opponentPlacements);
