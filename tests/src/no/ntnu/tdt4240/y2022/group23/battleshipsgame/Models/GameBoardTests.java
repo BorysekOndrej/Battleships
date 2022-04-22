@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
+
 public class GameBoardTests {
 
     private static Stream<int[]> provideDimensions() {
@@ -150,5 +153,128 @@ public class GameBoardTests {
         board.apply(Collections.singletonList(new GameBoardChange(new Coords(0, 0), snd)));
 
         Assertions.assertEquals(result, board.get(new Coords(0, 0)));
+    }
+
+
+    private static Stream<ShipPlacements> provideShipPlacements() {
+        ShipPlacements placements1 = new ShipPlacements();
+
+        placements1.addShip(5, 5, new RectangularShip(new Coords(0, 0), 2, false));
+        placements1.addShip(5, 5, new RectangularShip(new Coords(2, 0), 3, false));
+        placements1.addShip(5, 5, new RectangularShip(new Coords(0, 4), 3, true));
+
+        return Stream.of(placements1);
+    }
+
+    private static Stream<Arguments> provideShipPlacementsWithFirstShip() {
+        return provideShipPlacements()
+                .map(placements -> Arguments.of(
+                        placements,
+                        new RectangularShip(new Coords(0, 0), 2, false)
+                ));
+    }
+
+    private static Stream<Arguments> provideShipPlacementsWithExtraShip() {
+        return provideShipPlacements()
+                .flatMap(placements -> Stream.of(
+                        Arguments.of(
+                            placements,
+                            new RectangularShip(new Coords(4, 0), 4, false)
+                        ),
+                        Arguments.of(
+                            placements,
+                            new RectangularShip(new Coords(4, 0), 4, true)
+                        )
+                ));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipPlacements")
+    public void ships_are_revealed_from_unknown_board(ShipPlacements placements) {
+        GameBoard board = new GameBoard(5, 5);
+
+        board.reveal(placements);
+
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Coords coords = new Coords(x, y);
+                if (placements.hasShipOnCoords(coords)) {
+                    Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
+                } else {
+                    Assertions.assertEquals(GameBoardField.WATER, board.get(coords));
+                }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipPlacementsWithFirstShip")
+    public void ships_are_revealed_from_partially_revealed_board(ShipPlacements placements, IShip firstShip) {
+        GameBoard board = new GameBoard(5, 5);
+
+        for (Coords pos : firstShip.getPositions()) {
+            board.set(pos, GameBoardField.SHIP);
+        }
+
+        board.reveal(placements);
+
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Coords coords = new Coords(x, y);
+                if (placements.hasShipOnCoords(coords)) {
+                    Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
+                } else {
+                    Assertions.assertEquals(GameBoardField.WATER, board.get(coords));
+                }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipPlacementsWithFirstShip")
+    public void ships_are_revealed_but_not_unsunk(ShipPlacements placements, IShip firstShip) {
+        GameBoard board = new GameBoard(5, 5);
+
+        for (Coords pos : firstShip.getPositions()) {
+            board.set(pos, GameBoardField.SUNK);
+        }
+
+        board.reveal(placements);
+
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Coords coords = new Coords(x, y);
+                if (firstShip.getPositions().contains(coords)) {
+                    Assertions.assertEquals(GameBoardField.SUNK, board.get(coords));
+                } else if (placements.hasShipOnCoords(coords)) {
+                    Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
+                } else {
+                    Assertions.assertEquals(GameBoardField.WATER, board.get(coords));
+                }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipPlacementsWithExtraShip")
+    public void ships_with_extra_ship_fitting_are_revealed(ShipPlacements placements, IShip extraShip) {
+        GameBoard board = new GameBoard(5, 5, placements, extraShip);
+
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Coords coords = new Coords(x, y);
+                if (extraShip.getPositions().contains(coords)) {
+                    if (placements.canAdd(5, 5, extraShip)) {
+                        Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
+                    } else {
+                        Assertions.assertEquals(GameBoardField.COLLIDE, board.get(coords));
+                    }
+                } else if (placements.hasShipOnCoords(coords)) {
+                    Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
+                } else {
+                    Assertions.assertEquals(GameBoardField.WATER, board.get(coords));
+                }
+            }
+        }
     }
 }

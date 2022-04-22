@@ -14,11 +14,6 @@ public abstract class AbstractShip implements IShip {
 
     public AbstractShip() {}
 
-    protected AbstractShip(List<Coords> positions) {
-        this.positions = positions;
-        this.parts = positions.size();
-    }
-
     @Override
     public List<Coords> getPositions() {
         return positions;
@@ -68,15 +63,18 @@ public abstract class AbstractShip implements IShip {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj) && obj instanceof IShip) {
-            IShip ship1 = ((IShip) obj).copy();
-            IShip ship2 = this.copy();
-            ship1.displace();
-            ship2.displace();
-            if (ship1.getPositions().containsAll(ship2.getPositions()) && ship2.getPositions().containsAll(ship1.getPositions())) {
-                return true;
-            }
-        }
-        return false;
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof IShip))
+            return false;
+
+        IShip ship1 = ((IShip) obj).copy();
+        IShip ship2 = this.copy();
+
+        ship1.displace();
+        ship2.displace();
+
+        return ship1.getPositions().containsAll(ship2.getPositions()) && ship2.getPositions().containsAll(ship1.getPositions());
     }
 }
