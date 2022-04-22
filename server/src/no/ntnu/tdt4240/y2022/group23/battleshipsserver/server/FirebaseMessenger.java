@@ -66,6 +66,7 @@ public class FirebaseMessenger {
         // Send a message to the device corresponding to the provided registration token.
         try {
             String response = FirebaseMessaging.getInstance().send(message);
+            System.out.println("Successfully sent message to user " + userID.substring(0, 10) + "... with type " + msgType.name());
         } catch (FirebaseMessagingException e) {
             logger.warn(Arrays.toString(e.getStackTrace()));
         }
@@ -79,27 +80,5 @@ public class FirebaseMessenger {
             FirebaseMessenger.INSTANCE = new FirebaseMessenger();
         }
         return FirebaseMessenger.INSTANCE;
-    }
-
-
-    public static void sendMessageUsingMsgBuilder(Message.Builder messageBuilder, String userID) throws FirebaseMessagingException {
-        // todo: remove either this method, or the sendMessage alternative method
-        getInstance();
-        RedisStorage redisStorage = RedisStorage.getInstance();
-
-        String userToken = redisStorage.getUserTokenByID(userID);
-
-        logger.info("FCM messages to devices with token prefix TEST_ are not actually sent: "+ messageBuilder);
-        if (userToken.startsWith("TEST_")){
-            return;
-        }
-
-        Message message = messageBuilder.setToken(userToken).build();
-
-        // Send a message to the device corresponding to the provided
-        // registration token.
-        String response = FirebaseMessaging.getInstance().send(message);
-        // Response is a message ID string.
-        System.out.println("Successfully sent message: " + response);
     }
 }

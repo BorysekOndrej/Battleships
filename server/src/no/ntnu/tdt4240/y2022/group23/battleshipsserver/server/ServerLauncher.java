@@ -78,21 +78,23 @@ public class ServerLauncher {
 
 			boolean userStarts = new Random().nextBoolean();
 
-			Message.Builder userMessageBuilder = Message.builder()
-					.putData("type", ServerClientMessage.GAME_START.name())
-					.putData("myBoard", StringSerializer.toString(userBoardRevealed))
-					.putData("opponentBoard", StringSerializer.toString(opponentBoard))
-					.putData("nextTurn", (userStarts ? NextTurn.MY_TURN : NextTurn.OTHERS_TURN).name());
+			{
+				HashMap<String, String> map1 = new HashMap<>();
+				map1.put("myBoard", StringSerializer.toString(userBoardRevealed));
+				map1.put("opponentBoard", StringSerializer.toString(opponentBoard));
+				map1.put("nextTurn", (userStarts ? NextTurn.MY_TURN : NextTurn.OTHERS_TURN).name());
 
-			FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
+				FirebaseMessenger.sendMessage(userID, ServerClientMessage.GAME_START, map1);
+			}
 
-			Message.Builder opponentMessageBuilder = Message.builder()
-					.putData("type", ServerClientMessage.GAME_START.name())
-					.putData("myBoard", StringSerializer.toString(opponentBoardRevealed))
-					.putData("opponentBoard", StringSerializer.toString(userBoard))
-					.putData("nextTurn", (userStarts ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN).name());
+			{
+				HashMap<String, String> map2 = new HashMap<>();
+				map2.put("myBoard", StringSerializer.toString(opponentBoardRevealed));
+				map2.put("opponentBoard", StringSerializer.toString(userBoard));
+				map2.put("nextTurn", (userStarts ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN).name());
 
-			FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
+				FirebaseMessenger.sendMessage(opponentID, ServerClientMessage.GAME_START, map2);
+			}
 		}
 	}
 
@@ -119,23 +121,25 @@ public class ServerLauncher {
 				NextTurn.GAME_OVER :
 				nextTurn == NextTurn.MY_TURN ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN;
 
-		Message.Builder userMessageBuilder = Message.builder()
-				.putData("type", type.name())
-				.putData("board", StringSerializer.toString(opponentBoardAfter))
-				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
-				.putData("nextTurn", nextTurn.name());
+		{
+			HashMap<String, String> map = new HashMap<>();
+			map.put("board", StringSerializer.toString(opponentBoardAfter));
+			map.put("changedCoords", StringSerializer.toString(changedCoords));
+			map.put("unsunkShips", StringSerializer.toString(unsunkShips));
+			map.put("nextTurn", nextTurn.name());
 
-		Message.Builder opponentMessageBuilder = Message.builder()
-				.putData("type", type.name())
-				.putData("board", StringSerializer.toString(opponentBoardAfterRevealed))
-				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
-				.putData("nextTurn", switchedTurn.name());
+			FirebaseMessenger.sendMessage(userID, type, map);
+		}
 
-		FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
-		FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
+		{
+			HashMap<String, String> map = new HashMap<>();
+			map.put("board", StringSerializer.toString(opponentBoardAfterRevealed));
+			map.put("changedCoords", StringSerializer.toString(changedCoords));
+			map.put("unsunkShips", StringSerializer.toString(unsunkShips));
+			map.put("nextTurn", switchedTurn.name());
 
+			FirebaseMessenger.sendMessage(opponentID, type, map);
+		}
 
 		if (switchedTurn == NextTurn.GAME_OVER && !Lobby.getUsersGame(userID).isPrivate){
 			elo_update_after_game(userID, opponentID);
@@ -157,22 +161,26 @@ public class ServerLauncher {
 		ArrayList<GameBoardChange> changedCoords = new ArrayList<>();
 		ArrayList<IShip> unsunkShips = new ArrayList<>(shipPlacements.getUnsunkShipsDisplaced(opponentBoard));
 
-		Message.Builder userMessageBuilder = Message.builder()
-				.putData("type", type.name())
-				.putData("board", StringSerializer.toString(opponentBoard))
-				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
-				.putData("nextTurn", NextTurn.OTHERS_TURN.name());
+		{
+			HashMap<String, String> map = new HashMap<>();
 
-		Message.Builder opponentMessageBuilder = Message.builder()
-				.putData("type", type.name())
-				.putData("board", StringSerializer.toString(opponentBoardRevealed))
-				.putData("changedCoords", StringSerializer.toString(changedCoords))
-				.putData("unsunkShips", StringSerializer.toString(unsunkShips))
-				.putData("nextTurn", NextTurn.MY_TURN.name());
+			map.put("board", StringSerializer.toString(opponentBoard));
+			map.put("changedCoords", StringSerializer.toString(changedCoords));
+			map.put("unsunkShips", StringSerializer.toString(unsunkShips));
+			map.put("nextTurn", NextTurn.OTHERS_TURN.name());
 
-		FirebaseMessenger.sendMessageUsingMsgBuilder(userMessageBuilder, userID);
-		FirebaseMessenger.sendMessageUsingMsgBuilder(opponentMessageBuilder, opponentID);
+			FirebaseMessenger.sendMessage(userID, type, map);
+		}
+
+		{
+			HashMap<String, String> map = new HashMap<>();
+			map.put("board", StringSerializer.toString(opponentBoardRevealed));
+			map.put("changedCoords", StringSerializer.toString(changedCoords));
+			map.put("unsunkShips", StringSerializer.toString(unsunkShips));
+			map.put("nextTurn", NextTurn.MY_TURN.name());
+
+			FirebaseMessenger.sendMessage(opponentID, type, map);
+		}
 	}
 
 	public static void terminate(Context ctx) throws FirebaseMessagingException {
