@@ -73,12 +73,22 @@ def ship_placement(user_id: int):
      assert response.status_code == 200
 
 def single_shot(user_id: int, shot_id: int):
-     single_shot = "rO0ABXNyAEBuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuQWN0aW9ucy5TaW5nbGVTaG90mUUJKvowoG8CAAB4cgBEbm8ubnRudS50ZHQ0MjQwLnkyMDIyLmdyb3VwMjMuYmF0dGxlc2hpcHNnYW1lLkFjdGlvbnMuQWJzdHJhY3RBY3Rpb27Ft0fYnd5DrgIAAUwABmNvb3Jkc3QAPUxuby9udG51L3RkdDQyNDAveTIwMjIvZ3JvdXAyMy9iYXR0bGVzaGlwc2dhbWUvTW9kZWxzL0Nvb3Jkczt4cHNyADtuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuTW9kZWxzLkNvb3Jkc/dR62rnXUhVAgACSQABeEkAAXl4cAAAAAEAAAAB"
+     single_shot_base = "rO0ABXNyAEBuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuQWN0aW9ucy5TaW5nbGVTaG90mUUJKvowoG8CAAB4cgBEbm8ubnRudS50ZHQ0MjQwLnkyMDIyLmdyb3VwMjMuYmF0dGxlc2hpcHNnYW1lLkFjdGlvbnMuQWJzdHJhY3RBY3Rpb27Ft0fYnd5DrgIAAUwABmNvb3Jkc3QAPUxuby9udG51L3RkdDQyNDAveTIwMjIvZ3JvdXAyMy9iYXR0bGVzaGlwc2dhbWUvTW9kZWxzL0Nvb3Jkczt4cHNyADtuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuTW9kZWxzLkNvb3JkcwAAAAAAAAGkAgACSQABeEkAAXl4c"
+     coordinates = [
+          "AAAAAAAAAAI", # 0, 8
+          "AAAAAEAAAAI", # 1, 8
+          "AAAAAIAAAAI",
+          "AAAAAMAAAAI",
+          "AAAAAQAAAAI",
+          "AAAAAUAAAAI",
+          "AAAAAYAAAAI",
+          "AAAAAcAAAAI", # 7, 8
+     ]
 
-     last_char = chr(ord(single_shot[-1])+shot_id)
-
-     response = requests.post(f"{BASE_URL}/action", data={"userID": user_id, "action": single_shot[:-1] + last_char})
+     response = requests.post(f"{BASE_URL}/action", data={"userID": user_id, "action": single_shot_base + coordinates[shot_id]})
      assert response.status_code == 200
+
+
 
 
 if __name__ == "__main__":
