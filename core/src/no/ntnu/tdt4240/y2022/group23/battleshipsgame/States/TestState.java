@@ -25,6 +25,7 @@ public class TestState extends AbstractState {
         playState = new PlayStateGUI();
         //shipPlacementStateGUI = new ShipPlacementStateGUI();
         playState.setGameBoardPanelEnabled(false);
+
     }
 
     @Override

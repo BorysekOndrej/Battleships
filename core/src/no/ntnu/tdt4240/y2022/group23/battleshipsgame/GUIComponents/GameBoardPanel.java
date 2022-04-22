@@ -31,6 +31,7 @@ public class GameBoardPanel implements IRenderable {
     private final Texture hitField;
     private final Texture sunkField;
     private final Texture shipField;
+    private final Texture collideField;
     private final Texture markedField;
 
     private final int xPos;
@@ -47,6 +48,7 @@ public class GameBoardPanel implements IRenderable {
         hitField = new Texture("game_board/hit.png");
         sunkField = new Texture("game_board/sunk.png");
         shipField = new Texture("game_board/ship.png");
+        collideField = new Texture("game_board/collide.png");
         markedField = new Texture("game_board/marked_field.png");
         enabled = true;
 
@@ -59,7 +61,7 @@ public class GameBoardPanel implements IRenderable {
         gameBoard.set(new Coords(4,0), GameBoardField.WATER);
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
-        gameBoard.set(new Coords(4,4), GameBoardField.WATER);
+        gameBoard.set(new Coords(4,4), GameBoardField.COLLIDE);
     }
 
     public void setEnabled(boolean enabled){
@@ -100,6 +102,9 @@ public class GameBoardPanel implements IRenderable {
                 break;
             case SHIP:
                 sb.draw(shipField, xCord, yCord);
+                break;
+            case COLLIDE:
+                sb.draw(collideField, xCord, yCord);
                 break;
             default:
         }
@@ -155,6 +160,7 @@ public class GameBoardPanel implements IRenderable {
         hitField.dispose();
         sunkField.dispose();
         shipField.dispose();
+        collideField.dispose();
         markedField.dispose();
     }
     public int getGameBoardHeight(){
