@@ -6,12 +6,16 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.JoinLobbyStat
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
 
 public class JoinLobbyState extends AbstractLobbyState{
+    enum WaitingFor { GAME_ID, JOIN_SUCCESSFUL, PLACEMENT_START }
+
     private String gameId;
-    private JoinLobbyStateGUI joinLobbyStateGUI;
+    private final JoinLobbyStateGUI joinLobbyStateGUI;
+    private WaitingFor waitingFor;
 
     protected JoinLobbyState(GameStateManager gsm) {
         super(gsm);
         joinLobbyStateGUI = new JoinLobbyStateGUI();
+        waitingFor = WaitingFor.GAME_ID;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class JoinLobbyState extends AbstractLobbyState{
         //Read code
         if (joinLobbyStateGUI.getCode() != null && gameId == null){
             gameId = joinLobbyStateGUI.getCode();
-            lobbyAPIClient.sendJoinLobbyRequest(gameId);
+//            lobbyAPIClient.sendJoinLobbyRequest(gameId);
         }
     }
 
@@ -34,13 +38,28 @@ public class JoinLobbyState extends AbstractLobbyState{
         handleInput();
         joinLobbyStateGUI.update(dt);
 
-        if (gameId != null) {
-            Boolean lobbySuccessfullyJoined = lobbyAPIClient.wasLobbyJoinSuccessful();
-            if (Boolean.TRUE.equals(lobbySuccessfullyJoined)) {
-                goToShipPlacement();
-            } else if (Boolean.FALSE.equals(lobbySuccessfullyJoined)) {
-                gameId = null;
-                joinLobbyStateGUI.resetState();
+        switch (waitingFor) {
+            case GAME_ID: {
+                if (gameId != null) {
+                    lobbyAPIClient.sendJoinLobbyRequest(gameId);
+                    waitingFor = WaitingFor.JOIN_SUCCESSFUL;
+                }
+                break;
+            }
+            case JOIN_SUCCESSFUL: {
+                Boolean joinSuccessful = lobbyAPIClient.wasLobbyJoinSuccessful();
+                if (Boolean.TRUE.equals(joinSuccessful)) {
+                    waitingFor = WaitingFor.PLACEMENT_START;
+                } else if (Boolean.FALSE.equals(joinSuccessful)) {
+                    joinLobbyStateGUI.resetState();
+                    waitingFor = WaitingFor.GAME_ID;
+                }
+                break;
+            }
+            case PLACEMENT_START: {
+                if (lobbyAPIClient.receiveCanPlacementStart()) {
+                    goToShipPlacement();
+                }
             }
         }
     }
