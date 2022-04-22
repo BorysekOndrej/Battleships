@@ -37,6 +37,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     private IShip selectedShip = null;
     private GameBoard gameBoardWithNewShip = null;
+    private boolean shipPlaced = false;
 
     protected ShipPlacementState(GameStateManager gsm) {
         super(gsm);
@@ -63,7 +64,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         shipPlacementStateGUI.setShips(remainingShips);
 
         shipPlacementStateGUI.addGameBoardObserver(gameBoardObserver);
-        shipPlacementStateGUI.startTimer(30);//Starts timer with 30 seconds
+        shipPlacementStateGUI.startTimer(120);//Starts timer with 30 seconds
     }
 
     @Override
@@ -73,7 +74,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
             if (shipPlacementStateGUI.confirmButtonPressed()){
                 collocateShip();
             }
-            else if (Gdx.input.justTouched() && selectedShip != null){
+            else if (Gdx.input.justTouched() && shipPlaced){
                 rotateShip();
             }
         }
@@ -131,11 +132,13 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
     @Override
     public void gameBoardTouch(Coords coords){
         selectedShip = shipPlacementStateGUI.selectedShipType();
-        selectedShip.placeShip(coords);
+        //selectedShip.placeShip(coords);
 
         if (selectedShip != null){
-            gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
-            shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
+            subtractRemaining(selectedShip);
+            shipPlaced = true;
+            //gameBoardWithNewShip = new GameBoard(gameBoard.getWidth(),gameBoard.getHeight(),shipPlacements,selectedShip);
+            //shipPlacementStateGUI.setGameBoard(gameBoardWithNewShip);
         }
     }
 
@@ -151,12 +154,14 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
                 gameBoard = new GameBoard(gameBoardWithNewShip);
                 selectedShip = null;
                 gameBoardWithNewShip = null;
+                shipPlaced = false;
                 shipPlacementStateGUI.setGameBoard(gameBoard);
             }
             catch (Exception IllegalArgumentException){
                 //Could not position ship in ship placement
                 selectedShip = null;
                 gameBoardWithNewShip = null;
+                shipPlaced = false;
                 shipPlacementStateGUI.setGameBoard(gameBoard); //Eliminates the showing of red
             }
         }

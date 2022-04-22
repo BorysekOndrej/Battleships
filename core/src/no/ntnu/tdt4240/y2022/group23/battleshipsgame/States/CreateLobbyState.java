@@ -30,6 +30,7 @@ public class CreateLobbyState extends AbstractLobbyState{
         createLobbyStateGUI.update(dt);
         if (gameId == null){
             gameId = lobbyAPIClient.receiveGameId();
+            createLobbyStateGUI.setCode(gameId);
         }
         else if (lobbyAPIClient.receiveCanPlacementStart()){
             goToShipPlacement();

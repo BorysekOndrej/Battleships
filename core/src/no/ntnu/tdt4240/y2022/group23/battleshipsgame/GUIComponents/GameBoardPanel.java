@@ -52,14 +52,14 @@ public class GameBoardPanel implements IRenderable {
 
         //DEBUGGING ONLY
         gameBoard = new GameBoard(GAME_BOARD_ROWS, GAME_BOARD_ROWS);
-        gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
+        /*gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(1,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(2,0), GameBoardField.SUNK);
         gameBoard.set(new Coords(3,0), GameBoardField.WATER);
         gameBoard.set(new Coords(4,0), GameBoardField.WATER);
         gameBoard.set(new Coords(5,0), GameBoardField.HIT);
         gameBoard.set(new Coords(0,1), GameBoardField.WATER);
-        gameBoard.set(new Coords(4,4), GameBoardField.WATER);
+        gameBoard.set(new Coords(4,4), GameBoardField.WATER);*/
     }
 
     public void setEnabled(boolean enabled){
