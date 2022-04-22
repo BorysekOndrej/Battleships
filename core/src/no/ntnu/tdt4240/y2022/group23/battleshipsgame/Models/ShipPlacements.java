@@ -13,6 +13,8 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
  * from the opposing player.
  */
 public class ShipPlacements implements Serializable {
+    private static final long serialVersionUID = 69;
+
     private ArrayList<IShip> ships = new ArrayList<>();
 
     public boolean canAdd(int width, int height, IShip ship) {

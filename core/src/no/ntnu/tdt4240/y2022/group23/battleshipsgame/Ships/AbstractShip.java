@@ -8,6 +8,8 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 
 public abstract class AbstractShip implements IShip {
+    private static final long serialVersionUID = 42;
+
     private ArrayList<Coords> positions;
     private int parts;
     private boolean horizontal;

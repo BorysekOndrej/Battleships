@@ -1,6 +1,8 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
 public class GameBoardChange {
+    private static final long serialVersionUID = 80085;
+
     public final Coords coords;
     public final GameBoardField newField;
 

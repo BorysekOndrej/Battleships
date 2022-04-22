@@ -10,6 +10,8 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 
 public class GameState {
+    private static final long serialVersionUID = 69420;
+
     private final GameBoard board;
     private final List<Coords> changedCoords;
     private final List<IShip> unsunkShips;
