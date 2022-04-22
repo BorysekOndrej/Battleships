@@ -69,7 +69,7 @@ public class Lobby implements Serializable {
 
     public static String findGameID(String userID){
         try (Jedis jedis = pool.getResource()) {
-            return jedis.get("user_active_in_lobby_"+userID);
+            return jedis.get("active_lobby_of_user_"+userID);
         }
     }
 
@@ -109,7 +109,7 @@ public class Lobby implements Serializable {
             jedis.set("lobby_"+gameID, StringSerializer.toString(this));
 
             for (String userID: users) {
-                jedis.set("user_active_in_lobby_"+userID, gameID);
+                jedis.set("active_lobby_of_user_"+userID, gameID);
             }
         }
     }
@@ -150,9 +150,8 @@ public class Lobby implements Serializable {
     public String getOpponentID(String userID){
         for (String userID2: users) {
             if (!userID2.equals(userID)){
-                continue;
+                return userID2;
             }
-            return userID2;
         }
         return null;
     }

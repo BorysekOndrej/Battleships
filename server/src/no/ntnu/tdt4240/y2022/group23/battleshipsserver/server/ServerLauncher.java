@@ -1,7 +1,6 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -287,7 +286,14 @@ public class ServerLauncher {
 
 	public static void main (String[] arg) {
 		logger.info("Server project started");
-		Javalin app = Javalin.create().start(7070);
+		Javalin app = Javalin.create(config -> {
+			config.requestLogger((ctx, ms) -> {
+				String userID = ctx.formParam("userID"); // don't use getUserID, as that would make it mandatory for all endpoints
+				String shorterUserID = userID != null ? userID.substring(0, 10) : "NO_AUTH";
+				logger.info(ctx.path() + " | " + shorterUserID + " | " + ctx.status());
+			});
+		}).start(7070);
+
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 

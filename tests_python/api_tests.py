@@ -59,11 +59,11 @@ def play_game_as_a_player():
      lobby_id = int(input("Input lobby id: "))
      join_lobby(user_id, lobby_id)
 
-     input("Press key to place the ships")
+     input("Press ENTER to place the ships")
      ship_placement(user_id)
 
      for i in range(10):
-          input("Press key to shoot a single shot")
+          input("Press ENTER to shoot a single shot")
           single_shot(user_id, i)
 
 
@@ -73,13 +73,37 @@ def ship_placement(user_id: int):
      assert response.status_code == 200
 
 def single_shot(user_id: int, shot_id: int):
-     single_shot = "rO0ABXNyAEBuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuQWN0aW9ucy5TaW5nbGVTaG90mUUJKvowoG8CAAB4cgBEbm8ubnRudS50ZHQ0MjQwLnkyMDIyLmdyb3VwMjMuYmF0dGxlc2hpcHNnYW1lLkFjdGlvbnMuQWJzdHJhY3RBY3Rpb27Ft0fYnd5DrgIAAUwABmNvb3Jkc3QAPUxuby9udG51L3RkdDQyNDAveTIwMjIvZ3JvdXAyMy9iYXR0bGVzaGlwc2dhbWUvTW9kZWxzL0Nvb3Jkczt4cHNyADtuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuTW9kZWxzLkNvb3Jkc/dR62rnXUhVAgACSQABeEkAAXl4cAAAAAEAAAAB"
+     single_shot_base = "rO0ABXNyAEBuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuQWN0aW9ucy5TaW5nbGVTaG90mUUJKvowoG8CAAB4cgBEbm8ubnRudS50ZHQ0MjQwLnkyMDIyLmdyb3VwMjMuYmF0dGxlc2hpcHNnYW1lLkFjdGlvbnMuQWJzdHJhY3RBY3Rpb27Ft0fYnd5DrgIAAUwABmNvb3Jkc3QAPUxuby9udG51L3RkdDQyNDAveTIwMjIvZ3JvdXAyMy9iYXR0bGVzaGlwc2dhbWUvTW9kZWxzL0Nvb3Jkczt4cHNyADtuby5udG51LnRkdDQyNDAueTIwMjIuZ3JvdXAyMy5iYXR0bGVzaGlwc2dhbWUuTW9kZWxzLkNvb3JkcwAAAAAAAAGkAgACSQABeEkAAXl4c"
+     coordinates = [
+          "AAAAAAAAAAI", # 0, 8
+          "AAAAAEAAAAI", # 1, 8
+          "AAAAAIAAAAI",
+          "AAAAAMAAAAI",
+          "AAAAAQAAAAI",
+          "AAAAAUAAAAI",
+          "AAAAAYAAAAI",
+          "AAAAAcAAAAI", # 7, 8
+     ]
 
-     last_char = chr(ord(single_shot[-1])+shot_id)
-
-     response = requests.post(f"{BASE_URL}/placements", data={"userID": user_id, "action": single_shot[:-1] + last_char})
+     response = requests.post(f"{BASE_URL}/action", data={"userID": user_id, "action": single_shot_base + coordinates[shot_id]})
      assert response.status_code == 200
 
+
+def test_automated_game():
+     user1 = create_user()
+     user2 = create_user()
+
+     invite_code = create_lobby(user1)
+     join_lobby(user2, invite_code)
+
+     ship_placement(user1)
+     ship_placement(user2)
+
+     for i in range(6):
+          single_shot(user1, i)
+          single_shot(user2, i)
+
+     pass # todo: the rest
 
 if __name__ == "__main__":
      print(BASE_URL)
@@ -92,5 +116,6 @@ if __name__ == "__main__":
      assert response.status_code == 200
 
      play_game_as_a_player()
+     # test_automated_game()
 
 
