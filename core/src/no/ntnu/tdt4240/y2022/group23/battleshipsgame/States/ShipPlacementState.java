@@ -1,16 +1,15 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.States;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.ShipPlacementStateGUI;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Config;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTerminated;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.GameAPIClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -44,18 +43,10 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
         //Model components
         shipPlacements = new ShipPlacements();
-        remainingShips = new ArrayList<>();
-        gameBoard = new GameBoard(10,10);
+        gameBoard = new GameBoard(Config.GAME_BOARD_WIDTH, Config.GAME_BOARD_HEIGHT);
 
         //Create remaining ships list
-        //4 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),4,false),1));
-        //3 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),3,false),2));
-        //2 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),2,false),3));
-        //1 square ship
-        remainingShips.add(new Pair<>(new RectangularShip(new Coords(0,0),1,false),4));
+        remainingShips = Config.remainingShips();
 
         //GUI Components
         shipPlacementStateGUI = new ShipPlacementStateGUI();
@@ -84,7 +75,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
             gameAPIClient.sendShipPlacement(shipPlacements);
             goToPlayState();
         }
-        
+
         if (shipPlacementStateGUI.runOut()){ //If timer runs out go to ViewMyBoard
             if (hasShipRemainings()){
                 try{
