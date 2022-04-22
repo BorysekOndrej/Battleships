@@ -77,7 +77,7 @@ def single_shot(user_id: int, shot_id: int):
 
      last_char = chr(ord(single_shot[-1])+shot_id)
 
-     response = requests.post(f"{BASE_URL}/placements", data={"userID": user_id, "action": single_shot[:-1] + last_char})
+     response = requests.post(f"{BASE_URL}/action", data={"userID": user_id, "action": single_shot[:-1] + last_char})
      assert response.status_code == 200
 
 
