@@ -150,9 +150,8 @@ public class Lobby implements Serializable {
     public String getOpponentID(String userID){
         for (String userID2: users) {
             if (!userID2.equals(userID)){
-                continue;
+                return userID2;
             }
-            return userID2;
         }
         return null;
     }
