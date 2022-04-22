@@ -113,7 +113,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
         for (int i = 0; i <= remainingShips.size() ; i++){
             Pair<IShip,Integer> currentPair = remainingShips.get(i);
             IShip currentShip = currentPair.getValue0();
-            if (selectedShip.getPositions().size() == currentShip.getPositions().size()){ //Same type
+            if (selectedShip.equals(currentShip)){ // same type
                 remainingShips.set(i,currentPair.setAt1(currentPair.getValue1() - 1));
                 break;
             }
