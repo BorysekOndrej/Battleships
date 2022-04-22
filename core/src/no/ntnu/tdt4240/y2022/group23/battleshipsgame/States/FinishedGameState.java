@@ -26,6 +26,7 @@ public class FinishedGameState extends AbstractState {
 
     @Override
     public void update(float dt) {
+        handleInput();
         finishedGameStateGUI.update(dt);
     }
 
