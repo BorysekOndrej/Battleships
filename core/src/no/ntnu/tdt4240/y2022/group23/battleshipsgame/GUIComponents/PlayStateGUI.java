@@ -98,7 +98,7 @@ public class PlayStateGUI extends ShipPlacementStateGUI implements IRenderable {
     }
 
     @Override
-    public void handleInput(){}
+    public void handleInput(){ gameBoardPanel.handleInput(); }
 
     @Override
     public void update(float dt) {
