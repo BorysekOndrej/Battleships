@@ -34,10 +34,10 @@ public class BattleshipsGame extends ApplicationAdapter {
 		gsm.update(Gdx.graphics.getDeltaTime());
 		gsm.render(batch);
 
-		Map<String, String> receivedMsg = networkClient.receive();
-		if (receivedMsg != null){
-			System.out.println("Received new msg");
-		}
+//		Map<String, String> receivedMsg = networkClient.receive();
+//		if (receivedMsg != null){
+//			System.out.println("Received new msg");
+//		}
 	}
 	
 	@Override
