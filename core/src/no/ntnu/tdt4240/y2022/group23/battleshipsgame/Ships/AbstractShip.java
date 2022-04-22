@@ -8,7 +8,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 
 public abstract class AbstractShip implements IShip {
-    private List<Coords> positions;
+    private ArrayList<Coords> positions;
     private int parts;
     private boolean horizontal;
 
@@ -21,7 +21,7 @@ public abstract class AbstractShip implements IShip {
 
     @Override
     public void setPositions(List<Coords> positions){
-        this.positions = positions;
+        this.positions = new ArrayList<>(positions);
     }
 
     @Override
