@@ -24,10 +24,23 @@ public class JoinLobbyState extends AbstractLobbyState{
         }
 
         //Read code
-        if (joinLobbyStateGUI.getCode() != null){
-            if (gameId == null){
-                gameId = lobbyAPIClient.receiveGameId();
+        if (joinLobbyStateGUI.getCode() != null && gameId == null){
+//            if (gameId == null){
+//                gameId = lobbyAPIClient.receiveGameId();
+                gameId = joinLobbyStateGUI.getCode();
                 lobbyAPIClient.sendJoinLobbyRequest(gameId); //Check this
+//            }
+        }
+
+        if (gameId != null) {
+            Boolean joinSuccessful = lobbyAPIClient.wasLobbyJoinSuccessful();
+            if (joinSuccessful != null) {
+                if (joinSuccessful) {
+                    goToShipPlacement();
+                } else {
+                    joinLobbyStateGUI.resetState();
+                    gameId = null;
+                }
             }
         }
     }
