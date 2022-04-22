@@ -272,7 +272,7 @@ public class GameBoardTests {
                 } else if (placements.hasShipOnCoords(coords)) {
                     Assertions.assertEquals(GameBoardField.SHIP, board.get(coords));
                 } else {
-                    Assertions.assertEquals(GameBoardField.WATER, board.get(coords));
+                    Assertions.assertEquals(GameBoardField.UNKNOWN, board.get(coords));
                 }
             }
         }
