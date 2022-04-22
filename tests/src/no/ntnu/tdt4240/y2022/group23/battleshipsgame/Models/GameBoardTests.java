@@ -184,6 +184,14 @@ public class GameBoardTests {
                         Arguments.of(
                             placements,
                             new RectangularShip(new Coords(4, 0), 4, true)
+                        ),
+                        Arguments.of(
+                                placements,
+                                new RectangularShip(new Coords(1, 0), 4, true)
+                        ),
+                        Arguments.of(
+                                placements,
+                                new RectangularShip(new Coords(3, 0), 2, true)
                         )
                 ));
     }
