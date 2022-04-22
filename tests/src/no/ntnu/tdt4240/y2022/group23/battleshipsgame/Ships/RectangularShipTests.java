@@ -1,7 +1,9 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships;
 
 import org.javatuples.Pair;
+import org.javatuples.Triplet;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -121,18 +123,30 @@ public class RectangularShipTests {
         }
     }
 
-    private static Stream<Arguments> provideShipParts() {
+    private static Stream<Triplet<Integer, Boolean, Coords>> provideShipParts() {
         return IntStream.rangeClosed(1, 5)
                 .mapToObj(size -> Stream.of(
                         Pair.with(size, true),
                         Pair.with(size, false)
                 ))
                 .flatMap(Function.identity())
-                .map(pair -> Arguments.of(pair.getValue0(), pair.getValue1(), new Coords(7, 5)));
+                .flatMap(pair -> Stream.of(
+                        Triplet.with(pair.getValue0(), pair.getValue1(), new Coords(7, 5)),
+                        Triplet.with(pair.getValue0(), pair.getValue1(), new Coords(1, 3))
+                ));
+    }
+
+    private static Stream<Arguments> provideShipArguments() {
+        return provideShipParts().map(
+                triplet -> Arguments.of(
+                        triplet.getValue0(),
+                        triplet.getValue1(),
+                        triplet.getValue2()
+                ));
     }
 
     @ParameterizedTest
-    @MethodSource("provideShipParts")
+    @MethodSource("provideShipArguments")
     public void ship_is_displaced_correctly(int size, boolean horizontal, Coords start) {
         RectangularShip ship = new RectangularShip(start, size, horizontal);
         ship.displace();
@@ -146,7 +160,25 @@ public class RectangularShipTests {
     }
 
     @ParameterizedTest
-    @MethodSource("provideShipParts")
+    @MethodSource("provideShipArguments")
+    public void ship_is_placed_correctly(int size, boolean horizontal, Coords start) {
+        RectangularShip ship = new RectangularShip(new Coords(0, 0), size, horizontal);
+        ship.placeShip(start);
+        List<Coords> placed = ship.getPositions();
+        Assertions.assertEquals(start, placed.get(0));
+
+        assertCollectionsEqualInAnyOrder(
+                IntStream.range(0, size)
+                    .mapToObj(
+                        i -> horizontal ?
+                                new Coords(start.x + i, start.y) : new Coords(start.x, start.y + i))
+                    .collect(Collectors.toList()),
+                placed
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideShipArguments")
     public void ship_is_rotated_correctly(int size, boolean horizontal, Coords start) {
         RectangularShip ship = new RectangularShip(start, size, horizontal);
         List<Coords> original = ship.getPositions();
@@ -160,5 +192,29 @@ public class RectangularShipTests {
             );
             original = rotated;
         }
+    }
+
+    private static Stream<Arguments> provideDoubleShipArguments() {
+        return provideShipParts()
+                .flatMap(ship1 -> provideShipParts().map(ship2 -> Arguments.of(ship1, ship2)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDoubleShipArguments")
+    public void only_same_type_ships_equal(Triplet<Integer, Boolean, Coords> shipParts1, Triplet<Integer, Boolean, Coords> shipParts2) {
+        RectangularShip ship1 = new RectangularShip(shipParts1.getValue2(), shipParts1.getValue0(), shipParts1.getValue1());
+        RectangularShip ship2 = new RectangularShip(shipParts2.getValue2(), shipParts2.getValue0(), shipParts2.getValue1());
+
+        if (shipParts1.getValue0().equals(shipParts2.getValue0())) {
+            Assertions.assertEquals(ship1, ship2);
+        } else {
+            Assertions.assertNotEquals(ship1, ship2);
+        }
+    }
+
+    @Test
+    public void ship_not_equal_to_null() {
+        RectangularShip ship = new RectangularShip(new Coords(1, 3), 3, false);
+        Assertions.assertNotEquals(ship, null);
     }
 }
