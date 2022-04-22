@@ -23,7 +23,6 @@ public class TestState extends AbstractState {
     public TestState(GameStateManager gsm) {
         super(gsm);
         playState = new PlayStateGUI();
-        //shipPlacementStateGUI = new ShipPlacementStateGUI();
         playState.setGameBoardPanelEnabled(false);
 
     }

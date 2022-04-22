@@ -86,6 +86,8 @@ public class ShipPlacementStateGUI implements IRenderable {
         gameBoardPanel.setData(board);
     }
 
+
+
     public void setGameBoardPanelEnabled(boolean enabled){
         gameBoardPanel.setEnabled(enabled);
     }

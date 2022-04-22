@@ -24,8 +24,8 @@ public class MenuState extends AbstractState {
         if (mainMenu.joinLobbyButtonPressed()){
             goToJoinLobby();
         }
-        if (mainMenu.practiseButtonPressed()){
-            gsm.set(new TestState(gsm));//temporarily added for debuging
+        if (mainMenu.rankedButtonPressed()){
+            gsm.set(new ShipPlacementState(gsm));
         }
     }
 

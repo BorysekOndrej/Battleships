@@ -54,19 +54,6 @@ public class GameBoardPanel implements IRenderable {
 
         //DEBUGGING ONLY
         gameBoard = new GameBoard(GAME_BOARD_ROWS, GAME_BOARD_ROWS);
-        gameBoard.set(new Coords(0,0), GameBoardField.SUNK);
-        gameBoard.set(new Coords(1,0), GameBoardField.SUNK);
-        gameBoard.set(new Coords(2,0), GameBoardField.SUNK);
-        gameBoard.set(new Coords(3,0), GameBoardField.WATER);
-        gameBoard.set(new Coords(4,0), GameBoardField.WATER);
-        gameBoard.set(new Coords(5,0), GameBoardField.HIT);
-        gameBoard.set(new Coords(0,1), GameBoardField.WATER);
-        gameBoard.set(new Coords(4,4), GameBoardField.COLLIDE);
-        gameBoard.set(new Coords(4,5), GameBoardField.COLLIDE);
-        gameBoard.set(new Coords(4,6), GameBoardField.COLLIDE);
-        gameBoard.set(new Coords(5,6), GameBoardField.SHIP);
-        gameBoard.set(new Coords(6,6), GameBoardField.SHIP);
-        gameBoard.set(new Coords(7,6), GameBoardField.SHIP);
     }
 
     public void setEnabled(boolean enabled){
@@ -141,7 +128,6 @@ public class GameBoardPanel implements IRenderable {
     }
 
     public void update(float dt){
-        handleInput();
     }
 
     public void render(SpriteBatch sb){
