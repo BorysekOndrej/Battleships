@@ -122,15 +122,12 @@ public class LobbyAPIClient {
 
     /**
      * Used to terminate the communication with the server.
-     * @throws CommunicationTerminated to allow reacting the same way as when
-     * the communication is terminated by the other party
      */
-    public void endCommunication() throws CommunicationTerminated {
+    public void endCommunication() {
         Map<String, String> request = new HashMap<>();
         request.put("type", ClientServerMessage.END_COMMUNICATION.name());
 
         network.send("/terminate", request);
-        throw new CommunicationTerminated("this user terminated communication");
     }
 
     public void sendRequestCurrentELO() {
