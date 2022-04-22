@@ -59,6 +59,7 @@ public abstract class AbstractShip implements IShip {
             newPositions.add(new Coords(-(this.getPositions().get(i).y - start.y) + start.x, this.getPositions().get(i).x - start.x + start.y));
         }
         this.setPositions(newPositions);
+        this.setOrientation(!getOrientation());
     }
 
     @Override
