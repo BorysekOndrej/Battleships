@@ -42,10 +42,12 @@ public class GameBoard implements Serializable {
         boolean canAdd = placements.canAdd(width, height, ship);
 
         for (Coords coord : ship.getPositions()) {
-            if (canAdd) {
-                set(coord, GameBoardField.SHIP);
-            } else {
-                set(coord, GameBoardField.COLLIDE);
+            if (0 <= coord.x && coord.x < getWidth() && 0 <= coord.y && coord.y < getHeight()) {
+                if (canAdd) {
+                    set(coord, GameBoardField.SHIP);
+                } else {
+                    set(coord, GameBoardField.COLLIDE);
+                }
             }
         }
     }
