@@ -1,6 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.StringSerializer;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.RectangularShip;
 
@@ -172,5 +174,13 @@ public class ShipPlacementsTests {
         }
 
         Assertions.assertEquals(areAllSunk, placements.allSunk(board));
+    }
+
+    @Test
+    public void serialize_deserialize() {
+        ShipPlacements placements = new ShipPlacements();
+        placements.addShip(5, 5, new RectangularShip(new Coords(0, 0), 3, true));
+
+        Assertions.assertDoesNotThrow(() -> StringSerializer.fromString(StringSerializer.toString(placements)));
     }
 }
