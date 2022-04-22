@@ -37,7 +37,7 @@ public class GameBoard implements Serializable {
 
     public GameBoard(int width, int height, ShipPlacements placements, IShip ship) {
         this(width, height);
-        reveal(placements);
+        reveal(placements, GameBoardField.UNKNOWN);
 
         boolean canAdd = placements.canAdd(width, height, ship);
 
@@ -72,7 +72,7 @@ public class GameBoard implements Serializable {
     public int getWidth() { return board.get(0).size(); }
     public int getHeight() { return board.size(); }
 
-    public GameBoard reveal(ShipPlacements placements) {
+    private GameBoard reveal(ShipPlacements placements, GameBoardField filler) {
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
                 Coords coords = new Coords(x, y);
@@ -84,10 +84,14 @@ public class GameBoard implements Serializable {
                 if (placements.hasShipOnCoords(coords)) {
                     set(coords, GameBoardField.SHIP);
                 } else {
-                    set(coords, GameBoardField.WATER);
+                    set(coords, filler);
                 }
             }
         }
         return this;
+    }
+
+    public GameBoard reveal(ShipPlacements placements) {
+        return reveal(placements, GameBoardField.WATER);
     }
 }
