@@ -64,7 +64,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
                 collocateShip();
             }
         }
-    };
+    }
 
     @Override
     public void update(float dt) throws CommunicationTerminated {
@@ -90,7 +90,7 @@ public class ShipPlacementState extends AbstractState implements IGameBoardState
 
     //Changes state to view my board state
     private void goToPlayState(){
-        gsm.set(new PlayState(gsm));
+        gsm.set(new PlayState(gsm, gameBoard));
     }
 
     //Changes state to finished game state
