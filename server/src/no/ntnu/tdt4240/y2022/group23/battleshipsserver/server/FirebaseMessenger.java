@@ -54,11 +54,12 @@ public class FirebaseMessenger {
             messageBuilder = messageBuilder.putAllData(args);
         }
 
-        logger.info("FCM messages to devices with token prefix TEST_ are not actually sent: "+ messageBuilder);
+        logger.debug("Attempt to send message to user " + userID.substring(0, 10) + "... with type " + msgType.name());
+
         if (firebaseToken.startsWith("TEST_")){
+            logger.debug("FCM messages to devices with token prefix TEST_ are not actually sent.");
             return;
         }
-
         Message message = messageBuilder
             .setToken(firebaseToken)
             .build();
@@ -66,7 +67,6 @@ public class FirebaseMessenger {
         // Send a message to the device corresponding to the provided registration token.
         try {
             String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Successfully sent message to user " + userID.substring(0, 10) + "... with type " + msgType.name());
         } catch (FirebaseMessagingException e) {
             logger.warn(Arrays.toString(e.getStackTrace()));
         }

@@ -59,11 +59,11 @@ def play_game_as_a_player():
      lobby_id = int(input("Input lobby id: "))
      join_lobby(user_id, lobby_id)
 
-     input("Press key to place the ships")
+     input("Press ENTER to place the ships")
      ship_placement(user_id)
 
      for i in range(10):
-          input("Press key to shoot a single shot")
+          input("Press ENTER to shoot a single shot")
           single_shot(user_id, i)
 
 
