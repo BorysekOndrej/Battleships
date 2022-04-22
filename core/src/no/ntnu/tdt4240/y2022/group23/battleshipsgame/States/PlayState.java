@@ -5,11 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.AbstractAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.Radar;
-import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.SingleShot;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents.PlayStateGUI;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Config;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Coords;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameState;
@@ -19,163 +18,156 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.GameAPIClient;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Ships.IShip;
 import no.ntnu.tdt4240.y2022.group23.battleshipslogic.Observers.GameBoardObserver;
 
-import java.util.ArrayList;
 import java.util.List;
+
+enum View { MY_BOARD, OPPONENT_BOARD }
+enum WaitingFor {  GAME_START, MY_ACTION, MY_ACTION_RESULT, OPPONENT_ACTION_RESULT }
 
 public class PlayState extends AbstractState implements IGameBoardState {
     //Game API
-    private GameAPIClient gameAPIClient;
-    private Quartet<Boolean, GameBoard, GameBoard, NextTurn> serverInfo;
+    private final GameAPIClient gameAPIClient;
 
     //GUI
-    private PlayStateGUI playStateGUI;
+    private final PlayStateGUI playStateGUI;
 
-    //Event listener
-    private GameBoardObserver gameBoardObserver;
+    private GameBoard myGameBoard;
+    private GameBoard opponentGameBoard;
 
     private List<Pair<IShip, Integer>> myUnsunkShips;
     private List<Pair<IShip, Integer>> opponentUnsunkShips;
 
     //Action manager
-    private List<Pair<AbstractAction, Boolean>> actions;
+    private final List<Pair<IAction, Boolean>> actions;
     private int turnsLeftForRadar;
 
-    private GameBoard myGameBoard;
-    private GameBoard opponentGameBoard;
-
     private NextTurn turnHolder;
-    private boolean isMyBoardShowing = true;
+    private View currentBoardView;
 
-    //Server booleans
-    private boolean canGameStart = false;
-    private boolean actionSent = false;
-    private boolean timeOutSent = false;
-    private boolean myActionResultReceived = false;
+    //game state
+    private WaitingFor waitingFor;
 
-    protected PlayState(GameStateManager gsm) {
+    protected PlayState(GameStateManager gsm, GameBoard myGameBoard) {
         super(gsm);
         gameAPIClient = new GameAPIClient(gsm.getNetworkClient());
-        //serverInfo = new Quartet<>(false,null,null,null); //MAYBE needed
 
         playStateGUI = new PlayStateGUI();
-        playStateGUI.setSwitchButtonEnabled(true); //Switch button always enabled
-        playStateGUI.setShipPanelEnabled(false); //Ship panel is always disabled
+        playStateGUI.setSwitchButtonEnabled(false); // disabled till game can start
+        playStateGUI.setShipPanelEnabled(false); // ships cannot be selected in this phase
 
-        gameBoardObserver = new GameBoardObserver(this);
+        GameBoardObserver gameBoardObserver = new GameBoardObserver(this);
         playStateGUI.addGameBoardObserver(gameBoardObserver);
 
-        actions = new ArrayList<>();
+        actions = Config.actions();
+        playStateGUI.setActions(actions);
 
-        //Adding the shot
-        actions.add(new Pair<>(new SingleShot(new Coords(0,0)),true));
-        //Adding the radar
-        actions.add(new Pair<>(new Radar(new Coords(0,0)),true));
+        this.myGameBoard = myGameBoard;
+        this.opponentGameBoard = new GameBoard(myGameBoard.getWidth(), myGameBoard.getHeight());
+
+        myUnsunkShips = Config.remainingShips();
+        opponentUnsunkShips = Config.remainingShips();
+
+        turnHolder = NextTurn.OTHERS_TURN;
+        waitingFor = WaitingFor.GAME_START;
+
+        showMyBoard();
+    }
+
+    private void setWaitingFor(boolean thisPlayerWon) {
+        switch (turnHolder) {
+            case MY_TURN: { waitingFor = WaitingFor.MY_ACTION; break; }
+            case OTHERS_TURN: { waitingFor = WaitingFor.OPPONENT_ACTION_RESULT; break; }
+            case GAME_OVER: {
+                if (thisPlayerWon) {
+                    goToWonGame();
+                } else {
+                    goToLostGame();
+                }
+                break;
+            }
+        }
     }
 
     @Override
     public void handleInput() {
         playStateGUI.handleInput();
+
+        if (waitingFor != WaitingFor.GAME_START && playStateGUI.switchButtonPressed()){
+            if (currentBoardView == View.OPPONENT_BOARD){
+                showMyBoard();
+            } else {
+                showOpponentBoard();
+            }
+        }
+    }
+
+    private void processActionResult(GameState newGameState) {
+        if (newGameState == null)
+            return;
+
+        turnHolder = newGameState.getNextTurn();
+
+        if (newGameState.isThisPlayerBoard()) {
+            myGameBoard = newGameState.getBoard();
+            myUnsunkShips = newGameState.getUnsunkShips();
+            showMyBoard();
+        } else {
+            opponentGameBoard = newGameState.getBoard();
+            opponentUnsunkShips = newGameState.getUnsunkShips();
+            showOpponentBoard();
+        }
+
+        setWaitingFor(newGameState.thisPlayerWon());
+        playStateGUI.startTimer(Config.TURN_TIMEOUT);
     }
 
     @Override
     public void update(float dt) throws CommunicationTerminated {
+        handleInput();
         playStateGUI.update(dt);
 
-        if (!canGameStart){ //Game can not start
-            serverInfo = gameAPIClient.receiveCanGameStart();
-            if (serverInfo.getValue0()){
-                canGameStart = true;
-            }
-            playStateGUI.startTimer(30);
-        }
+        switch (waitingFor) {
+            case GAME_START: {
+                Quartet<Boolean, GameBoard, GameBoard, NextTurn> serverInfo = gameAPIClient.receiveCanGameStart();
+                if (!serverInfo.getValue0())
+                    break;
 
-        else { //Game has started
-            myGameBoard = serverInfo.getValue1();
-            opponentGameBoard = serverInfo.getValue2();
-            turnHolder = serverInfo.getValue3();
-
-            playStateGUI.setTurnIndicator(turnHolder);
-
-            if (turnHolder == NextTurn.MY_TURN){
-                playStateGUI.setConfirmButtonEnabled(true);
-                playStateGUI.setShipPanelEnabled(true);
-                //If my board is showing, game board is untouchable
-                //If opponent is showing, game board is touchable
-                playStateGUI.setGameBoardPanelEnabled(!isMyBoardShowing);
-            }
-            else if (turnHolder == NextTurn.OTHERS_TURN){
-                playStateGUI.setGameBoardPanelEnabled(false);
-                playStateGUI.setShipPanelEnabled(false);
-                playStateGUI.setConfirmButtonEnabled(false);
-            }
-
-            if (playStateGUI.switchButtonPressed()){
-                if (isMyBoardShowing){
-                    showEnemyBoard();
-                }
-                else{
+                myGameBoard = serverInfo.getValue1();
+                opponentGameBoard = serverInfo.getValue2();
+                turnHolder = serverInfo.getValue3();
+                if (turnHolder == NextTurn.MY_TURN) {
+                    waitingFor = WaitingFor.MY_ACTION;
                     showMyBoard();
+                } else {
+                    waitingFor = WaitingFor.OPPONENT_ACTION_RESULT;
+                    showOpponentBoard();
                 }
+                playStateGUI.startTimer(Config.TURN_TIMEOUT);
+                playStateGUI.setSwitchButtonEnabled(true);
+                break;
             }
-
-            //If timer runs out and has no timeOut or action signal has been sent
-            if (playStateGUI.runOut() && !(timeOutSent || actionSent)){
-                timeOutSent = true;
-                gameAPIClient.sendTimeout();
+            case MY_ACTION: {
+                if (playStateGUI.runOut()) {
+                    waitingFor = WaitingFor.MY_ACTION_RESULT;
+                    gameAPIClient.sendTimeout();
+                    playStateGUI.startTimer(Config.TURN_TIMEOUT);
+                }
+                break;
             }
-
-            //If action or timeOut signal has been set and the action result has not been received
-            if ((actionSent || timeOutSent) && !myActionResultReceived){
+            case MY_ACTION_RESULT: {
                 GameState newGameState = gameAPIClient.receiveMyActionResult();
-                if (newGameState != null){
-                    myActionResultReceived = true;
-
-                    opponentGameBoard = newGameState.getBoard();
-                    turnHolder = newGameState.getNextTurn();
-                    opponentUnsunkShips = newGameState.getUnsunkShips();
-
-                    showEnemyBoard(); //Show board that has changed
-                    playStateGUI.startTimer(30); //Restart timer
-
-                    if (turnHolder == NextTurn.GAME_OVER){
-                        if (!newGameState.thisPlayerWon()){ //Is this if necessary? I know that the game is over after my action, I won
-                            goToWonGame();
-                            gameAPIClient.endCommunication();
-                        }
-                    }
-                }
+                processActionResult(newGameState);
+                break;
             }
-
-            //If the result of my action was received
-            if (myActionResultReceived){
+            case OPPONENT_ACTION_RESULT: {
                 GameState newGameState = gameAPIClient.receiveOpponentActionResult();
-                if (newGameState != null){
-                    myGameBoard = newGameState.getBoard();
-                    turnHolder = newGameState.getNextTurn();
-                    myUnsunkShips = newGameState.getUnsunkShips();
+                processActionResult(newGameState);
 
-                    showMyBoard(); //Show board that has changed
-                    playStateGUI.startTimer(30); //Restart timer
-
-                    if (turnHolder == NextTurn.GAME_OVER){
-                        if (!newGameState.thisPlayerWon()){ //Same as before
-                            goToLostGame();
-                            gameAPIClient.endCommunication();
-                        }   
-                    }
-
-                    if (turnsLeftForRadar == 0){ //Radar is ready
-                        actions.set(1,new Pair<>(new Radar(new Coords(0,0)),true));
-                    }
-                    else if (turnsLeftForRadar>0){ //1 less turn for radar to be ready
-                        turnsLeftForRadar--;
-                    }
-
-                    //Reset the server booleans
-                    myActionResultReceived = false;
-                    timeOutSent = false;
-                    actionSent = false;
+                if (--turnsLeftForRadar == 0) {
+                    actions.set(1, actions.get(1).setAt1(true));
+                    playStateGUI.setActions(actions);
                 }
+
+                break;
             }
         }
     }
@@ -183,37 +175,49 @@ public class PlayState extends AbstractState implements IGameBoardState {
     @Override
     public void gameBoardTouch(Coords coords) {
         IAction action = playStateGUI.selectedAction();
-        //If neither an action or timeout has been sent, and an action is selected
-        if (!(actionSent || timeOutSent) && action != null){
+
+        if (waitingFor == WaitingFor.MY_ACTION && action != null) {
             action.setCoords(coords);
             gameAPIClient.sendAction(action);
-            actionSent = true;
-            if (action.equals(new Radar(coords))){ //Action is a radar
-                actions.set(1,new Pair<>(new Radar(new Coords(0,0)),false));
-                turnsLeftForRadar = 5;
+            waitingFor = WaitingFor.MY_ACTION_RESULT;
+
+            if (action instanceof Radar) {
+                actions.set(1, actions.get(1).setAt1(false));
+                playStateGUI.setActions(actions);
+                turnsLeftForRadar = Config.RADAR_COOLDOWN;
             }
         }
     }
 
-    private void showEnemyBoard(){
-        playStateGUI.setGameBoard(opponentGameBoard);
-        playStateGUI.setShips(opponentUnsunkShips);
-        isMyBoardShowing = false;
+    private void setGUI() {
+        playStateGUI.setTurnIndicator(turnHolder);
+        playStateGUI.setGameBoard(currentBoardView == View.MY_BOARD ? myGameBoard : opponentGameBoard);
+        playStateGUI.setShips(currentBoardView == View.MY_BOARD ? myUnsunkShips : opponentUnsunkShips);
     }
 
-    private void showMyBoard(){
-        playStateGUI.setGameBoard(myGameBoard);
-        playStateGUI.setShips(myUnsunkShips);
-        isMyBoardShowing = true;
+    private void showOpponentBoard() {
+        currentBoardView = View.OPPONENT_BOARD;
+
+        playStateGUI.setGameBoardPanelEnabled(true);
+        playStateGUI.setConfirmButtonEnabled(true);
+
+        setGUI();
     }
 
-    //Changes state to finished game state as the winner
-    private void goToWonGame(){
+    private void showMyBoard() {
+        currentBoardView = View.MY_BOARD;
+
+        playStateGUI.setGameBoardPanelEnabled(false);
+        playStateGUI.setConfirmButtonEnabled(false);
+
+        setGUI();
+    }
+
+    private void goToWonGame() {
         gsm.set(new FinishedGameState(gsm,true));
     }
 
-    //Changes state to finished game state as the loser
-    private void goToLostGame(){
+    private void goToLostGame() {
         gsm.set(new FinishedGameState(gsm,false));
     }
 

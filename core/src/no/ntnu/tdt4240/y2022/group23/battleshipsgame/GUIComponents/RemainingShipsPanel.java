@@ -131,9 +131,7 @@ public class RemainingShipsPanel implements IRenderable {
     }
 
     @Override
-    public void update(float dt) {
-        handleInput();
-    }
+    public void update(float dt) {}
 
     @Override
     public void render(SpriteBatch sb) {
