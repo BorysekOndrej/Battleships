@@ -74,7 +74,7 @@ public class GameBoard implements Serializable {
     public int getWidth() { return board.get(0).size(); }
     public int getHeight() { return board.size(); }
 
-    private GameBoard reveal(ShipPlacements placements, GameBoardField filler) {
+    public GameBoard reveal(ShipPlacements placements, GameBoardField filler) {
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
                 Coords coords = new Coords(x, y);
@@ -91,9 +91,5 @@ public class GameBoard implements Serializable {
             }
         }
         return this;
-    }
-
-    public GameBoard reveal(ShipPlacements placements) {
-        return reveal(placements, GameBoardField.WATER);
     }
 }
