@@ -57,6 +57,9 @@ public class LobbyAPIClient {
             return null;
 
         ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        if (responseType == ServerClientMessage.ELO_UPDATE)
+            return null;
+
         ResponseCheckers.checkUnexpectedType(
                 Collections.singletonList(ServerClientMessage.JOINED_LOBBY_WITH_ID),
                 responseType
@@ -90,6 +93,9 @@ public class LobbyAPIClient {
             return null;
 
         ServerClientMessage responseType = ResponseCheckers.checkCommunicationTerminated(response);
+        if (responseType == ServerClientMessage.ELO_UPDATE)
+            return null;
+
         ResponseCheckers.checkUnexpectedType(
                 Arrays.asList(
                         ServerClientMessage.JOINED_LOBBY_WITH_ID,
