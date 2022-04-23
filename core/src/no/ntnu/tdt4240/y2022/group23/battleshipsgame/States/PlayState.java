@@ -122,6 +122,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
         turnHolder = newGameState.getNextTurn();
         setWaitingFor(newGameState.thisPlayerWon());
 
+        setGUI();
+
         if (newGameState.isThisPlayerBoard()) {
             myGameBoard = newGameState.getBoard();
             myUnsunkShips = newGameState.getUnsunkShips();
@@ -148,6 +150,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
                 opponentGameBoard = serverInfo.getValue2();
                 turnHolder = serverInfo.getValue3();
                 setWaitingFor(false);
+
+                setGUI();
 
                 playStateGUI.setSwitchButtonEnabled(true);
                 playStateGUI.setPause(false);
