@@ -7,6 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,7 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Actions.IAction;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.Config;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoard;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardChange;
+import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.GameBoardField;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.NextTurn;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Models.ShipPlacements;
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
@@ -70,8 +73,8 @@ public class ServerLauncher {
 			GameBoard userBoard = new GameBoard(Config.GAME_BOARD_WIDTH, Config.GAME_BOARD_HEIGHT);
 			GameBoard opponentBoard = new GameBoard(Config.GAME_BOARD_WIDTH, Config.GAME_BOARD_HEIGHT);
 
-			GameBoard userBoardRevealed = new GameBoard(userBoard).reveal(userPlacements);
-			GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(opponentPlacements);
+			GameBoard userBoardRevealed = new GameBoard(userBoard).reveal(userPlacements, GameBoardField.UNKNOWN);
+			GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(opponentPlacements, GameBoardField.UNKNOWN);
 
 			redisStorage.setUserGameBoard(userID, userBoard);
 			redisStorage.setUserGameBoard(opponentID, opponentBoard);
@@ -117,7 +120,7 @@ public class ServerLauncher {
 		ArrayList<IShip> unsunkShips = new ArrayList<>(opponentPlacements.getUnsunkShipsDisplaced(opponentBoardAfter));
 		NextTurn nextTurn = evaluator.nextTurn();
 
-		GameBoard opponentBoardAfterRevealed = new GameBoard(opponentBoardAfter).reveal(opponentPlacements);
+		GameBoard opponentBoardAfterRevealed = new GameBoard(opponentBoardAfter).reveal(opponentPlacements, GameBoardField.UNKNOWN);
 		NextTurn switchedTurn = nextTurn == NextTurn.GAME_OVER ?
 				NextTurn.GAME_OVER :
 				nextTurn == NextTurn.MY_TURN ? NextTurn.OTHERS_TURN : NextTurn.MY_TURN;
@@ -156,7 +159,7 @@ public class ServerLauncher {
 		String opponentID = redisStorage.getOpponentId(userID);
 		GameBoard opponentBoard = redisStorage.getUserGameBoard(opponentID);
 		ShipPlacements shipPlacements = redisStorage.getUserShipPlacements(opponentID);
-		GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(shipPlacements);
+		GameBoard opponentBoardRevealed = new GameBoard(opponentBoard).reveal(shipPlacements, GameBoardField.UNKNOWN);
 
 		ServerClientMessage type = ServerClientMessage.ACTION_PERFORMED;
 		ArrayList<GameBoardChange> changedCoords = new ArrayList<>();
@@ -288,11 +291,16 @@ public class ServerLauncher {
 
 	public static void main (String[] arg) {
 		logger.info("Server project started");
+
 		Javalin app = Javalin.create(config -> {
 			config.requestLogger((ctx, ms) -> {
 				String userID = ctx.formParam("userID"); // don't use getUserID, as that would make it mandatory for all endpoints
 				String shorterUserID = userID != null ? userID.substring(0, 10) : "NO_AUTH";
-				logger.info(ctx.path() + " | " + shorterUserID + " | " + ctx.status());
+				logger.info(ctx.path() + " | "
+						+ shorterUserID + " | "
+						+ ctx.status() + " | "
+						+ ms + " ms"
+						+ " | time: " + Timestamp.from(Instant.now()));
 			});
 		}).start(7070);
 

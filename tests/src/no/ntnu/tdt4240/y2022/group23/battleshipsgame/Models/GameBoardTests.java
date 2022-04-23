@@ -201,7 +201,7 @@ public class GameBoardTests {
     public void ships_are_revealed_from_unknown_board(ShipPlacements placements) {
         GameBoard board = new GameBoard(5, 5);
 
-        board.reveal(placements);
+        board.reveal(placements, GameBoardField.WATER);
 
         for (int x = 0; x < board.getWidth(); x++) {
             for (int y = 0; y < board.getHeight(); y++) {
@@ -224,7 +224,7 @@ public class GameBoardTests {
             board.set(pos, GameBoardField.SHIP);
         }
 
-        board.reveal(placements);
+        board.reveal(placements, GameBoardField.WATER);
 
         for (int x = 0; x < board.getWidth(); x++) {
             for (int y = 0; y < board.getHeight(); y++) {
@@ -247,7 +247,7 @@ public class GameBoardTests {
             board.set(pos, GameBoardField.SUNK);
         }
 
-        board.reveal(placements);
+        board.reveal(placements, GameBoardField.WATER);
 
         for (int x = 0; x < board.getWidth(); x++) {
             for (int y = 0; y < board.getHeight(); y++) {

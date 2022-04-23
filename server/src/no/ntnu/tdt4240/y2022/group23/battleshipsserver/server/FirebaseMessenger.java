@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.y2022.group23.battleshipsserver.server;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -14,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.ServerClientMessage;
 
@@ -62,6 +64,7 @@ public class FirebaseMessenger {
         }
         Message message = messageBuilder
             .setToken(firebaseToken)
+            .setAndroidConfig(AndroidConfig.builder().setTtl((int) TimeUnit.SECONDS.toMillis(60)).build())
             .build();
 
         // Send a message to the device corresponding to the provided registration token.
