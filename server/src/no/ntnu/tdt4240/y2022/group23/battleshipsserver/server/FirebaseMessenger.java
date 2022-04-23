@@ -78,7 +78,7 @@ public class FirebaseMessenger {
 
     // --- SINGLETON STUFF ---
 
-    public static FirebaseMessenger getInstance(){
+    private static FirebaseMessenger getInstance(){
         if (FirebaseMessenger.INSTANCE == null){
             FirebaseMessenger.INSTANCE = new FirebaseMessenger();
         }
