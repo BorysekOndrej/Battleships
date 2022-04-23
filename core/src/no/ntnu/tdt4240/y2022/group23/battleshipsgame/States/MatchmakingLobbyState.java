@@ -8,10 +8,15 @@ import no.ntnu.tdt4240.y2022.group23.battleshipsgame.Network.CommunicationTermin
 public class MatchmakingLobbyState extends AbstractLobbyState{
     private RandOppLobbyStateGUI randOppLobbyStateGUI;
 
-    protected MatchmakingLobbyState(GameStateManager gsm) {
+    protected MatchmakingLobbyState(GameStateManager gsm,boolean isRanked) {
         super(gsm);
         randOppLobbyStateGUI = new RandOppLobbyStateGUI();
-        lobbyAPIClient.sendJoinCasualMatchmakingRequest();
+        if (isRanked){
+            lobbyAPIClient.sendJoinRankedMatchmakingRequest();
+        }
+        else {
+            lobbyAPIClient.sendJoinCasualMatchmakingRequest();
+        }
     }
 
     @Override
