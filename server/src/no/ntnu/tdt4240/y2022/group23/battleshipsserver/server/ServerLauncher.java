@@ -7,6 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -289,11 +291,16 @@ public class ServerLauncher {
 
 	public static void main (String[] arg) {
 		logger.info("Server project started");
+
 		Javalin app = Javalin.create(config -> {
 			config.requestLogger((ctx, ms) -> {
 				String userID = ctx.formParam("userID"); // don't use getUserID, as that would make it mandatory for all endpoints
 				String shorterUserID = userID != null ? userID.substring(0, 10) : "NO_AUTH";
-				logger.info(ctx.path() + " | " + shorterUserID + " | " + ctx.status());
+				logger.info(ctx.path() + " | "
+						+ shorterUserID + " | "
+						+ ctx.status() + " | "
+						+ ms + " ms"
+						+ " | time: " + Timestamp.from(Instant.now()));
 			});
 		}).start(7070);
 
