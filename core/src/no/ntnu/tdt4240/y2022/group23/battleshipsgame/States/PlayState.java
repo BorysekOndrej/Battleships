@@ -118,6 +118,7 @@ public class PlayState extends AbstractState implements IGameBoardState {
             return;
 
         turnHolder = newGameState.getNextTurn();
+        setWaitingFor(newGameState.thisPlayerWon());
 
         if (newGameState.isThisPlayerBoard()) {
             myGameBoard = newGameState.getBoard();
@@ -129,7 +130,6 @@ public class PlayState extends AbstractState implements IGameBoardState {
             showOpponentBoard();
         }
 
-        setWaitingFor(newGameState.thisPlayerWon());
         playStateGUI.startTimer(Config.TURN_TIMEOUT);
     }
 
@@ -175,7 +175,7 @@ public class PlayState extends AbstractState implements IGameBoardState {
                 GameState newGameState = gameAPIClient.receiveOpponentActionResult();
                 processActionResult(newGameState);
 
-                if (--turnsLeftForRadar == 0) {
+                if (newGameState != null && --turnsLeftForRadar == 0) {
                     actions.set(1, actions.get(1).setAt1(true));
                     playStateGUI.setActions(actions);
                 }
