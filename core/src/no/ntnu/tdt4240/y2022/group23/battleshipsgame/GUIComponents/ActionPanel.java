@@ -60,7 +60,7 @@ public class ActionPanel implements IRenderable {
     }
 
     public IAction selectedAction(){
-        if(markedActions == null) return null;
+        if(markedActions == null || !actions.get(markedActions).getValue1()) return null;
         return this.actions.get(markedActions).getValue0();
     }
 
