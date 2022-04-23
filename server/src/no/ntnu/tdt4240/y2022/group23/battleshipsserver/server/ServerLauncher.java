@@ -38,7 +38,7 @@ public class ServerLauncher {
 		return ctx.formParamAsClass("userID", String.class).get();
 	}
 
-	public static void join_matchmaking(Context ctx) {
+	private static void join_matchmaking(Context ctx) {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 		String userID = getUserID(ctx);
@@ -58,7 +58,7 @@ public class ServerLauncher {
 	}
 
 
-	public static void placements(Context ctx) throws FirebaseMessagingException {
+	private static void placements(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 		String userID = getUserID(ctx);
@@ -101,7 +101,7 @@ public class ServerLauncher {
 		}
 	}
 
-	public static void action(Context ctx) throws FirebaseMessagingException {
+	private static void action(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 		String userID = getUserID(ctx);
@@ -151,7 +151,7 @@ public class ServerLauncher {
 
 	}
 
-	public static void timeout(Context ctx) throws FirebaseMessagingException {
+	private static void timeout(Context ctx) throws FirebaseMessagingException {
 		RedisStorage redisStorage = RedisStorage.getInstance();
 
 		String userID = getUserID(ctx);
@@ -187,7 +187,7 @@ public class ServerLauncher {
 		}
 	}
 
-	public static void terminate(Context ctx) throws FirebaseMessagingException {
+	private static void terminate(Context ctx) throws FirebaseMessagingException {
 		String userID = getUserID(ctx);
 
 		RedisStorage.getInstance().removeUserFromMatchmakingQueues(userID);
@@ -201,7 +201,7 @@ public class ServerLauncher {
 		ctx.status(200).result("Ended communication and informed the other player");
 	}
 
-	public static void create_lobby(Context ctx) {
+	private static void create_lobby(Context ctx) {
 		String userID = getUserID(ctx);
 
 		String privateLobby = ctx.formParam("privateLobby");
@@ -213,7 +213,7 @@ public class ServerLauncher {
 	}
 
 
-	public static void join_lobby(Context ctx) {
+	private static void join_lobby(Context ctx) {
 		String userID = getUserID(ctx);
 		String inviteID = ctx.formParamAsClass("id", String.class).get();
 
@@ -228,7 +228,7 @@ public class ServerLauncher {
 		ctx.status(200).result("User added to Lobby");
 	}
 
-	public static void elo_get(Context ctx) {
+	private static void elo_get(Context ctx) {
 		String userID = getUserID(ctx);
 		String elo = RedisStorage.getInstance().getELO(userID);
 
@@ -273,7 +273,7 @@ public class ServerLauncher {
 		redisStorage.setELO(looserUserID, elos.getRight().toString());
 	}
 
-	public static void healthcheck(Context ctx) {
+	private static void healthcheck(Context ctx) {
 		HealthCheck healthCheck = new HealthCheck();
 		Map<String, String> result = healthCheck.getResult();
 
