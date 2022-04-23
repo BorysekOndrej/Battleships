@@ -1,5 +1,7 @@
 package no.ntnu.tdt4240.y2022.group23.battleshipsgame.GUIComponents;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,6 +16,7 @@ public class TimerPanel implements IRenderable {
     private final int xPos;
     private final int yPos;
     private boolean run;
+    private boolean pause;
     private float currentPeriod;
 
     public TimerPanel(int x, int y){
@@ -21,10 +24,15 @@ public class TimerPanel implements IRenderable {
         yPos = y;
         timeLeft = 0;
         run = false;
+        pause = false;
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(6);
         panel = new Texture("timer_panel/timer_panel.png");
+    }
+
+    public void setPause(boolean isPaused){
+        this.pause = isPaused;
     }
 
     public void startTimer(int period){
@@ -34,12 +42,19 @@ public class TimerPanel implements IRenderable {
     }
 
     @Override
-    public void handleInput() {}
+    public void handleInput() {
+        /* Debug
+        if(Gdx.input.justTouched()){
+            setPause(!pause);
+        }
+
+         */
+    }
 
     @Override
     public void update(float dt) {
         if(run){
-            currentPeriod += dt;
+            if(!pause) currentPeriod += dt;
             if(currentPeriod >= 1f ){
                 if(timeLeft==1){
                     run = false;
