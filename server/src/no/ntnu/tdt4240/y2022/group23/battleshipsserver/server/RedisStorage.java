@@ -111,11 +111,13 @@ public class RedisStorage {
     }
 
     GameBoard getUserGameBoard(String userID) {
-        return get("game_board_" + userID);
+        String lobbyID = Lobby.findGameID(userID);
+        return get("game_board_" + lobbyID + "_" + userID);
     }
 
     void setUserGameBoard(String userID, GameBoard board) {
-        set("game_board_" + userID, board);
+        String lobbyID = Lobby.findGameID(userID);
+        set("game_board_" + lobbyID + "_" + userID, board);
     }
 
     ShipPlacements getUserShipPlacements(String userID) {
