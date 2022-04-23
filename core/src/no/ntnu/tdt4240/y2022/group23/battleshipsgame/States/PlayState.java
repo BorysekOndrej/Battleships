@@ -203,8 +203,13 @@ public class PlayState extends AbstractState implements IGameBoardState {
     private void showOpponentBoard() {
         currentBoardView = View.OPPONENT_BOARD;
 
-        playStateGUI.setGameBoardPanelEnabled(true);
-        playStateGUI.setConfirmButtonEnabled(true);
+        if (waitingFor == WaitingFor.MY_ACTION) {
+            playStateGUI.setGameBoardPanelEnabled(true);
+            playStateGUI.setConfirmButtonEnabled(true);
+        } else {
+            playStateGUI.setGameBoardPanelEnabled(false);
+            playStateGUI.setConfirmButtonEnabled(false);
+        }
 
         setGUI();
     }
