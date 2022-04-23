@@ -27,19 +27,15 @@ public class MenuState extends AbstractState {
     //Handles the input of clicking the button
     public void handleInput(){
         if (mainMenu.practiseButtonPressed()){
-            lobbyAPIClient.endCommunication();
             goToPractice();
         }
         if (mainMenu.createLobbyButtonPressed()){
-            lobbyAPIClient.endCommunication();
             goToCreateLobby();
         }
         if (mainMenu.joinLobbyButtonPressed()){
-            lobbyAPIClient.endCommunication();
             goToJoinLobby();
         }
         if (mainMenu.rankedButtonPressed()){
-            lobbyAPIClient.endCommunication();
             goToRanked();
         }
     }
