@@ -23,7 +23,7 @@ public class Config {
     public static List<Pair<IShip, Integer>> remainingShips() {
         List<Pair<IShip, Integer>> remainingShips = new ArrayList<>();
         for (int i = 4; i >= 1; i--) {
-            remainingShips.add(Pair.with(new RectangularShip(new Coords(0, 0), i, false), i == 1 ? 1 : 0));
+            remainingShips.add(Pair.with(new RectangularShip(new Coords(0, 0), i, false), 5 - i));
         }
         return remainingShips;
     }
