@@ -194,6 +194,10 @@ public class PlayState extends AbstractState implements IGameBoardState {
     }
 
     private void setGUI() {
+        boolean userCanPerformAction = currentBoardView == View.OPPONENT_BOARD && waitingFor == WaitingFor.MY_ACTION;
+        playStateGUI.setGameBoardPanelEnabled(userCanPerformAction);
+        playStateGUI.setConfirmButtonEnabled(userCanPerformAction);
+
         playStateGUI.setTurnIndicator(turnHolder);
         playStateGUI.setGameBoard(currentBoardView == View.MY_BOARD ? myGameBoard : opponentGameBoard);
         playStateGUI.setShips(currentBoardView == View.MY_BOARD ? myUnsunkShips : opponentUnsunkShips);
@@ -201,24 +205,11 @@ public class PlayState extends AbstractState implements IGameBoardState {
 
     private void showOpponentBoard() {
         currentBoardView = View.OPPONENT_BOARD;
-
-        if (waitingFor == WaitingFor.MY_ACTION) {
-            playStateGUI.setGameBoardPanelEnabled(true);
-            playStateGUI.setConfirmButtonEnabled(true);
-        } else {
-            playStateGUI.setGameBoardPanelEnabled(false);
-            playStateGUI.setConfirmButtonEnabled(false);
-        }
-
         setGUI();
     }
 
     private void showMyBoard() {
         currentBoardView = View.MY_BOARD;
-
-        playStateGUI.setGameBoardPanelEnabled(false);
-        playStateGUI.setConfirmButtonEnabled(false);
-
         setGUI();
     }
 
