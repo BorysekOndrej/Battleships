@@ -72,6 +72,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
         waitingFor = WaitingFor.GAME_START;
 
         showMyBoard();
+        playStateGUI.startTimer(Config.TURN_TIMEOUT);
+        playStateGUI.setPause(true);
     }
 
     private void setWaitingFor(boolean thisPlayerWon) {
@@ -154,8 +156,8 @@ public class PlayState extends AbstractState implements IGameBoardState {
                     waitingFor = WaitingFor.OPPONENT_ACTION_RESULT;
                     showOpponentBoard();
                 }
-                playStateGUI.startTimer(Config.TURN_TIMEOUT);
                 playStateGUI.setSwitchButtonEnabled(true);
+                playStateGUI.setPause(false);
                 break;
             }
             case MY_ACTION: {

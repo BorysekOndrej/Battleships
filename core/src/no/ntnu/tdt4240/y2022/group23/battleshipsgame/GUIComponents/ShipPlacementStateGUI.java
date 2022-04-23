@@ -52,6 +52,8 @@ public class ShipPlacementStateGUI implements IRenderable {
         timer.startTimer(periodInSec);
     }
 
+    public void setPause(boolean isPaused) { timer.setPause(isPaused); }
+
     public boolean runOut(){
         return timer.runOut();
     }
