@@ -112,6 +112,7 @@ public class ServerLauncher {
 
 		ServerClientMessage type = evaluator.nextTurn() == NextTurn.GAME_OVER ? ServerClientMessage.GAME_OVER : ServerClientMessage.ACTION_PERFORMED;
 		GameBoard opponentBoardAfter = evaluator.boardAfterTurn();
+		redisStorage.setUserGameBoard(opponentID, opponentBoardAfter);
 		ArrayList<GameBoardChange> changedCoords = new ArrayList<>(evaluator.getChangedCoords());
 		ArrayList<IShip> unsunkShips = new ArrayList<>(opponentPlacements.getUnsunkShipsDisplaced(opponentBoardAfter));
 		NextTurn nextTurn = evaluator.nextTurn();
