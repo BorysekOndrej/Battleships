@@ -64,7 +64,11 @@ public class FirebaseMessenger {
         }
         Message message = messageBuilder
             .setToken(firebaseToken)
-            .setAndroidConfig(AndroidConfig.builder().setTtl((int) TimeUnit.SECONDS.toMillis(60)).build())
+            .setAndroidConfig(
+                    AndroidConfig.builder()
+                            .setTtl((int) TimeUnit.SECONDS.toMillis(60))
+                            .setPriority(AndroidConfig.Priority.HIGH)
+                            .build())
             .build();
 
         // Send a message to the device corresponding to the provided registration token.
