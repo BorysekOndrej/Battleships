@@ -193,12 +193,11 @@ public class ServerLauncher {
 		RedisStorage.getInstance().removeUserFromMatchmakingQueues(userID);
 
 		Lobby lobby = Lobby.getUsersGame(userID);
-		if (lobby == null){
-			return; // todo:
+		if (lobby != null){
+			lobby.endCommunication(userID);
 		}
-		lobby.endCommunication(userID);
 
-		ctx.status(200).result("Ended communication and informed the other player");
+		ctx.status(200).result("Ended communication. If you were in lobby than we informed the other player");
 	}
 
 	private static void create_lobby(Context ctx) {
@@ -208,7 +207,7 @@ public class ServerLauncher {
 		assert "true".equals(privateLobby);
 
 		Lobby lobby = new Lobby(true);
-		lobby.addUser(userID); // todo: handle exceptions
+		lobby.addUser(userID);
 		ctx.status(200).result(lobby.inviteID+"|Lobby created with invite ID and you've been invited.");
 	}
 
@@ -224,7 +223,7 @@ public class ServerLauncher {
 			return;
 		}
 
-		lobby.addUser(userID); // todo: handle exceptions
+		lobby.addUser(userID);
 		ctx.status(200).result("User added to Lobby");
 	}
 

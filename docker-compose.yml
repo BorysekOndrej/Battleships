@@ -36,7 +36,7 @@ services:
     environment:
       - REDIS_HOSTS=instance1:redis:6379
     # ports:
-    #   - '8079:8081' # todo: don't expose the port on production
+    #   - '8079:8081' # security: don't expose the port on production
     depends_on:
       - redis
 

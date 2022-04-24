@@ -26,8 +26,6 @@ public class RedisStorage {
         pool = new JedisPool(redisLocation, 6379);
     }
 
-    // todo: set TTL
-
     void addUserToMatchmakingQueue(String userID, String queue){
         if (userID.isEmpty()){
             return;
@@ -131,7 +129,7 @@ public class RedisStorage {
     }
 
     String getOpponentId(String userID) {
-        Lobby lobby = Lobby.getUsersGame(userID); // this creates circular dependency
+        Lobby lobby = Lobby.getUsersGame(userID);
         if (lobby == null){
             return null; // todo: throw exception?
         }

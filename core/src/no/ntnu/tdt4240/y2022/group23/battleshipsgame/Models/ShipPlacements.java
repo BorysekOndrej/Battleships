@@ -67,7 +67,7 @@ public class ShipPlacements implements Serializable {
     public boolean allSunk(GameBoard board) {
         for (IShip ship: ships) {
             for (Coords coords: ship.getPositions()){
-                if (board.get(coords) != GameBoardField.SUNK){ // todo: check why board is needed here
+                if (board.get(coords) != GameBoardField.SUNK){
                     return false;
                 }
             }

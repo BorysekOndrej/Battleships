@@ -43,7 +43,6 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
                 new IntentFilter("firebaseNewNotification"));
 
 
-        // todo: This is one giant race condition waiting to happen
         FirebaseInstallations.getInstance().getId()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -57,7 +56,6 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
                             });
                         } else {
                             Log.e("Installations", "Unable to get Installation ID");
-                            // todo: solve this
                         }
                     }
                 });
@@ -86,7 +84,6 @@ public class NetworkClient implements INetworkClient, IFirebaseTokenUpdate {
     // --- SINGLETON STUFF ---
 
     public static NetworkClient getInstance(Context context){
-        // todo: this will fail, if we first call get instance without the context
         if (NetworkClient.INSTANCE == null){
             NetworkClient.INSTANCE = new NetworkClient(context);
         }
