@@ -1,7 +1,13 @@
 # Battleships
 
-Requires platform Android 10 (api 29). On Android studio, go to `Tools > SDK Manager`
-and install the required version.
+This is a course project for [TDT4240 Software Architecture at NTNU](https://www.ntnu.edu/studies/courses/TDT4240) of Group 23 in Spring 2022. 
+
+
+Android 8.0+ application written in Java using LibGDX and Firebase Cloud Messaging.
+Server written in Java 1.8, Javalin as HTTPS server and Nginx as a reverse proxy.
+
+
+## How to build
 
 ### Docker
 
@@ -33,9 +39,7 @@ App build (cachable, but requires local tooling):
 For ease of development the file `android\google-services.json` is included in the repository. It contains API keys for Firebase, so it should idealy remain secret, however the keys are also recoverable from the APK, so it's not highly sensitive. Let's keep it in repository for now and revoke it before we make it public.
 
 
-
-
-### Icon
+## Icon
 
 Battleship by Phạm Thanh Lộc from NounProject.com
 https://thenounproject.com/icon/battleship-2506976/
